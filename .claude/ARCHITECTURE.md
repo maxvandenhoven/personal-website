@@ -28,6 +28,7 @@ personal-website/
 │           └── logo.svg        # Hex grid button icon
 ├── public/                     # Static assets served as-is (favicon, robots.txt)
 ├── src/
+│   ├── content.config.ts        # Content collections (blogs, projects, homepage)
 │   ├── components/
 │   │   ├── ui/                 # Primitives: Button, Card, Modal, Tag, SearchBar
 │   │   ├── layout/             # Structural: Header, Footer, Container, Section

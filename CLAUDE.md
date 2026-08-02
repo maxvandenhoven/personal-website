@@ -22,7 +22,7 @@ Additional npm scripts (used by Makefile and lint-staged):
 
 ## Tech Stack
 
-- **Framework**: Astro with React islands for interactive components
+- **Framework**: Astro 7 with React islands for interactive components
 - **Language**: TypeScript (strict mode)
 - **Styling**: Tailwind CSS v4 (light mode only, designed for easy dark mode extension)
 - **Syntax Highlighting**: Shiki (VS Code-grade tokenization)
