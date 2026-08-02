@@ -50,9 +50,13 @@ If you want `www.<domain>.com` to work as well, add a CNAME record:
 | ----- | ----- | -------------------- | ------------ |
 | CNAME | `www` | `<domain>.github.io` | DNS only     |
 
+### Important: no extra A/AAAA records on the apex
+
+The apex domain (`@`) must only have the 8 GitHub records listed above. Any additional A or AAAA record on `@` (for example, a leftover record pointing to a previous hosting provider) will prevent GitHub from provisioning the SSL certificate. If you previously hosted something on the apex domain, move it to a subdomain before adding the GitHub records.
+
 ### A note on subdomains
 
-If you have other subdomains pointing to different servers (like a homelab), those are independent A records. They will not conflict with the GitHub Pages setup as long as you do not use a wildcard DNS record. GitHub explicitly warns against wildcard records because they create vulnerability to domain takeover attacks.
+Subdomains pointing to other servers (like a homelab) are independent DNS entries. Records for `postgres.example.com` or `traefik.example.com` will not conflict with the GitHub Pages setup. Just do not use a wildcard DNS record (`*.example.com`). GitHub explicitly warns against wildcard records because they create vulnerability to domain takeover attacks.
 
 ## Step 3: Push and deploy
 
@@ -89,7 +93,7 @@ There are a few things worth checking after everything is in place.
 
 ## Troubleshooting
 
-**The Actions workflow fails on `make check`.** This means linting, formatting, or type checking found issues. Run `make check` locally to see the same errors and fix them before pushing.
+**The Actions workflow fails on `make ci`.** This means linting, formatting, or type checking found issues. Run `make check` locally to auto-fix what it can, then commit the changes and push again. Note that this should not be possible due to the pre-commit setup.
 
 **DNS is not resolving.** Cloudflare changes usually propagate within minutes, but it can take up to 24 hours globally. Double-check that the proxy toggle is set to DNS only (grey cloud, not orange).
 
