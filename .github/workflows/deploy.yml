@@ -3,6 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - ".claude/**"
+      - ".vscode/**"
+      - "docs/**"
   workflow_dispatch:
 
 permissions:
