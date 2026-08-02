@@ -9,29 +9,35 @@ All commands are available via the Makefile:
 - `make dev` — start local dev server
 - `make build` — build static site
 - `make preview` — preview built site locally
-- `make clean` — remove build artifacts
-- `make lint` — run ESLint + TypeScript type checking
+- `make clean` — remove `dist/` and `.astro/`
+- `make lint` — run ESLint (report only)
 - `make format` — run Prettier (auto-fix)
-- `make check` — run lint + format check + type check (same as pre-commit hook)
+- `make type` — run TypeScript type checking via `astro check`
+- `make check` — run lint + format check + typecheck (all report-only, all must pass)
+
+Additional npm scripts (used by Makefile and lint-staged):
+
+- `npm run lint:fix` — ESLint with auto-fix
+- `npm run format:check` — Prettier report only (no writes)
 
 ## Tech Stack
 
 - **Framework**: Astro with React islands for interactive components
 - **Language**: TypeScript (strict mode)
-- **Styling**: Tailwind CSS (light mode only, designed for easy dark mode extension)
+- **Styling**: Tailwind CSS v4 (light mode only, designed for easy dark mode extension)
 - **Syntax Highlighting**: Shiki (VS Code-grade tokenization)
 - **Package Manager**: npm
-- **Node Version**: 24 LTS (see `.nvmrc`)
-- **Linting**: ESLint (with Astro + React + TypeScript plugins)
-- **Formatting**: Prettier (with Tailwind class sorting plugin)
-- **Pre-commit**: husky + lint-staged runs `make check`
+- **Node Version**: 24 (managed via nvm, see `.nvmrc`)
+- **Linting**: ESLint 10 (flat config in `eslint.config.js`) with Astro, React Hooks, and TypeScript plugins
+- **Formatting**: Prettier (with `prettier-plugin-astro` and `prettier-plugin-tailwindcss` for class sorting)
+- **Pre-commit**: husky + lint-staged runs `eslint --fix` and `prettier --write` on staged `.ts`, `.tsx`, `.astro`, `.css` files
 
 ## Code Conventions
 
 ### Git
 
 - Use conventional commits: `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`
-- Pre-commit hook enforces lint + format + type check
+- Pre-commit hook runs lint-staged (auto-fixes lint + format on staged files)
 
 ### TypeScript
 
@@ -41,10 +47,10 @@ All commands are available via the Makefile:
 
 ### Styling
 
-- Never use raw hex/rgb colors — always use Tailwind theme tokens defined in `tailwind.config.ts`
-- Design tokens (colors, spacing, fonts, radii) live in `tailwind.config.ts`
-- Light mode only for now; when adding dark mode, use Tailwind `dark:` variants
-- Font loaded via CDN (configured in base layout)
+- Never use raw hex/rgb colors — always use Tailwind theme tokens defined in `src/styles/global.css`
+- Design tokens (colors, spacing, fonts, radii, shadows) live in the `@theme` block in `src/styles/global.css` (Tailwind v4 CSS-based config)
+- Light mode only for now; dark mode placeholder values are commented out in `global.css`
+- System font stacks as defaults until a CDN font is chosen
 
 ### Components
 

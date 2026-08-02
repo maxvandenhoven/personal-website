@@ -14,7 +14,7 @@ personal-website/
 │   └── workflows/
 │       └── deploy.yml          # Build + deploy on push to main, manual trigger
 ├── .husky/
-│   └── pre-commit              # Runs `make check`
+│   └── pre-commit              # Runs lint-staged (eslint --fix + prettier --write)
 ├── content/                    # CMS content (not in src/ — treated as data)
 │   ├── homepage.yaml             # Homepage configuration
 │   ├── blogs/
@@ -42,11 +42,11 @@ personal-website/
 │   │   ├── projects.astro      # Projects hex grid
 │   │   ├── 404.astro           # Custom 404 page
 │   │   └── rss.xml.ts          # RSS feed endpoint
-│   └── styles/                 # Global CSS, Tailwind base/utilities
+│   └── styles/
+│       └── global.css          # Tailwind v4 @theme tokens: colors, fonts, spacing, radii, shadows
 ├── astro.config.ts
-├── tailwind.config.ts          # Design tokens: colors, fonts, spacing, radii
 ├── tsconfig.json
-├── .eslintrc.cjs
+├── eslint.config.js            # ESLint 10 flat config
 ├── .prettierrc
 ├── .nvmrc                      # Node 24
 ├── .editorconfig
@@ -185,9 +185,9 @@ Both components receive their data as serialized props from Astro — no client-
 
 ## Design System
 
-- **Design tokens** defined in `tailwind.config.ts`: colors, fonts, spacing, border radii, shadows
-- **Light mode only** for now; architecture supports dark mode via Tailwind `dark:` variants
-- **Font**: Loaded via CDN (choice deferred — configured in base layout, referenced in Tailwind config)
+- **Design tokens** defined in `src/styles/global.css` via Tailwind v4 `@theme` directive: colors (primary, surface, text, accent), fonts, spacing, border radii, shadows — all using oklch color space
+- **Light mode only** for now; dark mode placeholder values are commented out in `global.css`, ready to uncomment
+- **Font**: System font stacks as defaults (CDN font choice deferred)
 - **No external UI libraries** — custom component library for consistency
 - **Syntax highlighting**: Shiki with VS Code-grade tokenization (theme choice deferred)
 
