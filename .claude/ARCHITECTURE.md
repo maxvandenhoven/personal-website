@@ -138,21 +138,24 @@ status: "draft" | "published"
 
 ### Homepage Config (`content/homepage.yaml`)
 
+Uses Astro's `file()` loader, which requires an array with `id` fields. The single entry uses `id: config` and is queried via `getEntry("homepage", "config")`.
+
 ```yaml
-name: string
-job_title: string
-hero_tagline: string
-hero_description: string
-github_link: string
-linkedin_link: string
-twitter_link: string
-email_link: string
-skills_description: string
-skills:
-  - skill_title: string
-    entries: [string]
-featured_projects: [string] # Project slugs
-featured_blogs: [string] # Blog slugs
+- id: config
+  name: string
+  job_title: string
+  hero_tagline: string
+  hero_description: string
+  github_link: string
+  linkedin_link: string
+  twitter_link: string
+  email_link: string
+  skills_description: string
+  skills:
+    - skill_title: string
+      entries: [string]
+  featured_projects: [string] # Project slugs
+  featured_blogs: [string] # Blog slugs
 ```
 
 ## Interactive Components (React Islands)

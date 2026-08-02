@@ -1,17 +1,74 @@
 ---
+import { getEntry, getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
 
+const homepageEntry = await getEntry("homepage", "config");
+if (!homepageEntry) throw new Error("Homepage config not found");
+const config = homepageEntry.data;
+
+const allProjects = await getCollection("projects");
+const allBlogs = await getCollection("blogs");
+
+const featuredProjects = config.featured_projects
+  .map((slug) => allProjects.find((p) => p.id === slug))
+  .filter(Boolean);
+const featuredBlogs = config.featured_blogs
+  .map((slug) => allBlogs.find((b) => b.id === slug))
+  .filter(Boolean);
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
-  </head>
-  <body>
-    <h1>Astro</h1>
-  </body>
-</html>
+<BaseLayout title={config.name} description={config.hero_tagline}>
+  <section>
+    <h1>{config.name}</h1>
+    <p>{config.job_title}</p>
+    <p><strong>{config.hero_tagline}</strong></p>
+    <p>{config.hero_description}</p>
+  </section>
+
+  <section>
+    <h2>Links</h2>
+    <ul>
+      <li><a href={config.github_link}>GitHub</a></li>
+      <li><a href={config.linkedin_link}>LinkedIn</a></li>
+      <li><a href={config.twitter_link}>Twitter</a></li>
+      <li><a href={config.email_link}>Email</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Skills</h2>
+    <p>{config.skills_description}</p>
+    {
+      config.skills.map((category) => (
+        <div>
+          <h3>{category.skill_title}</h3>
+          <ul>
+            {category.entries.map((entry) => (
+              <li>{entry}</li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </section>
+
+  <section>
+    <h2>Featured Projects</h2>
+    <ul>
+      {featuredProjects.map((project) => <li>{project!.data.title}</li>)}
+    </ul>
+  </section>
+
+  <section>
+    <h2>Featured Blogs</h2>
+    <ul>
+      {
+        featuredBlogs.map((blog) => (
+          <li>
+            <a href={`/blog/${blog!.id}`}>{blog!.data.title}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

@@ -1,0 +1,30 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const projects = (await getCollection("projects")).filter(
+  (project) => project.data.status === "published",
+);
+---
+
+<BaseLayout title="Projects" description="All projects">
+  <h1>Projects</h1>
+  <ul>
+    {
+      projects.map((project) => (
+        <li>
+          <strong>{project.data.title}</strong>
+          <p>{project.data.description}</p>
+          <p>Technologies: {project.data.technologies.join(", ")}</p>
+          <a href={project.data.github_link}>GitHub</a>
+          {project.data.relevant_blogs.length > 0 && (
+            <p>
+              Related blogs:{" "}
+              {project.data.relevant_blogs.map((slug) => `${slug}`).join(", ")}
+            </p>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

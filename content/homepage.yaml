@@ -1,0 +1,25 @@
+- id: config
+  name: Max van den Hoven
+  job_title: Software Engineer
+  hero_tagline: Building things that work
+  hero_description: I'm a software engineer who enjoys building robust systems and exploring new technologies. This is my corner of the internet where I share what I'm working on and what I've learned along the way.
+  github_link: https://github.com/maxvandenhoven
+  linkedin_link: https://linkedin.com/in/maxvandenhoven
+  twitter_link: https://twitter.com/maxvandenhoven
+  email_link: mailto:max.hoven@gmail.com
+  skills_description: A mix of tools and technologies I work with regularly.
+  skills:
+    - skill_title: Languages
+      entries:
+        - Python
+        - TypeScript
+        - Rust
+    - skill_title: Infrastructure
+      entries:
+        - Docker
+        - PostgreSQL
+        - Linux
+  featured_projects:
+    - test-project
+  featured_blogs:
+    - hello-world
