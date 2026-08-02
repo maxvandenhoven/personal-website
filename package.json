@@ -54,6 +54,9 @@
     ],
     "*.css": [
       "prettier --write"
+    ],
+    "*.{md,yaml,yml}": [
+      "prettier --write"
     ]
   }
 }

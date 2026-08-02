@@ -26,29 +26,29 @@ In your Cloudflare dashboard, go to **DNS > Records** and add the following entr
 
 ### A records (IPv4)
 
-| Type | Name | Content | Proxy status |
-|------|------|---------|--------------|
-| A | `@` | `185.199.108.153` | DNS only |
-| A | `@` | `185.199.109.153` | DNS only |
-| A | `@` | `185.199.110.153` | DNS only |
-| A | `@` | `185.199.111.153` | DNS only |
+| Type | Name | Content           | Proxy status |
+| ---- | ---- | ----------------- | ------------ |
+| A    | `@`  | `185.199.108.153` | DNS only     |
+| A    | `@`  | `185.199.109.153` | DNS only     |
+| A    | `@`  | `185.199.110.153` | DNS only     |
+| A    | `@`  | `185.199.111.153` | DNS only     |
 
 ### AAAA records (IPv6)
 
-| Type | Name | Content | Proxy status |
-|------|------|---------|--------------|
-| AAAA | `@` | `2606:50c0:8000::153` | DNS only |
-| AAAA | `@` | `2606:50c0:8001::153` | DNS only |
-| AAAA | `@` | `2606:50c0:8002::153` | DNS only |
-| AAAA | `@` | `2606:50c0:8003::153` | DNS only |
+| Type | Name | Content               | Proxy status |
+| ---- | ---- | --------------------- | ------------ |
+| AAAA | `@`  | `2606:50c0:8000::153` | DNS only     |
+| AAAA | `@`  | `2606:50c0:8001::153` | DNS only     |
+| AAAA | `@`  | `2606:50c0:8002::153` | DNS only     |
+| AAAA | `@`  | `2606:50c0:8003::153` | DNS only     |
 
 ### Optional: www subdomain
 
 If you want `www.<domain>.com` to work as well, add a CNAME record:
 
-| Type | Name | Content | Proxy status |
-|------|------|---------|--------------|
-| CNAME | `www` | `<domain>.github.io` | DNS only |
+| Type  | Name  | Content              | Proxy status |
+| ----- | ----- | -------------------- | ------------ |
+| CNAME | `www` | `<domain>.github.io` | DNS only     |
 
 ### A note on subdomains
 
