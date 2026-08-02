@@ -15,7 +15,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "astro check",
-    "prepare": "husky"
+    "prepare": "husky",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.2",
@@ -41,7 +43,11 @@
     "lint-staged": "^17.3.0",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
-    "prettier-plugin-tailwindcss": "^0.8.1"
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "storybook": "^10.5.5",
+    "@storybook/react-vite": "^10.5.5",
+    "@storybook/addon-docs": "^10.5.5",
+    "eslint-plugin-storybook": "^10.5.5"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
