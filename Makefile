@@ -1,4 +1,4 @@
-.PHONY: dev build preview clean lint format type check
+.PHONY: dev build preview clean lint format type check ci
 
 dev:
 	npm run dev
@@ -22,6 +22,11 @@ type:
 	npm run typecheck
 
 check:
+	npm run lint:fix
+	npm run format
+	npm run typecheck
+
+ci:
 	npm run lint
 	npm run format:check
 	npm run typecheck

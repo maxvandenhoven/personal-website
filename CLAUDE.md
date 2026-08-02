@@ -13,7 +13,8 @@ All commands are available via the Makefile:
 - `make lint` — run ESLint (report only)
 - `make format` — run Prettier (auto-fix)
 - `make type` — run TypeScript type checking via `astro check`
-- `make check` — run lint + format check + typecheck (all report-only, all must pass)
+- `make check` — auto-fix lint + format, then run typecheck
+- `make ci` — run lint + format check + typecheck (all report-only, all must pass; used in CI)
 
 Additional npm scripts (used by Makefile and lint-staged):
 
