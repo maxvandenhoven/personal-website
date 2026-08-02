@@ -63,6 +63,10 @@
     ],
     "*.{md,yaml,yml}": [
       "prettier --write"
+    ],
+    "*.{js,mjs}": [
+      "eslint --fix",
+      "prettier --write"
     ]
   }
 }
