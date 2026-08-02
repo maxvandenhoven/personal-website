@@ -150,8 +150,8 @@ skills_description: string
 skills:
   - skill_title: string
     entries: [string]
-featured_projects: [string]   # Project slugs
-featured_blogs: [string]      # Blog slugs
+featured_projects: [string] # Project slugs
+featured_blogs: [string] # Blog slugs
 ```
 
 ## Interactive Components (React Islands)

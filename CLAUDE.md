@@ -62,6 +62,7 @@ All commands are available via the Makefile:
 Blog posts and projects are managed as folders under `content/`.
 
 **Adding a blog post:**
+
 1. Create `content/blogs/[slug]/`
 2. Add `index.md` with required frontmatter (see ARCHITECTURE.md for fields)
 3. Add `banner.png` for the listing card and post header
@@ -69,11 +70,13 @@ Blog posts and projects are managed as folders under `content/`.
 5. Set `status: published` when ready (drafts are excluded from the build)
 
 **Adding a project:**
+
 1. Create `content/projects/[slug]/`
 2. Add `index.md` with required frontmatter (see ARCHITECTURE.md for fields)
 3. Add `logo.svg` for the hex grid button
 4. Set `status: published` when ready
 
 **Homepage config:**
+
 - Edit `content/homepage.yaml` to update homepage text, social links, skills, and featured items
 - See `.claude/PROMPTS.md` for implementation prompts to use in future sessions
