@@ -1,7 +1,10 @@
 ---
+import { Image } from "astro:assets";
 import { getEntry, getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { BlogCard } from "../components/blog";
+import { DotGrid } from "../components/ui";
+import headshot from "../../content/headshot.jpeg";
 
 const homepageEntry = await getEntry("homepage", "config");
 if (!homepageEntry) throw new Error("Homepage config not found");
@@ -40,25 +43,29 @@ const marqueeItems = config.marquee_skills;
 
 <BaseLayout title={config.name} description={config.hero_tagline}>
   <!-- Hero — full viewport height -->
-  <section class="flex min-h-[calc(100vh-56px)] items-center py-16">
+  <section
+    class="relative flex min-h-[calc(100vh-56px)] items-center overflow-hidden py-16 select-none"
+  >
+    <DotGrid client:load />
     <div
-      class="mx-auto grid w-full max-w-[1100px] items-center gap-16 px-8 md:grid-cols-[1.3fr_auto]"
+      class="relative z-10 mx-auto grid w-full max-w-[1100px] items-center gap-16 px-8 md:grid-cols-[1.3fr_auto]"
     >
       <div>
-        <p
-          class="text-text-secondary mb-6 text-sm font-bold tracking-[0.12em] uppercase"
-        >
-          {config.name}
-        </p>
-        <h1
-          class="font-heading mb-6 text-[clamp(42px,6vw,64px)] leading-[1.0] font-bold tracking-[-0.04em]"
-        >
-          {config.hero_tagline}
-        </h1>
-        <p
-          class="text-text-secondary mb-10 max-w-[500px] text-lg leading-relaxed"
-        >
-          {config.hero_description}
+        <div class="mb-6">
+          <h1
+            class="font-heading inline text-[clamp(42px,6vw,64px)] leading-[1.15] font-bold tracking-[-0.04em]"
+            style="background: rgba(255,253,245,0.8); padding: 0.05em 0.25em; margin-left: -0.25em; box-decoration-break: clone; -webkit-box-decoration-break: clone;"
+          >
+            {config.hero_tagline}
+          </h1>
+        </div>
+        <p class="mt-8 mb-10 max-w-[500px]">
+          <span
+            class="text-text-secondary inline text-lg leading-relaxed"
+            style="background: rgba(255,253,245,0.8); padding: 0.32em 0.25em; margin-left: -0.25em; box-decoration-break: clone; -webkit-box-decoration-break: clone;"
+          >
+            {config.hero_description}
+          </span>
         </p>
         <div class="flex flex-wrap gap-3">
           <a
@@ -90,15 +97,35 @@ const marqueeItems = config.marquee_skills;
           }
         </div>
       </div>
-      <div
-        class="hidden h-[320px] w-[320px] place-items-center rounded-[14px] border-2 border-[#000] bg-white shadow-xl md:grid"
+      <button
+        type="button"
+        id="headshot-btn"
+        class="btn-lift hidden cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] p-0 shadow-xl md:block"
       >
-        <span
-          class="text-text-muted text-sm font-bold tracking-[0.12em] uppercase"
-        >
-          Photo
-        </span>
-      </div>
+        <Image
+          src={headshot}
+          alt={`Photo of ${config.name}`}
+          width={320}
+          height={320}
+          class="h-[320px] w-[320px] object-cover"
+        />
+      </button>
+      <script>
+        document
+          .getElementById("headshot-btn")
+          ?.addEventListener("click", (e) => {
+            const btn = e.currentTarget as HTMLElement;
+            const rect = btn.getBoundingClientRect();
+            window.dispatchEvent(
+              new CustomEvent("dotgrid:wave", {
+                detail: {
+                  x: rect.left + rect.width / 2,
+                  y: rect.top + rect.height / 2,
+                },
+              }),
+            );
+          });
+      </script>
     </div>
   </section>
 
