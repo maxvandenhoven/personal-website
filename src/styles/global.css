@@ -96,6 +96,24 @@
   transform: translateY(2px);
 }
 
+/* Infinite horizontal marquee */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
 /* Prose styling for rendered markdown content */
 .prose {
   font-size: 1rem;

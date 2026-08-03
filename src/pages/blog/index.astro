@@ -25,21 +25,23 @@ const serializedPosts = posts.map((post) => ({
   title="Blog — Max van den Hoven"
   description="Field notes on building software, exploring new technologies, and lessons learned along the way."
 >
-  <div class="mx-auto max-w-[1100px] px-8 pt-12 pb-4">
-    <p
-      class="text-text-secondary mb-4 text-[13px] font-bold tracking-[0.1em] uppercase"
-    >
-      Blog
-    </p>
-    <h1
-      class="font-heading mb-4 text-[42px] leading-[1.1] font-bold tracking-[-0.04em]"
-    >
-      Read my writing
-    </h1>
-    <p class="text-text-secondary mb-2 max-w-[480px] text-base leading-relaxed">
-      Field notes on building software, exploring new technologies, and lessons
-      learned along the way.
-    </p>
-  </div>
+  <section class="py-16">
+    <div class="mx-auto max-w-[1100px] px-8">
+      <p
+        class="text-text-secondary mb-6 text-sm font-bold tracking-[0.12em] uppercase"
+      >
+        Blog
+      </p>
+      <h1
+        class="font-heading mb-6 text-[clamp(42px,6vw,64px)] leading-[1.0] font-bold tracking-[-0.04em]"
+      >
+        Read my writing
+      </h1>
+      <p class="text-text-secondary max-w-[500px] text-lg leading-relaxed">
+        Field notes on building software, exploring new technologies, and
+        lessons learned along the way.
+      </p>
+    </div>
+  </section>
   <BlogList client:load posts={serializedPosts} />
 </BaseLayout>

@@ -34,43 +34,47 @@ const socials = [
   { href: config.twitter_link, label: "X", icon: "twitter" },
   { href: config.email_link, label: "Email", icon: "mail" },
 ];
+
+const marqueeItems = config.marquee_skills;
 ---
 
 <BaseLayout title={config.name} description={config.hero_tagline}>
-  <div class="mx-auto max-w-[1100px] px-8 pt-12 pb-16">
-    <!-- Hero -->
-    <section class="grid items-center gap-12 py-12 md:grid-cols-[1.2fr_auto]">
+  <!-- Hero — full viewport height -->
+  <section class="flex min-h-[calc(100vh-56px)] items-center py-16">
+    <div
+      class="mx-auto grid w-full max-w-[1100px] items-center gap-16 px-8 md:grid-cols-[1.3fr_auto]"
+    >
       <div>
         <p
-          class="text-text-secondary mb-4 text-[13px] font-bold tracking-[0.1em] uppercase"
+          class="text-text-secondary mb-6 text-sm font-bold tracking-[0.12em] uppercase"
         >
           {config.name}
         </p>
         <h1
-          class="font-heading mb-4 text-[42px] leading-[1.1] font-bold tracking-[-0.04em]"
+          class="font-heading mb-6 text-[clamp(42px,6vw,64px)] leading-[1.0] font-bold tracking-[-0.04em]"
         >
           {config.hero_tagline}
         </h1>
         <p
-          class="text-text-secondary mb-8 max-w-[480px] text-base leading-relaxed"
+          class="text-text-secondary mb-10 max-w-[500px] text-lg leading-relaxed"
         >
           {config.hero_description}
         </p>
         <div class="flex flex-wrap gap-3">
           <a
             href="/blog"
-            class="btn-lift bg-accent-500 inline-flex items-center gap-1.5 rounded-md border-2 border-[#000] px-6 py-3 text-sm font-bold tracking-[-0.01em] shadow-md"
+            class="btn-lift bg-accent-500 inline-flex items-center gap-2 rounded-md border-2 border-[#000] px-7 py-3.5 text-base font-bold shadow-md"
           >
             Read the blog
           </a>
           <a
             href="/projects"
-            class="btn-lift inline-flex items-center gap-1.5 rounded-md border-2 border-[#000] bg-white px-6 py-3 text-sm font-bold tracking-[-0.01em] shadow-md"
+            class="btn-lift inline-flex items-center gap-2 rounded-md border-2 border-[#000] bg-white px-7 py-3.5 text-base font-bold shadow-md"
           >
             See projects
           </a>
         </div>
-        <div class="mt-6 flex gap-3">
+        <div class="mt-8 flex gap-3">
           {
             socials.map((s) => (
               <a
@@ -78,7 +82,7 @@ const socials = [
                 target={s.href.startsWith("mailto:") ? undefined : "_blank"}
                 rel="noopener noreferrer"
                 aria-label={s.label}
-                class="btn-lift grid h-11 w-11 place-items-center rounded-md border-2 border-[#000] bg-white shadow-sm"
+                class="btn-lift grid h-12 w-12 place-items-center rounded-md border-2 border-[#000] bg-white shadow-sm"
               >
                 <Fragment set:html={iconSvgs[s.icon]} />
               </a>
@@ -87,50 +91,64 @@ const socials = [
         </div>
       </div>
       <div
-        class="hidden h-[280px] w-[280px] place-items-center rounded-[14px] border-2 border-[#000] bg-white shadow-lg md:grid"
+        class="hidden h-[320px] w-[320px] place-items-center rounded-[14px] border-2 border-[#000] bg-white shadow-xl md:grid"
       >
         <span
-          class="text-text-muted text-sm font-bold tracking-[0.1em] uppercase"
+          class="text-text-muted text-sm font-bold tracking-[0.12em] uppercase"
         >
           Photo
         </span>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <hr class="my-10 border-t-2 border-[#000]" />
+  <!-- Marquee — skills ribbon -->
+  <div class="bg-accent-500 overflow-hidden border-y-2 border-[#000] py-4">
+    <div class="marquee-track">
+      {
+        [0, 1].map(() =>
+          marqueeItems.map((skill) => (
+            <span class="flex items-center gap-8 pr-8">
+              <span class="font-heading text-xl font-bold whitespace-nowrap">
+                {skill}
+              </span>
+              <span class="text-xl font-bold select-none" aria-hidden="true">
+                &bull;
+              </span>
+            </span>
+          )),
+        )
+      }
+    </div>
+  </div>
 
-    <!-- 01 — Skills -->
-    <section class="mb-10">
-      <div class="mb-3">
-        <span
-          class="bg-sky font-heading inline-flex items-center rounded-md border-[1.5px] border-[#000] px-3 py-1 text-[11px] font-bold tracking-[0.08em] uppercase shadow-[0_2px_0_#000]"
-        >
-          01 — Skills
-        </span>
-      </div>
-      <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
-        <h2
-          class="font-heading text-[28px] leading-[1.1] font-bold tracking-[-0.03em]"
-        >
-          Skills & tools
-        </h2>
-      </div>
-      <div
-        class="rounded-[14px] border-2 border-[#000] bg-[#FFD23F]/15 p-6 shadow-lg"
+  <!-- 01 — Skills -->
+  <section class="border-b-2 border-[#000] bg-[#74B9FF]/10 py-24">
+    <div class="mx-auto max-w-[1100px] px-8">
+      <span
+        class="font-heading mb-4 inline-flex items-center rounded-md border-[1.5px] border-[#000] bg-[#FFFDF5] px-3 py-1 text-xs font-bold tracking-[0.08em] uppercase shadow-[0_2px_0_#000]"
       >
-        <p class="text-text-secondary mb-4 text-sm leading-relaxed">
+        01 — Skills
+      </span>
+      <h2
+        class="font-heading mb-12 text-4xl leading-[1.05] font-bold tracking-[-0.03em]"
+      >
+        Skills & tools
+      </h2>
+      <div class="rounded-[14px] border-2 border-[#000] bg-white p-8 shadow-xl">
+        <p class="text-text-secondary mb-6 text-base leading-relaxed">
           {config.skills_description}
         </p>
-        <div class="grid gap-4 md:grid-cols-2">
+        <div class="grid gap-8 md:grid-cols-2">
           {
             config.skills.map((category) => (
               <div>
-                <h3 class="font-heading mb-1.5 text-base font-bold tracking-[-0.02em]">
+                <h3 class="font-heading mb-2 text-lg font-bold tracking-[-0.02em]">
                   {category.skill_title}
                 </h3>
                 <ul class="pl-5">
                   {category.entries.map((entry) => (
-                    <li class="text-text-secondary mb-0.5 text-sm leading-relaxed [&::marker]:text-base [&::marker]:text-[#000]">
+                    <li class="text-text-secondary mb-1 text-base leading-relaxed [&::marker]:text-lg [&::marker]:text-[#000]">
                       {entry}
                     </li>
                   ))}
@@ -140,31 +158,29 @@ const socials = [
           }
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <hr class="my-10 border-t-2 border-[#000]" />
-
-    <!-- 02 — Blog -->
-    {
-      featuredBlogs.length > 0 && (
-        <section class="mb-12">
-          <div class="mb-3">
-            <span class="bg-accent-500 font-heading inline-flex items-center rounded-md border-[1.5px] border-[#000] px-3 py-1 text-[11px] font-bold tracking-[0.08em] uppercase shadow-[0_2px_0_#000]">
-              02 — Blog
-            </span>
-          </div>
-          <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
-            <h2 class="font-heading text-[28px] leading-[1.1] font-bold tracking-[-0.03em]">
+  <!-- 02 — Blog -->
+  {
+    featuredBlogs.length > 0 && (
+      <section class="border-b-2 border-[#000] bg-[#FFD23F]/10 py-24">
+        <div class="mx-auto max-w-[1100px] px-8">
+          <span class="font-heading mb-4 inline-flex items-center rounded-md border-[1.5px] border-[#000] bg-[#FFFDF5] px-3 py-1 text-xs font-bold tracking-[0.08em] uppercase shadow-[0_2px_0_#000]">
+            02 — Blog
+          </span>
+          <div class="mb-12 flex flex-wrap items-end justify-between gap-4">
+            <h2 class="font-heading text-4xl leading-[1.05] font-bold tracking-[-0.03em]">
               Latest writing
             </h2>
             <a
               href="/blog"
-              class="border-b-2 border-[#000] pb-px text-[13px] font-bold transition-opacity hover:opacity-60"
+              class="border-b-2 border-[#000] pb-px text-sm font-bold transition-opacity hover:opacity-60"
             >
               All posts &rarr;
             </a>
           </div>
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div class="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3">
             {featuredBlogs.map((blog) => (
               <BlogCard
                 title={blog!.data.title}
@@ -177,46 +193,40 @@ const socials = [
               />
             ))}
           </div>
-        </section>
-      )
-    }
+        </div>
+      </section>
+    )
+  }
 
-    {
-      featuredBlogs.length > 0 && featuredProjects.length > 0 && (
-        <hr class="my-10 border-t-2 border-[#000]" />
-      )
-    }
-
-    <!-- 03 — Projects -->
-    {
-      featuredProjects.length > 0 && (
-        <section>
-          <div class="mb-3">
-            <span class="bg-lavender font-heading inline-flex items-center rounded-md border-[1.5px] border-[#000] px-3 py-1 text-[11px] font-bold tracking-[0.08em] uppercase shadow-[0_2px_0_#000]">
-              03 — Projects
-            </span>
-          </div>
-          <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
-            <h2 class="font-heading text-[28px] leading-[1.1] font-bold tracking-[-0.03em]">
+  <!-- 03 — Projects -->
+  {
+    featuredProjects.length > 0 && (
+      <section class="border-b-2 border-[#000] bg-[#B8A9FA]/10 py-24">
+        <div class="mx-auto max-w-[1100px] px-8">
+          <span class="font-heading mb-4 inline-flex items-center rounded-md border-[1.5px] border-[#000] bg-[#FFFDF5] px-3 py-1 text-xs font-bold tracking-[0.08em] uppercase shadow-[0_2px_0_#000]">
+            03 — Projects
+          </span>
+          <div class="mb-12 flex flex-wrap items-end justify-between gap-4">
+            <h2 class="font-heading text-4xl leading-[1.05] font-bold tracking-[-0.03em]">
               Things I've built
             </h2>
             <a
               href="/projects"
-              class="border-b-2 border-[#000] pb-px text-[13px] font-bold transition-opacity hover:opacity-60"
+              class="border-b-2 border-[#000] pb-px text-sm font-bold transition-opacity hover:opacity-60"
             >
               All projects &rarr;
             </a>
           </div>
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div class="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3">
             {featuredProjects.map((project) => (
               <a
                 href={project!.data.github_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="card-lift block cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] bg-white shadow-lg select-none"
+                class="card-lift block cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] bg-white shadow-xl select-none"
               >
                 <div
-                  class="relative flex h-[160px] items-center justify-center"
+                  class="relative flex h-[200px] items-center justify-center"
                   style={`background: ${project!.data.background_color}`}
                 >
                   <div
@@ -230,14 +240,14 @@ const socials = [
                     {project!.data.title}
                   </span>
                 </div>
-                <div class="p-4 pb-3.5">
-                  <h3 class="font-heading mb-1.5 text-[17px] leading-snug font-bold tracking-tight">
+                <div class="p-5">
+                  <h3 class="font-heading mb-2 text-xl leading-snug font-bold tracking-tight">
                     {project!.data.title}
                   </h3>
-                  <p class="text-text-secondary mb-3 text-[13px] leading-relaxed">
+                  <p class="text-text-secondary mb-4 text-sm leading-relaxed">
                     {project!.data.description}
                   </p>
-                  <div class="flex flex-wrap gap-[5px]">
+                  <div class="flex flex-wrap gap-1.5">
                     {project!.data.technologies.map((tech) => (
                       <span class="tag-lift bg-sky inline-flex items-center rounded-md border-[1.5px] border-[#000] px-2 py-0.5 text-[11px] font-bold shadow-[0_2px_0_#000]">
                         {tech}
@@ -248,8 +258,8 @@ const socials = [
               </a>
             ))}
           </div>
-        </section>
-      )
-    }
-  </div>
+        </div>
+      </section>
+    )
+  }
 </BaseLayout>

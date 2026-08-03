@@ -46,6 +46,7 @@ const homepage = defineCollection({
         entries: z.array(z.string()),
       }),
     ),
+    marquee_skills: z.array(z.string()),
     featured_projects: z.array(z.string()),
     featured_blogs: z.array(z.string()),
   }),

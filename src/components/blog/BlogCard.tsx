@@ -1,12 +1,12 @@
 import { Tag } from "../ui";
 
 const BANNER_PALETTES = [
-  { base: "#1a1a2a", stripe: "#222238", pill: "#FFD23F", pillText: "#000" },
-  { base: "#1a2a1a", stripe: "#223322", pill: "#88D498", pillText: "#000" },
-  { base: "#2a1a1a", stripe: "#332222", pill: "#FF6B6B", pillText: "#000" },
-  { base: "#0c1a2a", stripe: "#112233", pill: "#74B9FF", pillText: "#000" },
-  { base: "#1a1a2a", stripe: "#222238", pill: "#B8A9FA", pillText: "#000" },
-  { base: "#2a1a0c", stripe: "#331a00", pill: "#FFA552", pillText: "#000" },
+  { base: "#1a1a2a", stripe: "#222238" },
+  { base: "#1a2a1a", stripe: "#223322" },
+  { base: "#2a1a1a", stripe: "#332222" },
+  { base: "#0c1a2a", stripe: "#112233" },
+  { base: "#2a1a0c", stripe: "#331a00" },
+  { base: "#0c2a2a", stripe: "#113333" },
 ];
 
 function slugBanner(slug: string): (typeof BANNER_PALETTES)[0] {
@@ -49,10 +49,10 @@ export function BlogCard({
   return (
     <a
       href={href}
-      className="card-lift block cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] bg-white shadow-lg select-none"
+      className="card-lift block cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] bg-white shadow-xl select-none"
     >
       <div
-        className="relative flex h-[160px] items-center justify-center"
+        className="relative flex h-[200px] items-center justify-center"
         style={{ background: banner.base }}
       >
         <div
@@ -61,25 +61,22 @@ export function BlogCard({
             background: `repeating-linear-gradient(45deg, ${banner.base} 0, ${banner.base} 18px, ${banner.stripe} 18px, ${banner.stripe} 36px)`,
           }}
         />
-        <div
-          className="absolute top-2.5 right-2.5 z-10 inline-flex items-center gap-1 rounded-full border-[1.5px] border-[#000] px-2.5 py-1 text-[11px] font-bold"
-          style={{ background: banner.pill, color: banner.pillText }}
-        >
+        <div className="absolute top-3 right-3 z-10 inline-flex items-center gap-1 rounded-full border-[1.5px] border-[#000] bg-[#FFFDF5] px-3 py-1 text-xs font-bold">
           {readingTime}
         </div>
       </div>
-      <div className="p-4 pb-3.5">
-        <p className="text-text-secondary mb-1.5 text-[13px]">
+      <div className="p-5">
+        <p className="text-text-secondary mb-2 text-[13px]">
           {formatDate(publishDate)}
         </p>
-        <h3 className="font-heading mb-1.5 text-[17px] leading-snug font-bold tracking-tight">
+        <h3 className="font-heading mb-2 text-xl leading-snug font-bold tracking-tight">
           {title}
         </h3>
-        <p className="text-text-secondary mb-3 text-[13px] leading-relaxed">
+        <p className="text-text-secondary mb-4 text-sm leading-relaxed">
           {description}
         </p>
         {tags.length > 0 && (
-          <div className="flex flex-wrap gap-[5px]">
+          <div className="flex flex-wrap gap-1.5">
             {tags.map((tag) => (
               <Tag key={tag} label={tag} />
             ))}

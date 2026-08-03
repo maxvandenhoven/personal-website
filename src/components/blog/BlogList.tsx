@@ -52,9 +52,9 @@ export function BlogList({ posts }: BlogListProps) {
 
   return (
     <>
-      <div className="py-4">
+      <div className="py-5">
         <div className="mx-auto flex max-w-[1100px] flex-wrap items-center gap-3 px-8">
-          <span className="text-text-secondary text-[11px] font-bold tracking-wider uppercase">
+          <span className="text-text-secondary text-xs font-bold tracking-wider uppercase">
             Filter
           </span>
           <div className="flex flex-wrap gap-2">
@@ -62,7 +62,7 @@ export function BlogList({ posts }: BlogListProps) {
               <button
                 key={tag}
                 onClick={() => toggleTag(tag)}
-                className={`btn-lift cursor-pointer rounded-md border-[1.5px] border-[#000] px-3 py-1.5 text-[11px] font-bold shadow-[0_2px_0_#000] select-none ${
+                className={`btn-lift cursor-pointer rounded-md border-[1.5px] border-[#000] px-3 py-1.5 text-xs font-bold shadow-[0_2px_0_#000] select-none ${
                   selectedTags.has(tag)
                     ? "bg-accent-500 text-[#000]"
                     : "text-text-primary bg-white"
@@ -78,27 +78,27 @@ export function BlogList({ posts }: BlogListProps) {
             onChange={(e) =>
               setSortOrder(e.target.value as "newest" | "oldest")
             }
-            className="text-text-primary cursor-pointer rounded-md border-2 border-[#000] bg-white px-3 py-1.5 text-[13px] font-bold shadow-sm outline-none"
+            className="text-text-primary cursor-pointer rounded-md border-2 border-[#000] bg-white px-3 py-1.5 text-sm font-bold shadow-sm outline-none"
           >
             <option value="newest">Newest first</option>
             <option value="oldest">Oldest first</option>
           </select>
           <button
             onClick={clearAll}
-            className="text-text-primary cursor-pointer border-none bg-transparent text-[13px] font-bold underline decoration-2 underline-offset-2"
+            className="text-text-primary cursor-pointer border-none bg-transparent text-sm font-bold underline decoration-2 underline-offset-2"
           >
             Clear
           </button>
         </div>
       </div>
-      <section className="pt-6 pb-16">
+      <section className="pt-8 pb-20">
         <div className="mx-auto max-w-[1100px] px-8">
-          <span className="text-text-secondary mb-5 block text-[13px]">
+          <span className="text-text-secondary mb-6 block text-sm">
             {filteredPosts.length} post
             {filteredPosts.length === 1 ? "" : "s"}
           </span>
           {filteredPosts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3">
               {filteredPosts.map((post) => (
                 <BlogCard
                   key={post.slug}
@@ -113,7 +113,7 @@ export function BlogList({ posts }: BlogListProps) {
               ))}
             </div>
           ) : (
-            <div className="text-text-secondary py-16 text-center">
+            <div className="text-text-secondary py-20 text-center">
               No posts match these filters.{" "}
               <button
                 onClick={clearAll}

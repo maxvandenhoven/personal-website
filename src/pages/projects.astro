@@ -11,89 +11,91 @@ const projects = (await getCollection("projects")).filter(
   title="Projects — Max van den Hoven"
   description="Open-source tools and projects I build and maintain."
 >
-  <div class="mx-auto max-w-[1100px] px-8 pt-12 pb-16">
-    <section class="mb-10">
+  <section class="py-16">
+    <div class="mx-auto max-w-[1100px] px-8">
       <p
-        class="text-text-secondary mb-4 text-[13px] font-bold tracking-[0.1em] uppercase"
+        class="text-text-secondary mb-6 text-sm font-bold tracking-[0.12em] uppercase"
       >
         Projects
       </p>
       <h1
-        class="font-heading mb-4 text-[42px] leading-[1.1] font-bold tracking-[-0.04em]"
+        class="font-heading mb-6 text-[clamp(42px,6vw,64px)] leading-[1.0] font-bold tracking-[-0.04em]"
       >
         Things I've built
       </h1>
-      <p
-        class="text-text-secondary mb-2 max-w-[480px] text-base leading-relaxed"
-      >
+      <p class="text-text-secondary max-w-[500px] text-lg leading-relaxed">
         Open-source tools and projects I build and maintain. Click a card to
         view it on GitHub.
       </p>
-    </section>
+    </div>
+  </section>
 
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {
-        projects.map((project) => (
-          <a
-            href={project.data.github_link}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="card-lift block cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] bg-white shadow-lg select-none"
-          >
-            <div
-              class="relative flex h-[160px] items-center justify-center"
-              style={`background: ${project.data.background_color}`}
+  <section class="pb-24">
+    <div class="mx-auto max-w-[1100px] px-8">
+      <div class="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3">
+        {
+          projects.map((project) => (
+            <a
+              href={project.data.github_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="card-lift block cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] bg-white shadow-xl select-none"
             >
               <div
-                class="absolute inset-0"
-                style={`background: repeating-linear-gradient(45deg, ${project.data.background_color} 0, ${project.data.background_color} 18px, ${project.data.background_color}cc 18px, ${project.data.background_color}cc 36px)`}
-              />
-              <span
-                class="font-heading relative z-10 text-2xl font-bold"
-                style={`color: ${project.data.foreground_color}`}
+                class="relative flex h-[200px] items-center justify-center"
+                style={`background: ${project.data.background_color}`}
               >
-                {project.data.title}
-              </span>
-            </div>
-            <div class="p-4 pb-3.5">
-              <h3 class="font-heading mb-1.5 text-[17px] leading-snug font-bold tracking-tight">
-                {project.data.title}
-              </h3>
-              <p class="text-text-secondary mb-3 text-[13px] leading-relaxed">
-                {project.data.description}
-              </p>
-              <div class="flex flex-wrap gap-[5px]">
-                {project.data.technologies.map((tech) => (
-                  <span class="tag-lift bg-sky inline-flex items-center rounded-md border-[1.5px] border-[#000] px-2 py-0.5 text-[11px] font-bold shadow-[0_2px_0_#000]">
-                    {tech}
-                  </span>
-                ))}
+                <div
+                  class="absolute inset-0"
+                  style={`background: repeating-linear-gradient(45deg, ${project.data.background_color} 0, ${project.data.background_color} 18px, ${project.data.background_color}cc 18px, ${project.data.background_color}cc 36px)`}
+                />
+                <span
+                  class="font-heading relative z-10 text-2xl font-bold"
+                  style={`color: ${project.data.foreground_color}`}
+                >
+                  {project.data.title}
+                </span>
               </div>
-              {project.data.relevant_blogs.length > 0 && (
-                <p class="text-text-muted mt-2 text-[11px]">
-                  Related posts: {project.data.relevant_blogs.join(", ")}
+              <div class="p-5">
+                <h3 class="font-heading mb-2 text-xl leading-snug font-bold tracking-tight">
+                  {project.data.title}
+                </h3>
+                <p class="text-text-secondary mb-4 text-sm leading-relaxed">
+                  {project.data.description}
                 </p>
-              )}
-            </div>
-          </a>
-        ))
-      }
-    </div>
+                <div class="flex flex-wrap gap-1.5">
+                  {project.data.technologies.map((tech) => (
+                    <span class="tag-lift bg-sky inline-flex items-center rounded-md border-[1.5px] border-[#000] px-2 py-0.5 text-[11px] font-bold shadow-[0_2px_0_#000]">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+                {project.data.relevant_blogs.length > 0 && (
+                  <p class="text-text-muted mt-3 text-xs">
+                    Related posts: {project.data.relevant_blogs.join(", ")}
+                  </p>
+                )}
+              </div>
+            </a>
+          ))
+        }
+      </div>
 
-    <div class="mt-10 text-center">
-      <a
-        href="https://github.com/maxvandenhoven"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="btn-lift inline-flex items-center gap-1.5 rounded-md border-2 border-[#000] bg-white px-6 py-3 text-sm font-bold shadow-md"
-      >
-        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"
-          ><path
-            d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"
-          ></path></svg
+      <div class="mt-14 text-center">
+        <a
+          href="https://github.com/maxvandenhoven"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-lift inline-flex items-center gap-2 rounded-md border-2 border-[#000] bg-white px-7 py-3.5 text-base font-bold shadow-md"
         >
-        See everything on GitHub
-      </a>
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"
+            ><path
+              d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"
+            ></path></svg
+          >
+          See everything on GitHub
+        </a>
+      </div>
     </div>
-  </div>
+  </section>
 </BaseLayout>
