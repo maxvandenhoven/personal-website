@@ -1,4 +1,6 @@
 ---
+import "../styles/global.css";
+
 interface Props {
   title: string;
   description: string;
@@ -39,6 +41,13 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
       )
     }
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@700&family=Space+Mono&display=swap"
+      rel="stylesheet"
+    />
+
     <link
       rel="alternate"
       type="application/rss+xml"
@@ -46,19 +55,48 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
       href="/rss.xml"
     />
   </head>
-  <body>
-    <header>
-      <nav>
-        <a href="/">Home</a>
-        <a href="/blog">Blog</a>
-        <a href="/projects">Projects</a>
+  <body class="bg-surface-100 text-text-primary min-h-screen antialiased">
+    <header class="border-b-2 border-[#000] bg-white">
+      <nav
+        class="mx-auto flex h-14 max-w-[1100px] items-center justify-between px-8"
+      >
+        <a
+          href="/"
+          class="font-heading text-[17px] font-bold tracking-[-0.02em]"
+        >
+          Max van den Hoven
+        </a>
+        <div class="flex items-center gap-8">
+          <a
+            href="/"
+            class="border-b-2 border-transparent text-sm font-bold tracking-[0.01em] transition-[border-color] duration-75 hover:border-[#000]"
+          >
+            Home
+          </a>
+          <a
+            href="/blog"
+            class="border-b-2 border-transparent text-sm font-bold tracking-[0.01em] transition-[border-color] duration-75 hover:border-[#000]"
+          >
+            Blog
+          </a>
+          <a
+            href="/projects"
+            class="border-b-2 border-transparent text-sm font-bold tracking-[0.01em] transition-[border-color] duration-75 hover:border-[#000]"
+          >
+            Projects
+          </a>
+        </div>
       </nav>
     </header>
     <main>
       <slot />
     </main>
     <footer>
-      <p>&copy; {new Date().getFullYear()} {title}</p>
+      <div
+        class="text-text-secondary mx-auto max-w-[1100px] px-8 pt-2 pb-10 text-center text-[13px]"
+      >
+        &copy; {new Date().getFullYear()} Max van den Hoven
+      </div>
     </footer>
   </body>
 </html>

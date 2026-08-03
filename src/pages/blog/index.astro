@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { BlogList } from "../../components/blog";
 
 const posts = (await getCollection("blogs"))
   .filter((post) => post.data.status === "published")
@@ -9,21 +10,36 @@ const posts = (await getCollection("blogs"))
       new Date(b.data.publish_date).getTime() -
       new Date(a.data.publish_date).getTime(),
   );
+
+const serializedPosts = posts.map((post) => ({
+  title: post.data.title,
+  description: post.data.description,
+  publishDate: post.data.publish_date,
+  readingTime: post.data.reading_time,
+  tags: post.data.tags,
+  slug: post.id,
+}));
 ---
 
-<BaseLayout title="Blog" description="All blog posts">
-  <h1>Blog</h1>
-  <ul>
-    {
-      posts.map((post) => (
-        <li>
-          <a href={`/blog/${post.id}`}>{post.data.title}</a>
-          <span> — {post.data.publish_date}</span>
-          <span> — {post.data.reading_time}</span>
-          <p>{post.data.description}</p>
-          <p>Tags: {post.data.tags.join(", ")}</p>
-        </li>
-      ))
-    }
-  </ul>
+<BaseLayout
+  title="Blog — Max van den Hoven"
+  description="Field notes on building software, exploring new technologies, and lessons learned along the way."
+>
+  <div class="mx-auto max-w-[1100px] px-8 pt-12 pb-4">
+    <p
+      class="text-text-secondary mb-4 text-[13px] font-bold tracking-[0.1em] uppercase"
+    >
+      Blog
+    </p>
+    <h1
+      class="font-heading mb-4 text-[42px] leading-[1.1] font-bold tracking-[-0.04em]"
+    >
+      Read my writing
+    </h1>
+    <p class="text-text-secondary mb-2 max-w-[480px] text-base leading-relaxed">
+      Field notes on building software, exploring new technologies, and lessons
+      learned along the way.
+    </p>
+  </div>
+  <BlogList client:load posts={serializedPosts} />
 </BaseLayout>

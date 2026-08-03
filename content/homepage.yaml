@@ -14,6 +14,7 @@
         - Python
         - TypeScript
         - Rust
+        - Go
     - skill_title: Infrastructure
       entries:
         - Docker

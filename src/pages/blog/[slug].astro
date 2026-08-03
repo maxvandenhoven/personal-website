@@ -2,6 +2,7 @@
 import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { Tag } from "../../components/ui";
 
 export const getStaticPaths = (async () => {
   const posts = (await getCollection("blogs")).filter(
@@ -16,20 +17,50 @@ export const getStaticPaths = (async () => {
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 const { post } = Astro.props as Props;
 const { Content } = await render(post);
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr + "T00:00:00").toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
 ---
 
 <BaseLayout
-  title={post.data.title}
+  title={`${post.data.title} — Max van den Hoven`}
   description={post.data.description}
-  ogImage={`/content/blogs/${post.id}/banner.png`}
 >
-  <article>
-    <h1>{post.data.title}</h1>
-    <p>
-      {post.data.publish_date} &middot; {post.data.reading_time}
-    </p>
-    <p>Tags: {post.data.tags.join(", ")}</p>
-    <hr />
-    <Content />
+  <article class="mx-auto max-w-[680px] px-8 py-12">
+    <header class="mb-8">
+      <p class="text-text-secondary mb-3 text-[13px]">
+        <time datetime={post.data.publish_date}>
+          {formatDate(post.data.publish_date)}
+        </time>
+        &nbsp;&middot;&nbsp;
+        {post.data.reading_time}
+      </p>
+      <h1
+        class="font-heading mb-4 text-[32px] leading-[1.1] font-bold tracking-[-0.03em]"
+      >
+        {post.data.title}
+      </h1>
+      <p class="text-text-secondary mb-5 text-base leading-relaxed">
+        {post.data.description}
+      </p>
+      {
+        post.data.tags.length > 0 && (
+          <div class="mb-6 flex flex-wrap gap-[5px]">
+            {post.data.tags.map((tag) => (
+              <Tag label={tag} />
+            ))}
+          </div>
+        )
+      }
+      <hr class="border-t-2 border-[#000]" />
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
   </article>
 </BaseLayout>
