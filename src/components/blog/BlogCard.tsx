@@ -61,7 +61,7 @@ export function BlogCard({
             background: `repeating-linear-gradient(45deg, ${banner.base} 0, ${banner.base} 18px, ${banner.stripe} 18px, ${banner.stripe} 36px)`,
           }}
         />
-        <div className="absolute top-3 right-3 z-10 inline-flex items-center gap-1 rounded-full border-[1.5px] border-[#000] bg-[#FFFDF5] px-3 py-1 text-xs font-bold">
+        <div className="absolute top-3 right-3 z-10 inline-flex items-center gap-1 rounded-full border-[1.5px] border-[#000] bg-[#F5EEE0] px-3 py-1 text-xs font-bold">
           {readingTime}
         </div>
       </div>
