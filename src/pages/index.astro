@@ -10,6 +10,11 @@ const homepageEntry = await getEntry("homepage", "config");
 if (!homepageEntry) throw new Error("Homepage config not found");
 const config = homepageEntry.data;
 
+const bannerImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/content/blogs/*/banner.{jpg,jpeg,png,webp}",
+  { eager: true },
+);
+
 const allProjects = await getCollection("projects");
 const allBlogs = await getCollection("blogs");
 
@@ -214,17 +219,24 @@ const marqueeItems = config.marquee_skills;
             </a>
           </div>
           <div class="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3">
-            {featuredBlogs.map((blog) => (
-              <BlogCard
-                title={blog!.data.title}
-                description={blog!.data.description}
-                publishDate={blog!.data.publish_date}
-                readingTime={blog!.data.reading_time}
-                tags={blog!.data.tags}
-                href={`/blog/${blog!.id}`}
-                slug={blog!.id}
-              />
-            ))}
+            {featuredBlogs.map((blog) => {
+              const bannerKey = Object.keys(bannerImages).find((key) =>
+                key.startsWith(`/content/blogs/${blog!.id}/banner.`),
+              );
+              return (
+                <BlogCard
+                  title={blog!.data.title}
+                  description={blog!.data.description}
+                  publishDate={blog!.data.publish_date}
+                  readingTime={blog!.data.reading_time}
+                  tags={blog!.data.tags}
+                  href={`/blog/${blog!.id}`}
+                  bannerSrc={
+                    bannerKey ? bannerImages[bannerKey].default.src : undefined
+                  }
+                />
+              );
+            })}
           </div>
         </div>
       </section>

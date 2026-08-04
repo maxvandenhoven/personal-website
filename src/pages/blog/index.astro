@@ -3,6 +3,11 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { BlogList } from "../../components/blog";
 
+const bannerImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/content/blogs/*/banner.{jpg,jpeg,png,webp}",
+  { eager: true },
+);
+
 const posts = (await getCollection("blogs"))
   .filter((post) => post.data.status === "published")
   .sort(
@@ -11,14 +16,20 @@ const posts = (await getCollection("blogs"))
       new Date(a.data.publish_date).getTime(),
   );
 
-const serializedPosts = posts.map((post) => ({
-  title: post.data.title,
-  description: post.data.description,
-  publishDate: post.data.publish_date,
-  readingTime: post.data.reading_time,
-  tags: post.data.tags,
-  slug: post.id,
-}));
+const serializedPosts = posts.map((post) => {
+  const bannerKey = Object.keys(bannerImages).find((key) =>
+    key.startsWith(`/content/blogs/${post.id}/banner.`),
+  );
+  return {
+    title: post.data.title,
+    description: post.data.description,
+    publishDate: post.data.publish_date,
+    readingTime: post.data.reading_time,
+    tags: post.data.tags,
+    slug: post.id,
+    bannerSrc: bannerKey ? bannerImages[bannerKey].default.src : undefined,
+  };
+});
 ---
 
 <BaseLayout

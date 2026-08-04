@@ -1,22 +1,5 @@
 import { Tag } from "../ui";
 
-const BANNER_PALETTES = [
-  { base: "#1a1a2a", stripe: "#222238" },
-  { base: "#1a2a1a", stripe: "#223322" },
-  { base: "#2a1a1a", stripe: "#332222" },
-  { base: "#0c1a2a", stripe: "#112233" },
-  { base: "#2a1a0c", stripe: "#331a00" },
-  { base: "#0c2a2a", stripe: "#113333" },
-];
-
-function slugBanner(slug: string): (typeof BANNER_PALETTES)[0] {
-  let hash = 0;
-  for (let i = 0; i < slug.length; i++) {
-    hash = ((hash << 5) - hash + slug.charCodeAt(i)) | 0;
-  }
-  return BANNER_PALETTES[Math.abs(hash) % BANNER_PALETTES.length];
-}
-
 function formatDate(dateStr: string): string {
   return new Date(dateStr + "T00:00:00").toLocaleDateString("en-GB", {
     day: "numeric",
@@ -32,7 +15,7 @@ interface BlogCardProps {
   readingTime: string;
   tags: string[];
   href: string;
-  slug: string;
+  bannerSrc?: string;
 }
 
 export function BlogCard({
@@ -42,25 +25,17 @@ export function BlogCard({
   readingTime,
   tags,
   href,
-  slug,
+  bannerSrc,
 }: BlogCardProps) {
-  const banner = slugBanner(slug);
-
   return (
     <a
       href={href}
       className="card-lift block cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] bg-white select-none"
     >
-      <div
-        className="relative flex h-[200px] items-center justify-center"
-        style={{ background: banner.base }}
-      >
-        <div
-          className="absolute inset-0"
-          style={{
-            background: `repeating-linear-gradient(45deg, ${banner.base} 0, ${banner.base} 18px, ${banner.stripe} 18px, ${banner.stripe} 36px)`,
-          }}
-        />
+      <div className="bg-surface-300 relative aspect-video overflow-hidden">
+        {bannerSrc && (
+          <img src={bannerSrc} alt="" className="h-full w-full object-cover" />
+        )}
         <div className="absolute top-3 right-3 z-10 inline-flex items-center gap-1 rounded-full border-[1.5px] border-[#000] bg-[#F5EEE0] px-3 py-1 text-xs font-bold">
           {readingTime}
         </div>

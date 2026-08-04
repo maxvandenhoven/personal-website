@@ -8,6 +8,7 @@ interface PostData {
   readingTime: string;
   tags: string[];
   slug: string;
+  bannerSrc?: string;
 }
 
 interface BlogListProps {
@@ -108,7 +109,7 @@ export function BlogList({ posts }: BlogListProps) {
                   readingTime={post.readingTime}
                   tags={post.tags}
                   href={`/blog/${post.slug}`}
-                  slug={post.slug}
+                  bannerSrc={post.bannerSrc}
                 />
               ))}
             </div>

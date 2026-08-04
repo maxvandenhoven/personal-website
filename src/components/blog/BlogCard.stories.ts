@@ -29,7 +29,6 @@ export const Default: Story = {
     readingTime: "5 min",
     tags: ["Design", "Frontend", "Trends"],
     href: "/blog/hello-world",
-    slug: "hello-world",
   },
 };
 
@@ -42,7 +41,6 @@ export const GreenBanner: Story = {
     readingTime: "8 min",
     tags: ["Typography", "Design"],
     href: "/blog/type-systems",
-    slug: "type-systems",
   },
 };
 
@@ -56,7 +54,6 @@ export const LongTitle: Story = {
     readingTime: "6 min",
     tags: ["Motion", "CSS", "Architecture", "Testing"],
     href: "/blog/long-title",
-    slug: "long-title",
   },
 };
 
@@ -68,6 +65,5 @@ export const NoTags: Story = {
     readingTime: "2 min",
     tags: [],
     href: "/blog/no-tags",
-    slug: "no-tags",
   },
 };
