@@ -49,7 +49,7 @@ export function BlogCard({
   return (
     <a
       href={href}
-      className="card-lift block cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] bg-white shadow-xl select-none"
+      className="card-lift block cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] bg-white select-none"
     >
       <div
         className="relative flex h-[200px] items-center justify-center"

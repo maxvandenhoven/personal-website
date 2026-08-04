@@ -62,7 +62,7 @@ export function BlogList({ posts }: BlogListProps) {
               <button
                 key={tag}
                 onClick={() => toggleTag(tag)}
-                className={`btn-lift cursor-pointer rounded-md border-[1.5px] border-[#000] px-3 py-1.5 text-xs font-bold shadow-[0_2px_0_#000] select-none ${
+                className={`btn-lift cursor-pointer rounded-md border-[1.5px] border-[#000] px-3 py-1.5 text-xs font-bold select-none ${
                   selectedTags.has(tag)
                     ? "bg-accent-500 text-[#000]"
                     : "text-text-primary bg-white"

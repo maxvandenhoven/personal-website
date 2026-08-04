@@ -70,13 +70,13 @@ const marqueeItems = config.marquee_skills;
         <div class="flex items-center gap-4">
           <a
             href="/blog"
-            class="btn-lift bg-accent-500 inline-flex items-center justify-center gap-2 rounded-md border-2 border-[#000] px-7 py-3.5 text-base font-bold shadow-md sm:min-w-[170px]"
+            class="btn-lift bg-accent-500 inline-flex items-center justify-center gap-2 rounded-md border-2 border-[#000] px-7 py-3.5 text-base font-bold sm:min-w-[170px]"
           >
             Read the blog
           </a>
           <a
             href="/projects"
-            class="btn-lift hidden items-center justify-center gap-2 rounded-md border-2 border-[#000] bg-white px-7 py-3.5 text-base font-bold shadow-md sm:inline-flex sm:min-w-[170px]"
+            class="btn-lift hidden items-center justify-center gap-2 rounded-md border-2 border-[#000] bg-white px-7 py-3.5 text-base font-bold sm:inline-flex sm:min-w-[170px]"
           >
             See projects
           </a>
@@ -95,7 +95,7 @@ const marqueeItems = config.marquee_skills;
                 target={s.href.startsWith("mailto:") ? undefined : "_blank"}
                 rel="noopener noreferrer"
                 aria-label={s.label}
-                class="btn-lift grid h-12 w-12 place-items-center rounded-md border-2 border-[#000] bg-white shadow-sm"
+                class="btn-lift grid h-12 w-12 place-items-center rounded-md border-2 border-[#000] bg-white"
               >
                 <Fragment set:html={iconSvgs[s.icon]} />
               </a>
@@ -106,7 +106,7 @@ const marqueeItems = config.marquee_skills;
       <button
         type="button"
         id="headshot-btn"
-        class="btn-lift hidden cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] p-0 shadow-xl md:block"
+        class="btn-lift hidden cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] p-0 md:block"
       >
         <Image
           src={headshot}
@@ -159,7 +159,7 @@ const marqueeItems = config.marquee_skills;
   <section class="border-b-2 border-[#000] bg-[#74B9FF]/10 py-24">
     <div class="mx-auto max-w-[1100px] px-8">
       <span
-        class="font-heading mb-4 inline-flex items-center rounded-md border-[1.5px] border-[#000] bg-[#F5EEE0] px-3 py-1 text-xs font-bold tracking-[0.08em] uppercase shadow-[0_2px_0_#000]"
+        class="font-heading mb-4 inline-flex items-center rounded-md border-[1.5px] border-[#000] bg-[#F5EEE0] px-3 py-1 text-xs font-bold tracking-[0.08em] uppercase"
       >
         01 — Skills
       </span>
@@ -199,7 +199,7 @@ const marqueeItems = config.marquee_skills;
     featuredBlogs.length > 0 && (
       <section class="border-b-2 border-[#000] bg-[#FFD23F]/10 py-24">
         <div class="mx-auto max-w-[1100px] px-8">
-          <span class="font-heading mb-4 inline-flex items-center rounded-md border-[1.5px] border-[#000] bg-[#F5EEE0] px-3 py-1 text-xs font-bold tracking-[0.08em] uppercase shadow-[0_2px_0_#000]">
+          <span class="font-heading mb-4 inline-flex items-center rounded-md border-[1.5px] border-[#000] bg-[#F5EEE0] px-3 py-1 text-xs font-bold tracking-[0.08em] uppercase">
             02 — Blog
           </span>
           <div class="mb-12 flex flex-wrap items-end justify-between gap-4">
@@ -236,7 +236,7 @@ const marqueeItems = config.marquee_skills;
     featuredProjects.length > 0 && (
       <section class="border-b-2 border-[#000] bg-[#B8A9FA]/10 py-24">
         <div class="mx-auto max-w-[1100px] px-8">
-          <span class="font-heading mb-4 inline-flex items-center rounded-md border-[1.5px] border-[#000] bg-[#F5EEE0] px-3 py-1 text-xs font-bold tracking-[0.08em] uppercase shadow-[0_2px_0_#000]">
+          <span class="font-heading mb-4 inline-flex items-center rounded-md border-[1.5px] border-[#000] bg-[#F5EEE0] px-3 py-1 text-xs font-bold tracking-[0.08em] uppercase">
             03 — Projects
           </span>
           <div class="mb-12 flex flex-wrap items-end justify-between gap-4">
@@ -256,7 +256,7 @@ const marqueeItems = config.marquee_skills;
                 href={project!.data.github_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="card-lift block cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] bg-white shadow-xl select-none"
+                class="card-lift block cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] bg-white select-none"
               >
                 <div
                   class="relative flex h-[200px] items-center justify-center"
@@ -282,7 +282,7 @@ const marqueeItems = config.marquee_skills;
                   </p>
                   <div class="flex flex-wrap gap-1.5">
                     {project!.data.technologies.map((tech) => (
-                      <span class="tag-lift bg-sky inline-flex items-center rounded-md border-[1.5px] border-[#000] px-2 py-0.5 text-[11px] font-bold shadow-[0_2px_0_#000]">
+                      <span class="tag-lift bg-sky inline-flex items-center rounded-md border-[1.5px] border-[#000] px-2 py-0.5 text-[11px] font-bold">
                         {tech}
                       </span>
                     ))}

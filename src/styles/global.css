@@ -53,25 +53,30 @@
   --shadow-xl: 0 8px 0 #000000;
 }
 
-/* Neobrutalism interaction: press-down on hover */
+/* Neobrutalism press-down: solid shadow is the "depth".
+   translateY + shadow = constant so the bottom edge stays pinned.
+   Resting shadow is defined here (not via Tailwind utilities) so
+   all states use the same box-shadow format and interpolate cleanly. */
 .card-lift {
+  box-shadow: 0 8px 0 #000;
   transition:
-    box-shadow 120ms ease,
-    transform 120ms ease;
+    box-shadow 100ms ease,
+    transform 100ms ease;
 }
 .card-lift:hover {
-  box-shadow: 0 3px 0 #000;
-  transform: translateY(3px);
+  box-shadow: 0 4px 0 #000;
+  transform: translateY(4px);
 }
 .card-lift:active {
   box-shadow: 0 0 0 #000;
-  transform: translateY(6px);
+  transform: translateY(8px);
 }
 
 .btn-lift {
+  box-shadow: 0 5px 0 #000;
   transition:
-    box-shadow 80ms ease,
-    transform 80ms ease;
+    box-shadow 100ms ease,
+    transform 100ms ease;
 }
 .btn-lift:hover {
   box-shadow: 0 2px 0 #000;
@@ -83,16 +88,17 @@
 }
 
 .tag-lift {
+  box-shadow: 0 2px 0 #000;
   transition:
-    box-shadow 80ms ease,
-    transform 80ms ease;
+    box-shadow 100ms ease,
+    transform 100ms ease;
 }
 .tag-lift:hover {
   box-shadow: 0 1px 0 #000;
   transform: translateY(1px);
 }
 .tag-lift:active {
-  box-shadow: none;
+  box-shadow: 0 0 0 #000;
   transform: translateY(2px);
 }
 

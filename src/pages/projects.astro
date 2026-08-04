@@ -39,7 +39,7 @@ const projects = (await getCollection("projects")).filter(
               href={project.data.github_link}
               target="_blank"
               rel="noopener noreferrer"
-              class="card-lift block cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] bg-white shadow-xl select-none"
+              class="card-lift block cursor-pointer overflow-hidden rounded-[14px] border-2 border-[#000] bg-white select-none"
             >
               <div
                 class="relative flex h-[200px] items-center justify-center"
@@ -65,7 +65,7 @@ const projects = (await getCollection("projects")).filter(
                 </p>
                 <div class="flex flex-wrap gap-1.5">
                   {project.data.technologies.map((tech) => (
-                    <span class="tag-lift bg-sky inline-flex items-center rounded-md border-[1.5px] border-[#000] px-2 py-0.5 text-[11px] font-bold shadow-[0_2px_0_#000]">
+                    <span class="tag-lift bg-sky inline-flex items-center rounded-md border-[1.5px] border-[#000] px-2 py-0.5 text-[11px] font-bold">
                       {tech}
                     </span>
                   ))}
@@ -86,7 +86,7 @@ const projects = (await getCollection("projects")).filter(
           href="https://github.com/maxvandenhoven"
           target="_blank"
           rel="noopener noreferrer"
-          class="btn-lift inline-flex items-center gap-2 rounded-md border-2 border-[#000] bg-white px-7 py-3.5 text-base font-bold shadow-md"
+          class="btn-lift inline-flex items-center gap-2 rounded-md border-2 border-[#000] bg-white px-7 py-3.5 text-base font-bold"
         >
           <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"
             ><path

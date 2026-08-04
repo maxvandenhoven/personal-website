@@ -29,7 +29,7 @@ export function Tag({ label, size = "sm" }: TagProps) {
 
   return (
     <span
-      className={`tag-lift inline-flex items-center rounded-md border-[1.5px] border-[#000] font-bold whitespace-nowrap shadow-[0_2px_0_#000] ${sizes[size]}`}
+      className={`tag-lift inline-flex items-center rounded-md border-[1.5px] border-[#000] font-bold whitespace-nowrap ${sizes[size]}`}
       style={{ backgroundColor: color.bg, color: color.text }}
     >
       {label}
