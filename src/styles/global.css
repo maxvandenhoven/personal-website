@@ -96,6 +96,16 @@
   transform: translateY(2px);
 }
 
+/* Hero text: on mobile, increase line-height so frosted backgrounds don't overlap */
+@media (max-width: 767px) {
+  .hero-heading {
+    line-height: 1.35;
+  }
+  .hero-body {
+    line-height: 1.8;
+  }
+}
+
 /* Infinite horizontal marquee */
 @keyframes marquee {
   0% {
@@ -108,7 +118,7 @@
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee 40s linear infinite;
+  animation: marquee 240s linear infinite;
 }
 .marquee-track:hover {
   animation-play-state: paused;

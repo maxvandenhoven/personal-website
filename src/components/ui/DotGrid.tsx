@@ -64,6 +64,8 @@ export function DotGrid() {
       state.h = h;
       canvas!.width = w * dpr;
       canvas!.height = h * dpr;
+      canvas!.style.width = `${w}px`;
+      canvas!.style.height = `${h}px`;
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       const cols = Math.ceil(w / SPACING) + 1;

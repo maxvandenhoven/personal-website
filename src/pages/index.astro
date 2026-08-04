@@ -53,32 +53,38 @@ const marqueeItems = config.marquee_skills;
       <div>
         <div class="mb-6">
           <h1
-            class="font-heading inline text-[clamp(42px,6vw,64px)] leading-[1.15] font-bold tracking-[-0.04em]"
-            style="background: rgba(255,253,245,0.8); padding: 0.05em 0.25em; margin-left: -0.25em; box-decoration-break: clone; -webkit-box-decoration-break: clone;"
+            class="font-heading hero-heading inline text-[clamp(42px,6vw,64px)] leading-[1.15] font-bold tracking-[-0.04em]"
+            style="background: rgba(255,253,245,0.8); padding: 0 0.25em; margin-left: -0.25em; box-decoration-break: clone; -webkit-box-decoration-break: clone;"
           >
             {config.hero_tagline}
           </h1>
         </div>
         <p class="mt-8 mb-10 max-w-[500px]">
           <span
-            class="text-text-secondary inline text-lg leading-relaxed"
-            style="background: rgba(255,253,245,0.8); padding: 0.32em 0.25em; margin-left: -0.25em; box-decoration-break: clone; -webkit-box-decoration-break: clone;"
+            class="text-text-secondary hero-body inline text-lg leading-relaxed"
+            style="background: rgba(255,253,245,0.8); padding: 0 0.25em; margin-left: -0.25em; box-decoration-break: clone; -webkit-box-decoration-break: clone;"
           >
             {config.hero_description}
           </span>
         </p>
-        <div class="flex flex-wrap gap-3">
+        <div class="flex items-center gap-4">
           <a
             href="/blog"
-            class="btn-lift bg-accent-500 inline-flex items-center gap-2 rounded-md border-2 border-[#000] px-7 py-3.5 text-base font-bold shadow-md"
+            class="btn-lift bg-accent-500 inline-flex items-center justify-center gap-2 rounded-md border-2 border-[#000] px-7 py-3.5 text-base font-bold shadow-md sm:min-w-[170px]"
           >
             Read the blog
           </a>
           <a
             href="/projects"
-            class="btn-lift inline-flex items-center gap-2 rounded-md border-2 border-[#000] bg-white px-7 py-3.5 text-base font-bold shadow-md"
+            class="btn-lift hidden items-center justify-center gap-2 rounded-md border-2 border-[#000] bg-white px-7 py-3.5 text-base font-bold shadow-md sm:inline-flex sm:min-w-[170px]"
           >
             See projects
+          </a>
+          <a
+            href="/projects"
+            class="border-b-2 border-[#000] pb-px text-base font-bold transition-opacity hover:opacity-60 sm:hidden"
+          >
+            See projects &rarr;
           </a>
         </div>
         <div class="mt-8 flex gap-3">
@@ -133,7 +139,7 @@ const marqueeItems = config.marquee_skills;
   <div class="bg-accent-500 overflow-hidden border-y-2 border-[#000] py-4">
     <div class="marquee-track">
       {
-        [0, 1].map(() =>
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(() =>
           marqueeItems.map((skill) => (
             <span class="flex items-center gap-8 pr-8">
               <span class="font-heading text-xl font-bold whitespace-nowrap">

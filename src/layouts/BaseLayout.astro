@@ -58,15 +58,15 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
   <body class="bg-surface-100 text-text-primary min-h-screen antialiased">
     <header class="border-b-2 border-[#000] bg-white">
       <nav
-        class="mx-auto flex h-14 max-w-[1100px] items-center justify-between px-8"
+        class="relative mx-auto flex h-14 max-w-[1100px] items-center justify-between px-8"
       >
         <a
           href="/"
-          class="font-heading text-[17px] font-bold tracking-[-0.02em]"
+          class="font-heading absolute left-1/2 -translate-x-1/2 text-[17px] font-bold tracking-[-0.02em] md:static md:left-auto md:translate-x-0"
         >
           Max van den Hoven
         </a>
-        <div class="flex items-center gap-8">
+        <div class="hidden items-center gap-8 md:flex">
           <a
             href="/"
             class="border-b-2 border-transparent text-sm font-bold tracking-[0.01em] transition-[border-color] duration-75 hover:border-[#000]"
@@ -86,8 +86,58 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
             Projects
           </a>
         </div>
+        <button
+          type="button"
+          id="hamburger-btn"
+          class="btn-lift ml-auto grid h-10 w-10 place-items-center rounded-md border-2 border-[#000] bg-white shadow-sm md:hidden"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <svg
+            class="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
       </nav>
+      <div id="mobile-menu" class="hidden border-t-2 border-[#000] md:hidden">
+        <div class="flex flex-col">
+          <a
+            href="/"
+            class="border-surface-300 hover:bg-surface-100 border-b px-8 py-3 text-sm font-bold tracking-[0.01em]"
+          >
+            Home
+          </a>
+          <a
+            href="/blog"
+            class="border-surface-300 hover:bg-surface-100 border-b px-8 py-3 text-sm font-bold tracking-[0.01em]"
+          >
+            Blog
+          </a>
+          <a
+            href="/projects"
+            class="hover:bg-surface-100 px-8 py-3 text-sm font-bold tracking-[0.01em]"
+          >
+            Projects
+          </a>
+        </div>
+      </div>
     </header>
+    <script>
+      const hamburgerBtn = document.getElementById("hamburger-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+      hamburgerBtn?.addEventListener("click", () => {
+        const isOpen = mobileMenu?.classList.toggle("hidden") === false;
+        hamburgerBtn.setAttribute("aria-expanded", String(isOpen));
+      });
+    </script>
     <main>
       <slot />
     </main>
