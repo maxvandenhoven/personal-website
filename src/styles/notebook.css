@@ -454,12 +454,28 @@
 }
 
 /* Plain sheets (pattern "none", e.g. blog posts) have no rules to align to,
-   so the baseline-grid nudges are switched off — text sits naturally. */
+   so the baseline-grid machinery is switched off: no translateY nudges, and
+   the rule-multiple line-heights give way to normal, tighter ones. */
 .nb-sheet--plain .nb-h1,
 .nb-sheet--plain .nb-h2,
 .nb-sheet--plain .nb-lead,
 .nb-sheet--plain .nb-subtitle {
   transform: none;
+}
+.nb-sheet--plain .nb-h1 {
+  line-height: 1.1;
+}
+.nb-sheet--plain .nb-h2 {
+  line-height: 1.15;
+}
+.nb-sheet--plain .nb-lead,
+.nb-sheet--plain .nb-subtitle {
+  line-height: 1.6;
+}
+/* On article pages the description spans the full container width (like the
+   banner below it) instead of the grid pages' 58ch measure. */
+.nb-sheet--plain .nb-subtitle {
+  max-width: none;
 }
 
 /* Full-height sheets (the hero) approximate vertical centering on tall
@@ -979,16 +995,28 @@
   color: var(--nb-card-bg);
 }
 
-/* Date sorter (native select, dressed as paper). */
+/* Date sorter: a native select dressed as one more pill, so it sits flush
+   with the filter buttons (same height, radius, and type). The chevron is an
+   inline SVG data-URI — its stroke mirrors --nb-ink-soft (data-URIs can't
+   read CSS variables). */
 .nb-select {
+  appearance: none;
+  -webkit-appearance: none;
   font-family: var(--nb-font-mono);
-  font-size: 0.82rem;
-  padding: 6px 10px;
-  border-radius: 3px;
-  border: 1px solid color-mix(in srgb, var(--nb-ink) 35%, transparent);
-  background: var(--nb-card-bg);
+  font-size: 0.78rem;
+  padding: 4px 30px 4px 14px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--nb-ink) 30%, transparent);
+  background-color: var(--nb-card-bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236a6250' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
   color: var(--nb-ink);
   cursor: pointer;
+}
+.nb-select:hover {
+  background-color: color-mix(in srgb, var(--nb-ink) 5%, var(--nb-card-bg));
 }
 
 /* ==========================================================================

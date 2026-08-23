@@ -87,18 +87,26 @@ export function BlogList({ posts }: BlogListProps) {
           ))}
         </div>
         <div className="flex-1" />
-        <select
-          value={sortOrder}
-          onChange={(e) => setSortOrder(e.target.value as "newest" | "oldest")}
-          className="nb-select"
-          aria-label="Sort posts"
-        >
-          <option value="newest">Newest first</option>
-          <option value="oldest">Oldest first</option>
-        </select>
-        <button type="button" onClick={clearAll} className="nb-textlink">
-          Clear
-        </button>
+        <div className="flex items-center gap-4">
+          <select
+            value={sortOrder}
+            onChange={(e) =>
+              setSortOrder(e.target.value as "newest" | "oldest")
+            }
+            className="nb-select"
+            aria-label="Sort posts"
+          >
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+          </select>
+          <button
+            type="button"
+            onClick={clearAll}
+            className="nb-mono-label cursor-pointer underline underline-offset-4 transition-opacity hover:opacity-60"
+          >
+            Clear
+          </button>
+        </div>
       </div>
 
       {filteredPosts.length > 0 ? (
