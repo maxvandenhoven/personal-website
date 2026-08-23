@@ -731,7 +731,9 @@
   display: flex;
   flex-direction: column;
   background: var(--nb-card-bg);
-  padding: 12px 12px 14px;
+  /* uniform frame: the same margin above the banner, beside it, and below
+     the last row (the pills — whose wrapper adds no bottom padding) */
+  padding: 14px;
   border-radius: 2px;
   box-shadow: var(--nb-shadow-small);
   transition:
@@ -793,14 +795,15 @@
   );
 }
 .nb-taped-card__banner {
-  height: 132px;
+  /* matches the real banner images (1672x941 ≈ 16:9) so they show uncropped */
+  aspect-ratio: 16 / 9;
   background-size: cover;
   background-position: center;
   border-radius: 1px;
   background-color: var(--nb-hero-line);
 }
 .nb-taped-card__body {
-  padding: 13px 5px 3px;
+  padding: 13px 5px 0;
   display: flex;
   flex-direction: column;
   flex: 1;
