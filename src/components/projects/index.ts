@@ -1,1 +1,0 @@
-export { HexGrid } from "./HexGrid";

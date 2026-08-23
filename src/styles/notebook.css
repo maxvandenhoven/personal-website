@@ -451,6 +451,15 @@
   min-height: var(--sheet-min-h, var(--nb-sheet-min-h));
 }
 
+/* Plain sheets (pattern "none", e.g. blog posts) have no rules to align to,
+   so the baseline-grid nudges are switched off — text sits naturally. */
+.nb-sheet--plain .nb-h1,
+.nb-sheet--plain .nb-h2,
+.nb-sheet--plain .nb-lead,
+.nb-sheet--plain .nb-subtitle {
+  transform: none;
+}
+
 /* Full-height sheets (the hero) approximate vertical centering on tall
    screens: the top padding grows toward the centered position — half the
    viewport minus half the content height — but is ROUNDED to a whole number
@@ -927,6 +936,159 @@
   background: var(--nb-pill-bg);
   color: var(--nb-pill-text);
   white-space: nowrap;
+}
+
+/* ==========================================================================
+   LIST CONTROLS (blog listing)
+   Tag-filter toggle buttons, the date sorter, and small mono labels — all in
+   the pill/meta idiom of the cards so the listing reads as one system.
+   ========================================================================== */
+
+/* Small uppercase mono label ("Filter", the post count, article meta). */
+.nb-mono-label {
+  font-family: var(--nb-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nb-ink-soft);
+}
+
+/* Tag filter toggle: an outlined pill that fills in when active. */
+.nb-filter-btn {
+  font-family: var(--nb-font-mono);
+  font-size: 0.78rem;
+  padding: 4px 13px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--nb-pill-text) 45%, transparent);
+  background: var(--nb-card-bg);
+  color: var(--nb-pill-text);
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    color 120ms ease,
+    border-color 120ms ease;
+}
+.nb-filter-btn:hover {
+  background: var(--nb-pill-bg);
+}
+.nb-filter-btn--active {
+  background: var(--nb-pill-text);
+  border-color: var(--nb-pill-text);
+  color: var(--nb-card-bg);
+}
+
+/* Date sorter (native select, dressed as paper). */
+.nb-select {
+  font-family: var(--nb-font-mono);
+  font-size: 0.82rem;
+  padding: 6px 10px;
+  border-radius: 3px;
+  border: 1px solid color-mix(in srgb, var(--nb-ink) 35%, transparent);
+  background: var(--nb-card-bg);
+  color: var(--nb-ink);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   PROSE (blog posts)
+   Long-form article styling in the notebook fonts. Used on the plain
+   (rule-less) post sheets, so line-heights are free to favor legibility
+   over the baseline grid.
+   ========================================================================== */
+
+.nb-prose {
+  font-family: var(--nb-font-body);
+  font-size: 1.13rem;
+  line-height: 1.75;
+  color: var(--nb-ink);
+}
+.nb-prose h1,
+.nb-prose h2,
+.nb-prose h3,
+.nb-prose h4 {
+  font-family: var(--nb-font-heading);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--nb-ink);
+  line-height: 1.2;
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+}
+.nb-prose h1 {
+  font-size: 1.9rem;
+}
+.nb-prose h2 {
+  font-size: 1.55rem;
+}
+.nb-prose h3 {
+  font-size: 1.25rem;
+}
+.nb-prose h4 {
+  font-size: 1.1rem;
+}
+.nb-prose p {
+  margin-bottom: 1.25em;
+}
+.nb-prose a {
+  color: var(--nb-ink);
+  border-bottom: 1.5px solid currentColor;
+  transition: opacity 120ms ease;
+}
+.nb-prose a:hover {
+  opacity: 0.6;
+}
+.nb-prose ul,
+.nb-prose ol {
+  padding-left: 1.4rem;
+  margin-bottom: 1.25em;
+}
+.nb-prose ul {
+  list-style-type: disc;
+}
+.nb-prose ol {
+  list-style-type: decimal;
+}
+.nb-prose li {
+  margin-bottom: 0.35em;
+}
+.nb-prose li::marker {
+  color: var(--nb-accent);
+}
+.nb-prose img {
+  border-radius: 2px;
+  box-shadow: var(--nb-shadow-small);
+  margin: 2em 0;
+  max-width: 100%;
+}
+.nb-prose blockquote {
+  border-left: 3px solid color-mix(in srgb, var(--nb-accent) 60%, transparent);
+  padding-left: 1em;
+  margin: 1.5em 0;
+  font-style: italic;
+  color: var(--nb-ink-soft);
+}
+.nb-prose pre {
+  border-radius: 3px;
+  padding: 1.25em;
+  overflow-x: auto;
+  margin: 1.5em 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  box-shadow: var(--nb-shadow-small);
+}
+.nb-prose code {
+  font-family: var(--nb-font-mono);
+  font-size: 0.85em;
+}
+.nb-prose :not(pre) > code {
+  background: color-mix(in srgb, var(--nb-ink) 8%, transparent);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.nb-prose hr {
+  border: none;
+  border-top: 1px solid color-mix(in srgb, var(--nb-ink) 25%, transparent);
+  margin: 2.5em 0;
 }
 
 /* ==========================================================================

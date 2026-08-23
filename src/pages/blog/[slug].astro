@@ -2,6 +2,7 @@
 import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import PaperSheet from "../../components/layout/PaperSheet.astro";
 
 const bannerImages = import.meta.glob<{ default: ImageMetadata }>(
   "/content/blogs/*/banner.{jpg,jpeg,png,webp}",
@@ -40,37 +41,38 @@ function formatDate(dateStr: string): string {
   title={`${post.data.title} — Max van den Hoven`}
   description={post.data.description}
 >
-  <article>
-    <header class="mx-auto max-w-[1100px] px-8 pt-16 pb-10">
-      <p class="text-text-secondary mb-4 text-sm">
-        <time datetime={post.data.publish_date}>
-          {formatDate(post.data.publish_date)}
-        </time>
-        &nbsp;&middot;&nbsp;
-        {post.data.reading_time}
-      </p>
-      <h1
-        class="font-heading mb-5 text-4xl leading-[1.1] font-bold tracking-[-0.03em]"
-      >
-        {post.data.title}
-      </h1>
-      <p class="text-text-secondary text-lg leading-relaxed">
-        {post.data.description}
-      </p>
-    </header>
-    {
-      bannerSrc && (
-        <div class="mx-auto max-w-[850px] px-8 pb-10">
+  <!-- A plain white sheet: no rules behind long-form text, for legibility.
+       pattern="none" also switches the baseline-grid nudges off. -->
+  <PaperSheet
+    variant="skills"
+    pattern="none"
+    layer={1}
+    class="min-h-[calc(100vh-var(--nb-header-h))]"
+  >
+    <article class="mx-auto max-w-[850px]">
+      <header class="mb-10">
+        <p class="nb-mono-label mb-4">
+          <time datetime={post.data.publish_date}>
+            {formatDate(post.data.publish_date)}
+          </time>
+          &nbsp;&middot;&nbsp;
+          {post.data.reading_time}
+        </p>
+        <h1 class="nb-h2">{post.data.title}</h1>
+        <p class="nb-subtitle mt-3">{post.data.description}</p>
+      </header>
+      {
+        bannerSrc && (
           <img
             src={bannerSrc}
             alt=""
-            class="w-full rounded-[14px] border-2 border-[#000] object-cover"
+            class="mb-10 w-full rounded-[2px] object-cover shadow-[var(--nb-shadow-small)]"
           />
-        </div>
-      )
-    }
-    <div class="prose mx-auto max-w-[850px] px-8 pb-16">
-      <Content />
-    </div>
-  </article>
+        )
+      }
+      <div class="nb-prose">
+        <Content />
+      </div>
+    </article>
+  </PaperSheet>
 </BaseLayout>

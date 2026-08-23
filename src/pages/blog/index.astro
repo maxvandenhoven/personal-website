@@ -1,7 +1,9 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { BlogList } from "../../components/blog";
+import PaperSheet from "../../components/layout/PaperSheet.astro";
+import SectionHeader from "../../components/layout/SectionHeader.astro";
+import { BlogList } from "../../components/blog/BlogList";
 
 const bannerImages = import.meta.glob<{ default: ImageMetadata }>(
   "/content/blogs/*/banner.{jpg,jpeg,png,webp}",
@@ -36,23 +38,20 @@ const serializedPosts = posts.map((post) => {
   title="Blog — Max van den Hoven"
   description="Field notes on building software, exploring new technologies, and lessons learned along the way."
 >
-  <section class="py-16">
-    <div class="mx-auto max-w-[1100px] px-8">
-      <p
-        class="text-text-secondary mb-6 text-sm font-bold tracking-[0.12em] uppercase"
-      >
-        Blog
-      </p>
-      <h1
-        class="font-heading mb-6 text-[clamp(42px,6vw,64px)] leading-[1.0] font-bold tracking-[-0.04em]"
-      >
-        Read my writing
-      </h1>
-      <p class="text-text-secondary max-w-[500px] text-lg leading-relaxed">
-        Field notes on building software, exploring new technologies, and
-        lessons learned along the way.
-      </p>
-    </div>
-  </section>
-  <BlogList client:load posts={serializedPosts} />
+  <!-- One light-blue ruled sheet (the same paper as the homepage's blog
+       section), stretched to at least the viewport so the page is all
+       paper. Title/subtitle sit on the rules via SectionHeader. -->
+  <PaperSheet
+    variant="blog"
+    pattern="ruled"
+    margin
+    layer={1}
+    class="min-h-[calc(100vh-var(--nb-header-h))]"
+  >
+    <SectionHeader
+      title="Read my writing"
+      subtitle="Field notes on building software, exploring new technologies, and lessons learned along the way."
+    />
+    <BlogList client:load posts={serializedPosts} />
+  </PaperSheet>
 </BaseLayout>

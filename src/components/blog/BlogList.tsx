@@ -1,5 +1,16 @@
 import { useState, useMemo } from "react";
-import { BlogCard } from "./BlogCard";
+import { TapedBlogCard } from "./TapedBlogCard";
+
+/**
+ * BlogList — the interactive blog listing: tag filter, date sorter, and the
+ * grid of taped cards.
+ *
+ * Rendered as a client island inside the blog listing's PaperSheet, so the
+ * notebook theme (fonts, pill colors, card styling) comes straight from
+ * src/styles/notebook.css. Filtering is AND-based (a post must carry every
+ * selected tag); the tape rotation cycles per card so the pin-board feel
+ * survives re-sorting.
+ */
 
 interface PostData {
   title: string;
@@ -11,9 +22,12 @@ interface PostData {
   bannerSrc?: string;
 }
 
-interface BlogListProps {
+export interface BlogListProps {
   posts: PostData[];
 }
+
+/* Same cycle as the homepage cards, so the two grids feel alike. */
+const tapeTilts = ["-3deg", "2deg", "-1.5deg"];
 
 export function BlogList({ posts }: BlogListProps) {
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
@@ -53,79 +67,65 @@ export function BlogList({ posts }: BlogListProps) {
 
   return (
     <>
-      <div className="py-5">
-        <div className="mx-auto flex max-w-[1100px] flex-wrap items-center gap-3 px-8">
-          <span className="text-text-secondary text-xs font-bold tracking-wider uppercase">
-            Filter
-          </span>
-          <div className="flex flex-wrap gap-2">
-            {allTags.map((tag) => (
-              <button
-                key={tag}
-                onClick={() => toggleTag(tag)}
-                className={`btn-lift cursor-pointer rounded-md border-[1.5px] border-[#000] px-3 py-1.5 text-xs font-bold select-none ${
-                  selectedTags.has(tag)
-                    ? "bg-accent-500 text-[#000]"
-                    : "text-text-primary bg-white"
-                }`}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-          <div className="flex-1" />
-          <select
-            value={sortOrder}
-            onChange={(e) =>
-              setSortOrder(e.target.value as "newest" | "oldest")
-            }
-            className="text-text-primary cursor-pointer rounded-md border-2 border-[#000] bg-white px-3 py-1.5 text-sm font-bold shadow-sm outline-none"
-          >
-            <option value="newest">Newest first</option>
-            <option value="oldest">Oldest first</option>
-          </select>
-          <button
-            onClick={clearAll}
-            className="text-text-primary cursor-pointer border-none bg-transparent text-sm font-bold underline decoration-2 underline-offset-2"
-          >
-            Clear
+      <div className="mb-2 flex flex-wrap items-center gap-3">
+        <span className="nb-mono-label">Filter</span>
+        <div className="flex flex-wrap gap-2">
+          {allTags.map((tag) => (
+            <button
+              key={tag}
+              type="button"
+              onClick={() => toggleTag(tag)}
+              className={`nb-filter-btn ${
+                selectedTags.has(tag) ? "nb-filter-btn--active" : ""
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+        <div className="flex-1" />
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value as "newest" | "oldest")}
+          className="nb-select"
+          aria-label="Sort posts"
+        >
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+        </select>
+        <button type="button" onClick={clearAll} className="nb-textlink">
+          Clear
+        </button>
+      </div>
+
+      <span className="nb-mono-label mb-8 block">
+        {filteredPosts.length} post{filteredPosts.length === 1 ? "" : "s"}
+      </span>
+
+      {filteredPosts.length > 0 ? (
+        <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredPosts.map((post, i) => (
+            <TapedBlogCard
+              key={post.slug}
+              title={post.title}
+              description={post.description}
+              publishDate={post.publishDate}
+              readingTime={post.readingTime}
+              tags={post.tags}
+              href={`/blog/${post.slug}`}
+              bannerSrc={post.bannerSrc}
+              tapeTilt={tapeTilts[i % tapeTilts.length]}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="nb-body py-20 text-center">
+          No posts match these filters.{" "}
+          <button type="button" onClick={clearAll} className="nb-textlink">
+            Clear all
           </button>
         </div>
-      </div>
-      <section className="pt-8 pb-20">
-        <div className="mx-auto max-w-[1100px] px-8">
-          <span className="text-text-secondary mb-6 block text-sm">
-            {filteredPosts.length} post
-            {filteredPosts.length === 1 ? "" : "s"}
-          </span>
-          {filteredPosts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3">
-              {filteredPosts.map((post) => (
-                <BlogCard
-                  key={post.slug}
-                  title={post.title}
-                  description={post.description}
-                  publishDate={post.publishDate}
-                  readingTime={post.readingTime}
-                  tags={post.tags}
-                  href={`/blog/${post.slug}`}
-                  bannerSrc={post.bannerSrc}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-text-secondary py-20 text-center">
-              No posts match these filters.{" "}
-              <button
-                onClick={clearAll}
-                className="text-text-primary cursor-pointer border-none bg-transparent font-bold underline decoration-2"
-              >
-                Clear all
-              </button>
-            </div>
-          )}
-        </div>
-      </section>
+      )}
     </>
   );
 }
