@@ -165,6 +165,19 @@
    so caps and baselines land on the ruled lines of the paper behind them.
    ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   Baseline nudges: translateY moves a text block down so its baseline rests
+   ~3px above the ruled line below it. The offset is DERIVED, not hardcoded,
+   so it stays correct when the rule size and the clamp()ed font sizes change
+   across breakpoints:
+
+     nudge = slot/2 − 3px − (ascent − 0.5em) · font-size
+
+   where slot/2 is half the line box (headings span 2 rules, body text 1),
+   and the ascent constants were measured in-browser: ≈0.86em for Fraunces
+   (headings), ≈0.72em for Newsreader (body/subtitles).
+   -------------------------------------------------------------------------- */
+
 .nb-h1 {
   font-family: var(--nb-font-heading);
   font-weight: 900;
@@ -172,7 +185,7 @@
   line-height: calc(var(--nb-rule) * 2);
   letter-spacing: -0.02em;
   color: var(--nb-ink);
-  transform: translateY(0.1em); /* baseline nudge onto the rule */
+  transform: translateY(calc(var(--nb-rule) - 3px - 0.36em));
 }
 /* Italic emphasis inside a heading (the "highlighted" word). */
 .nb-h1 em,
@@ -190,7 +203,7 @@
   line-height: calc(var(--nb-rule) * 2);
   letter-spacing: -0.015em;
   color: var(--nb-ink);
-  transform: translateY(0.34em); /* baseline nudge onto the rule */
+  transform: translateY(calc(var(--nb-rule) - 3px - 0.36em));
 }
 
 .nb-lead {
@@ -198,7 +211,7 @@
   font-size: 1.2rem;
   line-height: var(--nb-rule); /* tracks the rules line for line */
   color: var(--nb-ink);
-  transform: translateY(0.6em); /* baseline nudge onto the rule */
+  transform: translateY(calc(var(--nb-rule) / 2 - 3px - 0.22em));
 }
 
 .nb-body {
@@ -668,7 +681,7 @@
   /* no extra margin: the title's roomy 2-rule line-height already provides
      the visual gap, and this keeps the header a whole number of rules tall */
   margin-top: 0;
-  transform: translateY(0.6em); /* baseline nudge onto the rule */
+  transform: translateY(calc(var(--nb-rule) / 2 - 3px - 0.22em));
 }
 /* Light tone for dark sheets. */
 .nb-tone-light .nb-h2 {
