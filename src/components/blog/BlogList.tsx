@@ -67,7 +67,7 @@ export function BlogList({ posts }: BlogListProps) {
 
   return (
     <>
-      <div className="mb-2 flex flex-wrap items-center gap-3">
+      <div className="mb-[var(--nb-rule)] flex flex-wrap items-center gap-3">
         <span className="nb-mono-label">Filter</span>
         <div className="flex flex-wrap gap-2">
           {allTags.map((tag) => (
@@ -97,10 +97,6 @@ export function BlogList({ posts }: BlogListProps) {
           Clear
         </button>
       </div>
-
-      <span className="nb-mono-label mb-8 block">
-        {filteredPosts.length} post{filteredPosts.length === 1 ? "" : "s"}
-      </span>
 
       {filteredPosts.length > 0 ? (
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
