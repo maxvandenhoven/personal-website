@@ -40,6 +40,12 @@ interface Props {
    * torn overhang always lies on top of the sheet below (e.g. 4,3,2,1).
    */
   layer?: number;
+  /**
+   * Top padding in RULES (whole numbers keep the baseline grid intact).
+   * Defaults to the shared --nb-section-pad-y (4 rules). Standalone pages use
+   * a smaller value so the title sits closer to the header.
+   */
+  padTopRules?: number;
   /** Per-instance color overrides (default to the variant's theme colors). */
   bg?: string;
   line?: string;
@@ -57,6 +63,7 @@ const {
   torn = false,
   fullHeight = false,
   layer = 0,
+  padTopRules,
   bg,
   line,
   lip,
@@ -100,6 +107,9 @@ const styleVars = [
   `--paper-lip:${lip ?? palette.lip}`,
   `--paper-margin:${marginColor ?? palette.margin}`,
   `z-index:${layer}`,
+  padTopRules != null
+    ? `--sheet-pad-top:calc(var(--nb-rule) * ${padTopRules})`
+    : "",
   // The hero fills the viewport below the ruler header; other sheets use the
   // shared --nb-sheet-min-h minimum from the theme.
   fullHeight ? "--sheet-min-h:calc(100vh - var(--nb-header-h))" : "",
