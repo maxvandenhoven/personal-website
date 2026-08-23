@@ -60,6 +60,11 @@
     var(--nb-rule) * 4
   ); /* vertical padding inside a section (grid-aligned) */
   --nb-sheet-min-h: 60vh; /* minimum height of a non-hero sheet */
+  /* Roughly half the hero content's height. Used to vertically center the
+     hero on tall screens (see .nb-sheet--full below) while keeping its top
+     padding a whole number of rules. Approximate is fine — it only steers
+     where the centered position is; the snapping keeps the grid honest. */
+  --nb-hero-center-offset: 250px;
   --nb-torn-height: 70px; /* height of the ragged torn zone */
   --nb-torn-overlap: 56px; /* how far a torn sheet overhangs the next one */
 
@@ -433,6 +438,24 @@
   min-height: var(--sheet-min-h, var(--nb-sheet-min-h));
 }
 
+/* Full-height sheets (the hero) approximate vertical centering on tall
+   screens: the top padding grows toward the centered position — half the
+   viewport minus half the content height — but is ROUNDED to a whole number
+   of rules, so the text stays phase-locked to the paper's lines at every
+   viewport height. On short viewports the max() falls back to the normal
+   section padding, and the plain declaration above it covers browsers
+   without round(). */
+.nb-sheet--full .nb-sheet__body {
+  padding-top: var(--nb-section-pad-y);
+  padding-top: max(
+    var(--nb-section-pad-y),
+    round(
+      calc((100vh - var(--nb-header-h)) / 2 - var(--nb-hero-center-offset)),
+      var(--nb-rule)
+    )
+  );
+}
+
 /* Centered content column shared by all sections. */
 .nb-content {
   position: relative;
@@ -489,11 +512,26 @@
   width: calc(100% + var(--nb-rule) * 200);
   transform: translateX(calc(var(--nb-rule) * -100));
   background-image:
+    /* major tick at the tile origin */
     linear-gradient(to right, var(--nb-ruler-tick) 0 1px, transparent 1px),
-    linear-gradient(to right, var(--nb-ruler-tick) 0 1px, transparent 1px);
+    /* four minor ticks INSIDE the same rule-wide tile (at 1/5 .. 4/5), so a
+       minor tick can never land next to a major one through subpixel
+       rounding — the major position simply has no minor tick */
+    linear-gradient(
+        to right,
+        transparent 0 calc(20% - 0.5px),
+        var(--nb-ruler-tick) 0 calc(20% + 0.5px),
+        transparent 0 calc(40% - 0.5px),
+        var(--nb-ruler-tick) 0 calc(40% + 0.5px),
+        transparent 0 calc(60% - 0.5px),
+        var(--nb-ruler-tick) 0 calc(60% + 0.5px),
+        transparent 0 calc(80% - 0.5px),
+        var(--nb-ruler-tick) 0 calc(80% + 0.5px),
+        transparent 0 100%
+      );
   background-size:
-    calc(var(--nb-rule) / 5) 10px,
-    var(--nb-rule) 20px;
+    var(--nb-rule) 20px,
+    var(--nb-rule) 10px;
   background-repeat: repeat-x, repeat-x;
   background-position:
     left bottom,

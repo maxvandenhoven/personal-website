@@ -112,7 +112,7 @@ const patternClass = pattern === "none" ? "" : `nb-paper--${pattern}`;
 
 <section
   id={id}
-  class={`nb-sheet ${torn ? "nb-sheet--torn" : ""} ${className}`}
+  class={`nb-sheet ${torn ? "nb-sheet--torn" : ""} ${fullHeight ? "nb-sheet--full" : ""} ${className}`}
   style={styleVars}
 >
   <!-- The paper: color + pattern + margin rule, masked ragged when torn.

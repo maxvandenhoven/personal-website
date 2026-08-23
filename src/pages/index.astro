@@ -102,8 +102,10 @@ const taglineAfter = idx >= 0 ? tagline.slice(idx + highlight.length) : "";
       subtitle={config.skills_description}
     />
     <!-- The gap is one rule, and the notes are sized in whole rules, so each
-         note falls exactly inside the squares of the grid paper. -->
-    <div class="flex flex-wrap gap-[var(--nb-rule)]">
+         note falls exactly inside the squares of the grid paper. On phones
+         the notes are centered instead (the squares matter less there than
+         the balance of the layout). -->
+    <div class="flex flex-wrap gap-[var(--nb-rule)] max-sm:justify-center">
       {
         config.skills.map((group, i) => (
           <StickyNote
