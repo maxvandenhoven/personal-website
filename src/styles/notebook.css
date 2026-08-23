@@ -348,15 +348,17 @@
 /* Red (or otherwise) vertical margin rule. Lives INSIDE the sheet's
    background layer so it runs the full height of the sheet AND continues
    into the torn overhang (the tear mask clips it along with the paper).
-   Positioned 1.75rem left of where the centered content column begins so it
-   stays aligned at every viewport width. */
+   Positioned exactly ONE rule left of where the centered content column
+   begins: that puts it on the same vertical lattice as the grid paper's
+   lines (.nb-grid-vlines) and the ruler header's major ticks, so all three
+   line up at every viewport width. */
 .nb-margin-rule {
   position: absolute;
   top: 0;
   bottom: 0;
   left: calc(
     max(0px, (100% - var(--nb-content-max)) / 2) + var(--nb-content-pad-x) -
-      1.75rem
+      var(--nb-rule)
   );
   width: 1px;
   background: color-mix(in srgb, var(--paper-margin) 45%, transparent);
@@ -463,19 +465,35 @@
     color-mix(in srgb, var(--nb-ruler-tick) 60%, transparent);
 }
 
-/* Tick marks: two tiled gradients anchored to the bottom edge.
-   - minor ticks: short, every 12px
-   - major ticks: taller, every 60px */
-.nb-ruler__ticks {
+/* Tick marks, anchored to the bottom edge and to the CONTENT COLUMN's
+   vertical lattice (same trick as .nb-grid-vlines: the layer's left edge
+   sits on the content margin and is widened by ±100 rules, so a tick lands
+   on the lattice at every viewport width; the clip wrapper hides the
+   excess without clipping the mobile dropdown).
+   - minor ticks: short, every third of a rule
+   - major ticks: taller, every rule — so they line up with the grid paper's
+     vertical lines and with the hero/blog margin rule */
+.nb-ruler__ticks-clip {
   position: absolute;
   inset: 0;
+  overflow: hidden;
   pointer-events: none;
+}
+.nb-ruler__ticks {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(
+    max(0px, (100% - var(--nb-content-max)) / 2) + var(--nb-content-pad-x)
+  );
+  width: calc(100% + var(--nb-rule) * 200);
+  transform: translateX(calc(var(--nb-rule) * -100));
   background-image:
     linear-gradient(to right, var(--nb-ruler-tick) 0 1px, transparent 1px),
     linear-gradient(to right, var(--nb-ruler-tick) 0 1px, transparent 1px);
   background-size:
-    12px 10px,
-    60px 20px;
+    calc(var(--nb-rule) / 3) 10px,
+    var(--nb-rule) 20px;
   background-repeat: repeat-x, repeat-x;
   background-position:
     left bottom,
