@@ -67,7 +67,10 @@ export function BlogList({ posts }: BlogListProps) {
 
   return (
     <>
-      <div className="mb-[var(--nb-rule)] flex flex-wrap items-center gap-3">
+      {/* The row is exactly one rule tall (when it doesn't wrap) with its
+          items centered, so the controls sit centered between two rules and
+          the card grid below stays on the lattice. */}
+      <div className="mb-[var(--nb-rule)] flex min-h-[var(--nb-rule)] flex-wrap items-center gap-3">
         <span className="nb-mono-label">Filter</span>
         <div className="flex flex-wrap gap-2">
           {allTags.map((tag) => (
