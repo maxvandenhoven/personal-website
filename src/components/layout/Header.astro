@@ -1,0 +1,106 @@
+---
+/**
+ * Header — a sticky "ruler" that runs along the top of every page.
+ *
+ * It looks like the edge of a ruler: a translucent white strip with minor and
+ * major tick marks. All of its look is configurable from the central theme
+ * (src/styles/notebook.css):
+ *   --nb-ruler-bg       background color        (default white)
+ *   --nb-ruler-opacity  translucency 0–1        (default 0.82)
+ *   --nb-ruler-tick     tick-mark color         (default warm gray)
+ *
+ * Works on mobile (hamburger menu) and desktop (inline links).
+ */
+interface Props {
+  /** Site title shown on the left. */
+  name: string;
+}
+const { name } = Astro.props;
+
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/blog", label: "Blog" },
+  { href: "/projects", label: "Projects" },
+];
+---
+
+<header class="nb-ruler">
+  <span class="nb-ruler__ticks" aria-hidden="true"></span>
+  <nav
+    class="relative mx-auto flex h-full max-w-[var(--nb-content-max)] items-center justify-between px-[var(--nb-content-pad-x)]"
+  >
+    <a
+      href="/"
+      class="text-[17px] tracking-[-0.01em] text-[var(--nb-ink)]"
+      style="font-family: var(--nb-font-heading); font-weight: 600;"
+    >
+      {name}
+    </a>
+
+    <!-- Desktop links -->
+    <div class="hidden items-center gap-7 md:flex">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class="border-b border-transparent pb-0.5 text-[14px] tracking-[0.02em] text-[var(--nb-ink)] transition-colors duration-100 hover:border-[var(--nb-ink)]"
+            style="font-family: var(--nb-font-mono);"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- Mobile hamburger -->
+    <button
+      type="button"
+      id="nb-menu-btn"
+      class="ml-auto grid h-8 w-8 place-items-center text-[var(--nb-ink)] md:hidden"
+      aria-label="Open menu"
+      aria-expanded="false"
+    >
+      <svg
+        class="h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Mobile dropdown -->
+  <div
+    id="nb-menu"
+    class="hidden border-t border-[color-mix(in_srgb,var(--nb-ruler-tick)_60%,transparent)] bg-[var(--nb-ruler-bg)] md:hidden"
+  >
+    <div class="flex flex-col">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class="border-b border-[color-mix(in_srgb,var(--nb-ruler-tick)_40%,transparent)] px-[var(--nb-content-pad-x)] py-3 text-[14px] text-[var(--nb-ink)] last:border-b-0"
+            style="font-family: var(--nb-font-mono);"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById("nb-menu-btn");
+  const menu = document.getElementById("nb-menu");
+  btn?.addEventListener("click", () => {
+    const isOpen = menu?.classList.toggle("hidden") === false;
+    btn.setAttribute("aria-expanded", String(isOpen));
+  });
+</script>

@@ -1,0 +1,856 @@
+/* ==========================================================================
+   NOTEBOOK THEME — central design configuration
+   --------------------------------------------------------------------------
+   This is THE single place to change the look of the notebook-style site.
+   Everything below is a CSS custom property (variable). Change a value here
+   and it updates everywhere that uses it — no hunting through components.
+
+   How it works:
+   - Global DEFAULTS live in `:root` below.
+   - Components read them via `var(--nb-...)`.
+   - Every component also accepts props that override the default for ONE
+     instance by setting the same variable inline (e.g. a single Polaroid can
+     get a different pin color without touching this file).
+
+   Naming: every variable is prefixed `--nb-` (notebook) so it never clashes
+   with the older neobrutalist tokens still used by the (unchanged) blog pages.
+   ========================================================================== */
+
+:root {
+  /* ---------------------------------------------------------------------- */
+  /* FONTS                                                                   */
+  /* Loaded in BaseLayout.astro via Google Fonts. Swap the stack here and    */
+  /* the whole site follows.                                                 */
+  /* ---------------------------------------------------------------------- */
+  --nb-font-heading: "Fraunces", Georgia, serif; /* taglines + section titles */
+  --nb-font-body:
+    "Newsreader", Georgia, serif; /* running text / descriptions */
+  --nb-font-mono:
+    "Spline Sans Mono", ui-monospace, monospace; /* nav, meta, pills */
+  --nb-font-signature:
+    "Caveat", cursive; /* handwritten signature / margin notes */
+
+  /* ---------------------------------------------------------------------- */
+  /* INK (text) + ACCENT                                                     */
+  /* ---------------------------------------------------------------------- */
+  --nb-ink: #2e2a22; /* primary text */
+  --nb-ink-soft: #6a6250; /* secondary text, meta */
+  --nb-accent: #b5462f; /* terracotta — the "red pen" accent */
+
+  /* ---------------------------------------------------------------------- */
+  /* BASELINE GRID — the heart of the notebook look                          */
+  /* --nb-rule is ONE ruled line of the notebook. Everything vertical is a   */
+  /* whole multiple of it: section padding, heading line-heights, gaps. The  */
+  /* paper patterns draw a line every --nb-rule px starting from the top of  */
+  /* each sheet, and because the paddings are multiples too, headings and    */
+  /* body lines land ON the rules (like real writing on ruled paper).        */
+  /* Headings additionally get a tiny translateY nudge (set on the type      */
+  /* classes below) so their baselines rest on a rule instead of floating.   */
+  /* ---------------------------------------------------------------------- */
+  --nb-rule: 36px; /* one ruled line (mobile override at the bottom) */
+
+  /* ---------------------------------------------------------------------- */
+  /* PAGE RHYTHM                                                             */
+  /* Consistent spacing so every section feels part of one notebook.         */
+  /* ---------------------------------------------------------------------- */
+  --nb-header-h: 64px; /* ruler header height (hero subtracts this) */
+  --nb-content-max: 1100px; /* max content width, shared by all sections */
+  --nb-content-pad-x: 2rem; /* horizontal page padding (desktop) */
+  --nb-section-pad-y: calc(
+    var(--nb-rule) * 4
+  ); /* vertical padding inside a section (grid-aligned) */
+  --nb-sheet-min-h: 60vh; /* minimum height of a non-hero sheet */
+  --nb-torn-height: 70px; /* height of the ragged torn zone */
+  --nb-torn-overlap: 56px; /* how far a torn sheet overhangs the next one */
+
+  /* The ragged tear silhouette, used as an alpha MASK on the bottom of a
+     torn sheet's background layer (see .nb-sheet__bg-fill). Black = kept.
+     PLACEHOLDER: to switch to a real ripped-paper PNG later, replace this
+     data-URI with the PNG's alpha (black where paper, transparent below the
+     rip) — nothing else has to change. */
+  --nb-torn-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath fill='black' d='M0,0 H1440 V44 C1410,49 1398,58 1372,55 C1345,52 1330,40 1305,45 C1280,50 1268,63 1240,61 C1214,59 1201,47 1176,50 C1150,53 1140,66 1112,62 C1086,58 1074,45 1046,49 C1018,53 1008,64 980,60 C954,56 944,43 916,47 C890,51 880,64 852,61 C826,58 814,46 788,51 C762,56 752,67 724,63 C698,59 688,45 660,50 C634,55 622,66 596,62 C570,58 560,44 532,49 C506,54 496,65 468,60 C442,55 430,43 404,48 C378,53 368,65 340,61 C314,57 302,45 276,50 C250,55 240,66 212,62 C186,58 176,44 148,49 C122,54 110,64 84,60 C58,56 46,44 20,49 C13,50 6,52 0,53 Z'/%3E%3C/svg%3E");
+
+  /* Subtle paper-fiber noise, overlaid at very low alpha on sticky notes
+     (and reusable anywhere that needs paper feel). */
+  --nb-paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  /* ---------------------------------------------------------------------- */
+  /* SHADOWS — one shared "quality bar" for anything lifted off the page.    */
+  /* Layered: a tight contact shadow + a soft directional ambient shadow.    */
+  /* Small = sticky notes / cards at rest. Big = polaroid / hovered cards.   */
+  /* ---------------------------------------------------------------------- */
+  --nb-shadow-small:
+    0 1px 2px rgba(46, 42, 34, 0.14), 0 3px 6px rgba(46, 42, 34, 0.1),
+    1px 10px 22px -6px rgba(46, 42, 34, 0.18);
+  --nb-shadow-big:
+    0 1px 2px rgba(46, 42, 34, 0.18), 0 4px 8px rgba(46, 42, 34, 0.12),
+    2px 16px 32px -8px rgba(46, 42, 34, 0.26),
+    4px 32px 56px -16px rgba(46, 42, 34, 0.2);
+
+  /* ---------------------------------------------------------------------- */
+  /* PAPER — HERO (beige, ruled with red margin)                             */
+  /* ---------------------------------------------------------------------- */
+  --nb-hero-bg: #e9e1cf; /* background color (default beige) */
+  --nb-hero-line: #c9bd9e; /* rule color (default gray-tan) */
+  --nb-hero-lip: #f2ecdd; /* pale "deckle" edge along the tear */
+  --nb-hero-margin: #b5462f; /* margin rule color (default red) */
+
+  /* ---------------------------------------------------------------------- */
+  /* PAPER — SKILLS (white, grid, no margin)                                 */
+  /* Rule color defaults to the hero's rule color, as requested.             */
+  /* ---------------------------------------------------------------------- */
+  --nb-skills-bg: #fbfaf7; /* background color (default white) */
+  --nb-skills-line: var(
+    --nb-hero-line
+  ); /* grid color (default: same as hero) */
+  --nb-skills-lip: #ffffff;
+
+  /* ---------------------------------------------------------------------- */
+  /* PAPER — BLOG (light blue, ruled)                                        */
+  /* Its own margin + rule colors, distinct from the hero's.                 */
+  /* ---------------------------------------------------------------------- */
+  --nb-blog-bg: #dbe5e3; /* background color (default light blue) */
+  --nb-blog-line: #bccdc8; /* rule color */
+  --nb-blog-lip: #e8efed;
+  --nb-blog-margin: #6f9a91; /* margin rule color (distinct teal, not the red) */
+
+  /* ---------------------------------------------------------------------- */
+  /* PAPER — PROJECTS (black, isometric grid)                                */
+  /* ---------------------------------------------------------------------- */
+  --nb-projects-bg: #1b1a17; /* background color (default near-black) */
+  --nb-projects-line: rgba(255, 255, 255, 0.08); /* isometric grid color */
+  --nb-projects-lip: #2a2823;
+
+  /* ---------------------------------------------------------------------- */
+  /* RULER HEADER                                                            */
+  /* ---------------------------------------------------------------------- */
+  --nb-ruler-bg: #ffffff; /* header background (parameter) */
+  --nb-ruler-opacity: 0.82; /* header translucency 0–1 (parameter) */
+  --nb-ruler-tick: #b8ae94; /* color of the ruler tick marks (parameter) */
+
+  /* ---------------------------------------------------------------------- */
+  /* COMPONENT DEFAULTS                                                      */
+  /* Per-instance overridable via props.                                     */
+  /* ---------------------------------------------------------------------- */
+  --nb-highlight: #f7d774; /* highlighter color behind the emphasized word */
+  --nb-button-bg: var(--nb-ink); /* CTA button background */
+  --nb-button-text: #f6f1e4; /* CTA button text */
+  --nb-pin: #c0402d; /* polaroid push-pin color */
+  --nb-tape: rgba(230, 220, 190, 0.55); /* washi tape on the blog cards */
+
+  /* Sticky notes (skills). A small palette is cycled across the notes. */
+  --nb-sticky: #fbe38a; /* yellow */
+  --nb-sticky-2: #b9e0c8; /* mint */
+  --nb-sticky-3: #f7c6b0; /* peach */
+
+  /* Blog cards */
+  --nb-card-bg: #ffffff; /* card stock */
+  --nb-pill-bg: rgba(31, 111, 92, 0.12); /* skill pill background */
+  --nb-pill-text: #1f6f5c; /* skill pill text */
+
+  /* Shared vertical gap between a section header and its content. Change here
+     to re-space every section at once (kept in whole rules). */
+  --nb-header-gap: calc(var(--nb-rule) * 2);
+}
+
+/* ==========================================================================
+   TYPOGRAPHY
+   Semantic type classes shared across every section. Line-heights are whole
+   (or half) multiples of --nb-rule and headings get a tiny translateY nudge,
+   so caps and baselines land on the ruled lines of the paper behind them.
+   ========================================================================== */
+
+.nb-h1 {
+  font-family: var(--nb-font-heading);
+  font-weight: 900;
+  font-size: clamp(2.6rem, 6vw, 4.5rem);
+  line-height: calc(var(--nb-rule) * 2);
+  letter-spacing: -0.02em;
+  color: var(--nb-ink);
+  transform: translateY(0.06em); /* baseline nudge onto the rule */
+}
+/* Italic emphasis inside a heading (the "highlighted" word). */
+.nb-h1 em,
+.nb-h2 em {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.nb-h2 {
+  font-family: var(--nb-font-heading);
+  font-weight: 600;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: calc(var(--nb-rule) * 1.5);
+  letter-spacing: -0.015em;
+  color: var(--nb-ink);
+  transform: translateY(0.1em); /* baseline nudge onto the rule */
+}
+
+.nb-lead {
+  font-family: var(--nb-font-body);
+  font-size: 1.2rem;
+  line-height: var(--nb-rule); /* tracks the rules line for line */
+  color: var(--nb-ink);
+}
+
+.nb-body {
+  font-family: var(--nb-font-body);
+  font-size: 1.05rem;
+  line-height: var(--nb-rule);
+  color: var(--nb-ink-soft);
+}
+
+/* Handwritten aside — used for the "signature" / margin notes. */
+.nb-hand {
+  font-family: var(--nb-font-signature);
+  font-weight: 400;
+  color: var(--nb-ink-soft);
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+/* --------------------------------------------------------------------------
+   Highlighter swipe behind an inline word.
+   Reads like a real marker stroke: two semi-transparent multiply-blended
+   swipes (a main pass + a lighter second pass), each slightly skewed/rotated
+   with uneven rounded ends, overshooting the word a little on both sides.
+   The strokes sit ON TOP of the text — multiply keeps the ink dark through
+   the color, exactly like real highlighter over pen.
+   Color comes from --nb-highlight.
+   -------------------------------------------------------------------------- */
+.nb-mark {
+  position: relative;
+}
+.nb-mark::before,
+.nb-mark::after {
+  content: "";
+  position: absolute;
+  background: var(--nb-highlight);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+/* main swipe */
+.nb-mark::before {
+  top: 0.06em;
+  bottom: 0;
+  left: -0.32em;
+  right: -0.28em;
+  opacity: 0.62;
+  transform: rotate(-1.4deg) skewX(-9deg);
+  border-radius: 0.6em 0.2em 0.7em 0.3em / 1.2em 0.5em 1em 0.4em;
+}
+/* lighter second pass, offset so the edges look rough/uneven */
+.nb-mark::after {
+  top: 0.3em;
+  bottom: -0.04em;
+  left: -0.12em;
+  right: -0.42em;
+  opacity: 0.35;
+  transform: rotate(-0.6deg) skewX(-14deg);
+  border-radius: 0.3em 0.8em 0.2em 0.9em / 0.8em 0.3em 1.1em 0.6em;
+}
+
+/* ==========================================================================
+   PAPER BACKGROUNDS
+   A sheet's background layer gets `.nb-paper` plus one pattern modifier.
+   Each sheet sets its own --paper-bg / --paper-line / --paper-lip
+   (PaperSheet.astro does this from the variant prop), so the classes stay
+   generic and colors stay centralized.
+
+   Patterns are anchored to the TOP of the sheet. Because every vertical
+   padding is a whole multiple of --nb-rule, the content top always coincides
+   with a ruled line (see BASELINE GRID above).
+   ========================================================================== */
+
+.nb-paper {
+  background-color: var(--paper-bg);
+}
+
+/* Horizontal ruled lines (hero, blog). */
+.nb-paper--ruled {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--nb-rule) - 1px),
+    var(--paper-line) calc(var(--nb-rule) - 1px),
+    var(--paper-line) var(--nb-rule)
+  );
+}
+
+/* Square grid (skills). */
+.nb-paper--grid {
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      transparent 0,
+      transparent calc(var(--nb-rule) - 1px),
+      var(--paper-line) calc(var(--nb-rule) - 1px),
+      var(--paper-line) var(--nb-rule)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(var(--nb-rule) - 1px),
+      var(--paper-line) calc(var(--nb-rule) - 1px),
+      var(--paper-line) var(--nb-rule)
+    );
+}
+
+/* Isometric grid (projects) — three line families at 30° / 150° / vertical. */
+.nb-paper--iso {
+  background-image:
+    repeating-linear-gradient(
+      30deg,
+      transparent 0,
+      transparent calc(var(--nb-rule) - 1px),
+      var(--paper-line) calc(var(--nb-rule) - 1px),
+      var(--paper-line) var(--nb-rule)
+    ),
+    repeating-linear-gradient(
+      150deg,
+      transparent 0,
+      transparent calc(var(--nb-rule) - 1px),
+      var(--paper-line) calc(var(--nb-rule) - 1px),
+      var(--paper-line) var(--nb-rule)
+    ),
+    repeating-linear-gradient(
+      to right,
+      transparent 0,
+      transparent calc(var(--nb-rule) - 1px),
+      var(--paper-line) calc(var(--nb-rule) - 1px),
+      var(--paper-line) var(--nb-rule)
+    );
+}
+
+/* Red (or otherwise) vertical margin rule. Lives INSIDE the sheet's
+   background layer so it runs the full height of the sheet AND continues
+   into the torn overhang (the tear mask clips it along with the paper).
+   Positioned 1.75rem left of where the centered content column begins so it
+   stays aligned at every viewport width. */
+.nb-margin-rule {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(
+    max(0px, (100% - var(--nb-content-max)) / 2) + var(--nb-content-pad-x) -
+      1.75rem
+  );
+  width: 1px;
+  background: color-mix(in srgb, var(--paper-margin) 45%, transparent);
+}
+
+/* ==========================================================================
+   SHEET LAYOUT + TORN EDGE
+   Each section is a `.nb-sheet`. Sheets sit flush in normal flow — no
+   negative margins. Instead, each sheet paints its paper on a dedicated
+   absolutely-positioned background layer (.nb-sheet__bg) and, when torn,
+   that layer EXTENDS --nb-torn-overlap below the sheet and is masked into
+   the ragged silhouette at the bottom. Sheets get explicit descending
+   z-indexes (the `layer` prop on PaperSheet), so an earlier sheet's ragged
+   overhang always lies on top of the next sheet.
+
+   Because the pattern, the margin rule, and the tear all live on ONE
+   continuous layer, the rules/grids run seamlessly all the way to the
+   ragged edge — no flat band, no seam.
+
+   Swapping in a real ripped-paper PNG later = replacing --nb-torn-mask.
+   ========================================================================== */
+
+.nb-sheet {
+  position: relative;
+}
+
+/* The paper layer. Torn sheets overhang the next sheet and cast a shadow
+   that follows the ragged silhouette (the drop-shadows apply AFTER the mask).
+   The first drop-shadow is a hard 2px offset in the pale lip color — it draws
+   the torn paper's white inner edge (deckle) along the rip. */
+.nb-sheet__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.nb-sheet--torn > .nb-sheet__bg {
+  bottom: calc(-1 * var(--nb-torn-overlap));
+  filter: drop-shadow(0 2px 0 var(--paper-lip))
+    drop-shadow(0 5px 4px rgba(35, 30, 20, 0.18))
+    drop-shadow(0 14px 12px rgba(35, 30, 20, 0.1));
+}
+.nb-sheet__bg-fill {
+  position: absolute;
+  inset: 0;
+}
+/* The mask: fully opaque from the top, ragged over the bottom
+   --nb-torn-height. The two mask images overlap by 1px so no hairline seam
+   can appear between them. */
+.nb-sheet--torn .nb-sheet__bg-fill {
+  -webkit-mask-image: linear-gradient(#000, #000), var(--nb-torn-mask);
+  mask-image: linear-gradient(#000, #000), var(--nb-torn-mask);
+  -webkit-mask-size:
+    100% calc(100% - var(--nb-torn-height) + 1px),
+    100% var(--nb-torn-height);
+  mask-size:
+    100% calc(100% - var(--nb-torn-height) + 1px),
+    100% var(--nb-torn-height);
+  -webkit-mask-position: top, bottom;
+  mask-position: top, bottom;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* Content sits above the paper layer. Vertical padding is whole rules, so
+   the content top lands on a ruled line (see BASELINE GRID). */
+.nb-sheet__body {
+  position: relative;
+  z-index: 2;
+  padding-top: var(--nb-section-pad-y);
+  padding-bottom: var(--nb-section-pad-y);
+  min-height: var(--sheet-min-h, var(--nb-sheet-min-h));
+}
+
+/* Centered content column shared by all sections. */
+.nb-content {
+  position: relative;
+  max-width: var(--nb-content-max);
+  margin: 0 auto;
+  padding-left: var(--nb-content-pad-x);
+  padding-right: var(--nb-content-pad-x);
+}
+
+/* ==========================================================================
+   RULER HEADER
+   Translucent white strip with minor + major tick marks along the bottom,
+   mimicking a real ruler. Sticky to the top of the viewport.
+   ========================================================================== */
+
+.nb-ruler {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--nb-header-h);
+  /* translucent: mix the (parameter) background with transparency */
+  background: color-mix(
+    in srgb,
+    var(--nb-ruler-bg) calc(var(--nb-ruler-opacity) * 100%),
+    transparent
+  );
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--nb-ruler-tick) 60%, transparent);
+}
+
+/* Tick marks: two tiled gradients anchored to the bottom edge.
+   - minor ticks: short, every 12px
+   - major ticks: taller, every 60px */
+.nb-ruler__ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--nb-ruler-tick) 0 1px, transparent 1px),
+    linear-gradient(to right, var(--nb-ruler-tick) 0 1px, transparent 1px);
+  background-size:
+    12px 10px,
+    60px 20px;
+  background-repeat: repeat-x, repeat-x;
+  background-position:
+    left bottom,
+    left bottom;
+}
+
+/* ==========================================================================
+   NOTEBOOK BUTTON (CTA)
+   A firm, slightly pressed paper button. Background is a parameter.
+   ========================================================================== */
+
+.nb-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--nb-font-mono);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 0.95rem 1.8rem;
+  border-radius: 3px;
+  background: var(--nb-button-bg);
+  color: var(--nb-button-text);
+  box-shadow: 0 2px 0 rgba(35, 30, 20, 0.35);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+  cursor: pointer;
+}
+.nb-button:hover {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 rgba(35, 30, 20, 0.35);
+}
+.nb-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 rgba(35, 30, 20, 0.35);
+}
+
+/* A plain text link with an arrow, used beside the button. */
+.nb-textlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--nb-font-mono);
+  font-size: 0.95rem;
+  color: var(--nb-ink);
+  border-bottom: 1.5px solid currentColor;
+  padding-bottom: 1px;
+  transition: opacity 120ms ease;
+}
+.nb-textlink:hover {
+  opacity: 0.6;
+}
+.nb-textlink svg {
+  transition: transform 150ms ease;
+}
+.nb-textlink:hover svg {
+  transform: translateY(2px);
+}
+
+/* ==========================================================================
+   POLAROID
+   A pinned, slightly tilted photo with a wide bottom margin for the
+   signature. The pin is an inline SVG (see Polaroid component): a domed head
+   with a specular highlight, a sliver of needle, and its own cast shadow.
+   The photo itself floats on the layered "big" shadow.
+   ========================================================================== */
+
+.nb-polaroid {
+  --tilt: -3deg;
+  position: relative;
+  display: inline-block;
+  background: #fff;
+  padding: 14px 14px 0; /* bottom padding added by the signature area */
+  border-radius: 2px;
+  box-shadow: var(--nb-shadow-big);
+  transform: rotate(var(--tilt));
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.7, 0.3, 1),
+    box-shadow 220ms ease;
+}
+.nb-polaroid:hover {
+  transform: rotate(0deg) translateY(-4px);
+  box-shadow:
+    0 2px 3px rgba(46, 42, 34, 0.16),
+    0 6px 12px rgba(46, 42, 34, 0.12),
+    3px 22px 40px -8px rgba(46, 42, 34, 0.28),
+    6px 40px 64px -16px rgba(46, 42, 34, 0.22);
+}
+.nb-polaroid__photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+/* White strip under the photo where the signature sits. */
+.nb-polaroid__signature {
+  font-family: var(--nb-font-signature);
+  color: var(--nb-ink);
+  font-size: 1.9rem;
+  line-height: 1;
+  text-align: center;
+  padding: 0.85rem 0 1.1rem;
+}
+/* The push-pin SVG that "sticks" the photo down. Its fill reads --nb-pin. */
+.nb-polaroid__pin {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translateX(-50%);
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   SECTION HEADER
+   Shared title + undertitle used by every section, so headings look identical
+   everywhere. The gap below is --nb-header-gap (one place to re-space all
+   sections). A `light` tone flips the colors for dark sheets (projects).
+   ========================================================================== */
+
+.nb-section-header {
+  margin-bottom: var(--nb-header-gap);
+}
+.nb-subtitle {
+  font-family: var(--nb-font-body);
+  font-size: 1.15rem;
+  line-height: var(--nb-rule);
+  color: var(--nb-ink-soft);
+  max-width: 58ch;
+  margin-top: calc(var(--nb-rule) * 0.5);
+}
+/* Light tone for dark sheets. */
+.nb-tone-light .nb-h2 {
+  color: #f4efe2;
+}
+.nb-tone-light .nb-subtitle {
+  color: rgba(244, 239, 226, 0.7);
+}
+
+/* ==========================================================================
+   STICKY NOTE (skills)
+   Built to read like a real sticky note:
+   - a darker, matte adhesive band pressed flat along the top;
+   - paper-fiber grain over the whole note (--nb-paper-grain);
+   - a gentle cup: the bottom edge curls toward the viewer, catching light;
+   - two skewed shadow "wings" under the bottom corners so only the lower
+     half reads as lifted, while the glued top stays tight to the page.
+   Background/fonts are parameters.
+   ========================================================================== */
+
+.nb-sticky-note {
+  --sticky-bg: var(--nb-sticky);
+  --sticky-tilt: -1.5deg;
+  position: relative;
+  background-color: var(--sticky-bg);
+  background-image:
+    var(--nb-paper-grain),
+    /* adhesive band: slightly darker + matte where the glue presses flat */
+    linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.07) 0,
+        rgba(0, 0, 0, 0.02) 12%,
+        rgba(0, 0, 0, 0) 18%
+      ),
+    /* bottom curl: the paper bends up and catches the light */
+    linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 70%,
+        rgba(255, 255, 255, 0.14) 90%,
+        rgba(255, 255, 255, 0.32) 100%
+      ),
+    /* faint diagonal cup shading */
+    linear-gradient(105deg, rgba(0, 0, 0, 0.035), rgba(0, 0, 0, 0) 35%);
+  padding: 1.6rem 1.5rem 2rem;
+  border-radius: 1px 1px 4px 2px;
+  transform: rotate(var(--sticky-tilt));
+  /* tight contact shadow only — the lift comes from the corner wings below */
+  box-shadow: 0 1px 1px rgba(46, 42, 34, 0.1);
+  transition:
+    transform 200ms cubic-bezier(0.2, 0.7, 0.3, 1),
+    box-shadow 200ms ease;
+}
+/* The two shadow wings under the curled bottom corners. */
+.nb-sticky-note::before,
+.nb-sticky-note::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  bottom: 16px;
+  width: 45%;
+  height: 12px;
+  box-shadow: 2px 18px 14px rgba(46, 42, 34, 0.22);
+}
+.nb-sticky-note::before {
+  left: 4%;
+  transform: rotate(-2.5deg);
+}
+.nb-sticky-note::after {
+  right: 4%;
+  transform: rotate(2.5deg);
+}
+.nb-sticky-note:hover {
+  transform: rotate(0deg) translateY(-3px);
+  box-shadow: var(--nb-shadow-small);
+}
+.nb-sticky-note__title {
+  font-family: var(--nb-font-heading);
+  font-weight: 600;
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
+  color: var(--nb-ink);
+  margin-bottom: 0.9rem;
+}
+.nb-sticky-note__list {
+  list-style: none;
+}
+.nb-sticky-note__list li {
+  font-family: var(--nb-font-mono);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--nb-ink);
+  padding-left: 1.1rem;
+  position: relative;
+}
+.nb-sticky-note__list li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  opacity: 0.6;
+}
+
+/* ==========================================================================
+   TAPED BLOG CARD
+   A card of "card stock" held down by a strip of washi tape. Lifts and
+   straightens on hover. Colors/fonts are parameters.
+   ========================================================================== */
+
+.nb-taped-card {
+  --card-tilt: -1deg;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--nb-card-bg);
+  padding: 12px 12px 14px;
+  border-radius: 2px;
+  box-shadow: var(--nb-shadow-small);
+  transform: rotate(var(--card-tilt));
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.7, 0.3, 1),
+    box-shadow 220ms ease;
+  cursor: pointer;
+}
+.nb-taped-card:hover,
+.nb-taped-card:focus-visible {
+  transform: rotate(0deg) translateY(-4px);
+  box-shadow: var(--nb-shadow-big);
+  outline: none;
+  z-index: 5;
+}
+/* The washi tape across the top of the card stock. The outer span only
+   positions itself and casts the drop-shadow (which must apply AFTER the
+   torn-end clipping); the ::before carries the translucent tape body, a
+   diagonal sheen, and jagged clip-path ends like hand-torn tape. */
+.nb-taped-card__tape {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  width: 104px;
+  height: 27px;
+  transform: translateX(-50%) rotate(-3deg);
+  filter: drop-shadow(0 1px 1px rgba(46, 42, 34, 0.18));
+  pointer-events: none;
+}
+.nb-taped-card__tape::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0) 22%,
+      rgba(255, 255, 255, 0.3) 38%,
+      rgba(255, 255, 255, 0) 55%
+    ),
+    var(--nb-tape);
+  clip-path: polygon(
+    2% 0%,
+    98% 2%,
+    100% 14%,
+    97.5% 28%,
+    100% 43%,
+    98% 58%,
+    100% 74%,
+    97% 88%,
+    99% 100%,
+    3% 98%,
+    0% 86%,
+    2.5% 70%,
+    0% 55%,
+    2% 40%,
+    0% 25%,
+    2.5% 12%
+  );
+}
+.nb-taped-card__banner {
+  height: 132px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 1px;
+  background-color: var(--nb-hero-line);
+}
+.nb-taped-card__body {
+  padding: 13px 5px 3px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.nb-taped-card__title {
+  font-family: var(--nb-font-heading);
+  font-weight: 600;
+  font-size: 1.15rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--nb-ink);
+  margin-bottom: 0.4rem;
+}
+.nb-taped-card__desc {
+  font-family: var(--nb-font-body);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--nb-ink-soft);
+  margin-bottom: 0.9rem;
+}
+/* Meta is pushed to the bottom of the card; the pills sit below it as the
+   very last row, so a row of cards ends in aligned pill rows. */
+.nb-taped-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--nb-font-mono);
+  font-size: 0.72rem;
+  color: var(--nb-ink-soft);
+  margin-top: auto;
+}
+.nb-taped-card__meta .nb-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+}
+.nb-taped-card__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 0.7rem;
+}
+
+/* Skill pill (blog card tags). */
+.nb-pill {
+  font-family: var(--nb-font-mono);
+  font-size: 0.68rem;
+  padding: 2px 9px;
+  border-radius: 20px;
+  background: var(--nb-pill-bg);
+  color: var(--nb-pill-text);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   The rule unit shrinks a little on small screens so the grid stays a
+   believable notebook scale; because everything is measured in rules, the
+   whole vertical rhythm scales with it.
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  :root {
+    --nb-rule: 30px;
+    --nb-header-h: 56px;
+    --nb-content-pad-x: 1.5rem;
+    --nb-section-pad-y: calc(var(--nb-rule) * 3);
+    --nb-sheet-min-h: 0px; /* let short sections shrink on phones */
+  }
+  .nb-margin-rule {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nb-polaroid,
+  .nb-button,
+  .nb-textlink svg,
+  .nb-sticky-note,
+  .nb-taped-card {
+    transition: none;
+  }
+}

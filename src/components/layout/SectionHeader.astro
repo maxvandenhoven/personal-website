@@ -1,0 +1,30 @@
+---
+/**
+ * SectionHeader — the shared title + undertitle block for every section.
+ *
+ * Keeps headings/subtitles identical across Skills, Blog, and Projects, and
+ * spaces them consistently (the gap below the header is --nb-header-gap,
+ * tunable once in the central theme). Fonts come from the shared theme, so
+ * changing the heading font updates every section at once. The title's
+ * line-height is measured in ruled lines (--nb-rule), so it sits on the
+ * paper's grid.
+ *
+ * Usage:
+ *   <SectionHeader title="Skills & tools"
+ *                  subtitle="A mix of tools I work with." />
+ *   <SectionHeader ... tone="light" />   // for dark sheets (projects)
+ */
+interface Props {
+  title: string;
+  /** The undertitle shown below the title (optional). */
+  subtitle?: string;
+  /** "light" flips text colors for use on a dark sheet. */
+  tone?: "dark" | "light";
+}
+const { title, subtitle, tone = "dark" } = Astro.props;
+---
+
+<div class={`nb-section-header ${tone === "light" ? "nb-tone-light" : ""}`}>
+  <h2 class="nb-h2">{title}</h2>
+  {subtitle && <p class="nb-subtitle">{subtitle}</p>}
+</div>

@@ -1,0 +1,129 @@
+---
+/**
+ * PaperSheet — the backbone of every page section.
+ *
+ * Renders one "sheet" of notebook paper: a colored background with a ruled /
+ * grid / isometric pattern, an optional margin rule, and an optional torn
+ * bottom edge that overhangs the following sheet (so the sections read as a
+ * stack of pages).
+ *
+ * How the tear works: the paper (color + pattern + margin rule) is painted on
+ * a dedicated absolutely-positioned background layer. When `torn` is set that
+ * layer extends `--nb-torn-overlap` below the sheet and is masked into a
+ * ragged silhouette (--nb-torn-mask in notebook.css) — so the rules run
+ * continuously all the way to the ragged edge, and swapping in a real
+ * ripped-paper PNG later only means replacing that one mask variable.
+ * Give earlier sheets a higher `layer` so their overhang stacks on top.
+ *
+ * All colors come from the central theme (src/styles/notebook.css). Pick a
+ * `variant` to inherit that paper's palette, or override any individual color
+ * with a prop.
+ *
+ * Usage:
+ *   <PaperSheet variant="hero" pattern="ruled" margin torn fullHeight layer={4}>
+ *     ...section content...
+ *   </PaperSheet>
+ */
+interface Props {
+  /** Which paper palette to use. */
+  variant: "hero" | "skills" | "blog" | "projects";
+  /** Background pattern. */
+  pattern: "ruled" | "grid" | "iso" | "none";
+  /** Draw the vertical margin rule (ruled sheets only). */
+  margin?: boolean;
+  /** Tear the bottom edge so it overhangs the next sheet. */
+  torn?: boolean;
+  /** Make the sheet at least a full viewport tall (used by the hero). */
+  fullHeight?: boolean;
+  /**
+   * Stacking order of the sheet. Give earlier sheets a HIGHER number so their
+   * torn overhang always lies on top of the sheet below (e.g. 4,3,2,1).
+   */
+  layer?: number;
+  /** Per-instance color overrides (default to the variant's theme colors). */
+  bg?: string;
+  line?: string;
+  lip?: string;
+  marginColor?: string;
+  /** Extra classes on the outer <section>. */
+  class?: string;
+  id?: string;
+}
+
+const {
+  variant,
+  pattern,
+  margin = false,
+  torn = false,
+  fullHeight = false,
+  layer = 0,
+  bg,
+  line,
+  lip,
+  marginColor,
+  class: className = "",
+  id,
+} = Astro.props;
+
+// Map the variant to its theme variables. A prop, when given, wins.
+const palette = {
+  hero: {
+    bg: "var(--nb-hero-bg)",
+    line: "var(--nb-hero-line)",
+    lip: "var(--nb-hero-lip)",
+    margin: "var(--nb-hero-margin)",
+  },
+  skills: {
+    bg: "var(--nb-skills-bg)",
+    line: "var(--nb-skills-line)",
+    lip: "var(--nb-skills-lip)",
+    margin: "var(--nb-hero-margin)",
+  },
+  blog: {
+    bg: "var(--nb-blog-bg)",
+    line: "var(--nb-blog-line)",
+    lip: "var(--nb-blog-lip)",
+    margin: "var(--nb-blog-margin)",
+  },
+  projects: {
+    bg: "var(--nb-projects-bg)",
+    line: "var(--nb-projects-line)",
+    lip: "var(--nb-projects-lip)",
+    margin: "var(--nb-hero-margin)",
+  },
+}[variant];
+
+// Expose the resolved colors as local CSS variables the paper classes read.
+const styleVars = [
+  `--paper-bg:${bg ?? palette.bg}`,
+  `--paper-line:${line ?? palette.line}`,
+  `--paper-lip:${lip ?? palette.lip}`,
+  `--paper-margin:${marginColor ?? palette.margin}`,
+  `z-index:${layer}`,
+  // The hero fills the viewport below the ruler header; other sheets use the
+  // shared --nb-sheet-min-h minimum from the theme.
+  fullHeight ? "--sheet-min-h:calc(100vh - var(--nb-header-h))" : "",
+]
+  .filter(Boolean)
+  .join(";");
+
+const patternClass = pattern === "none" ? "" : `nb-paper--${pattern}`;
+---
+
+<section
+  id={id}
+  class={`nb-sheet ${torn ? "nb-sheet--torn" : ""} ${className}`}
+  style={styleVars}
+>
+  <!-- The paper: color + pattern + margin rule, masked ragged when torn. -->
+  <div class="nb-sheet__bg" aria-hidden="true">
+    <div class={`nb-sheet__bg-fill nb-paper ${patternClass}`}>
+      {margin && <span class="nb-margin-rule" />}
+    </div>
+  </div>
+  <div class={`nb-sheet__body ${fullHeight ? "flex items-center" : ""}`}>
+    <div class="nb-content w-full">
+      <slot />
+    </div>
+  </div>
+</section>
