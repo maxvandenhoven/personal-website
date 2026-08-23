@@ -43,11 +43,11 @@ export const Default: Story = {
   },
 };
 
-export const Tilted: Story = {
+export const TiltedTape: Story = {
   args: {
     ...Default.args,
     title: "The graph-paper method",
-    tilt: "1.6deg",
+    tapeTilt: "2deg",
   },
 };
 

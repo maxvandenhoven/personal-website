@@ -6,14 +6,15 @@ import { Pill } from "../ui/Pill";
  *
  * Banner, title, description, then (pinned to the bottom of the card) a
  * reading-time + date meta line with the tag pills as the very last row.
- * Lifts and straightens on hover. Colors and fonts come from the central
- * theme (--nb-card-bg, --nb-tape, --nb-pill-*, the --nb-font-* stacks) and
- * can be overridden per-instance with props.
+ * The card itself sits straight; only the tape is rotated (per-card via
+ * `tapeTilt`). Lifts on hover. Colors and fonts come from the central theme
+ * (--nb-card-bg, --nb-tape, --nb-pill-*, the --nb-font-* stacks) and can be
+ * overridden per-instance with props.
  *
  * Usage:
  *   <TapedBlogCard title=... description=... readingTime="6 min read"
  *                  publishDate="2026-03-14" tags={["writing"]} href="/blog/x"
- *                  bannerSrc={src} tilt="1deg" />
+ *                  bannerSrc={src} tapeTilt="2deg" />
  */
 export interface TapedBlogCardProps {
   title: string;
@@ -23,8 +24,8 @@ export interface TapedBlogCardProps {
   tags: string[];
   href: string;
   bannerSrc?: string;
-  /** Resting rotation of the card (e.g. "-1deg"). */
-  tilt?: string;
+  /** Rotation of the tape strip only (e.g. "2deg", default -3deg). */
+  tapeTilt?: string;
   /** Card background override (default --nb-card-bg). */
   bg?: string;
 }
@@ -37,7 +38,7 @@ export function TapedBlogCard({
   tags,
   href,
   bannerSrc,
-  tilt,
+  tapeTilt,
   bg,
 }: TapedBlogCardProps) {
   const formattedDate = new Date(publishDate + "T00:00:00").toLocaleDateString(
@@ -46,7 +47,7 @@ export function TapedBlogCard({
   );
 
   const style: CSSProperties = {
-    ...(tilt ? { "--card-tilt": tilt } : {}),
+    ...(tapeTilt ? { "--tape-tilt": tapeTilt } : {}),
     ...(bg ? { "--nb-card-bg": bg } : {}),
   } as CSSProperties;
 

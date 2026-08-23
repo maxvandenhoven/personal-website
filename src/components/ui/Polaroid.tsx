@@ -12,7 +12,7 @@ import type { CSSProperties } from "react";
  * per-instance with props:
  *   pinColor       the push-pin color        (default --nb-pin)
  *   signature      handwritten text below    (rendered in --nb-font-signature)
- *   tilt           rotation, e.g. "-3deg"    (default -3deg)
+ *   tilt           rotation, e.g. "-3deg"    (default 3deg, slightly clockwise)
  *
  * The image is passed in as a plain `src` string so the component stays
  * decoupled from Astro's asset pipeline (import the image in the page and
@@ -25,7 +25,7 @@ export interface PolaroidProps {
   signature?: string;
   /** Pin color override (default: --nb-pin). */
   pinColor?: string;
-  /** Rotation of the whole polaroid (default: -3deg). */
+  /** Rotation of the whole polaroid (default: 3deg). */
   tilt?: string;
   /** Rendered photo size in px (square). */
   size?: number;

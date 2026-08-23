@@ -26,15 +26,15 @@ const featuredBlogs = config.featured_blogs
   )
   .filter(Boolean);
 
-// Sticky notes and blog cards are cycled through small palettes / tilts so the
-// stack looks hand-placed rather than uniform.
+// Sticky notes cycle through a small color palette, and the tape on the blog
+// cards cycles through a few rotations, so the stack looks hand-placed
+// rather than uniform. The notes and cards themselves sit straight.
 const stickyColors = [
   "var(--nb-sticky)",
   "var(--nb-sticky-2)",
   "var(--nb-sticky-3)",
 ];
-const stickyTilts = ["-1.8deg", "1.4deg", "-0.8deg"];
-const cardTilts = ["-1.2deg", "1deg", "-0.6deg"];
+const tapeTilts = ["-3deg", "2deg", "-1.5deg"];
 
 // Split the tagline around the highlighted word so we can wrap just that word
 // in a highlighter marker. Falls back gracefully if the word isn't found.
@@ -52,7 +52,7 @@ const taglineAfter = idx >= 0 ? tagline.slice(idx + highlight.length) : "";
        pinned polaroid headshot. -->
   <PaperSheet variant="hero" pattern="ruled" margin torn fullHeight layer={4}>
     <div
-      class="grid items-center gap-12 select-none md:grid-cols-[1.2fr_auto] md:gap-16"
+      class="grid items-start gap-12 select-none md:grid-cols-[1.2fr_auto] md:gap-16"
     >
       <div>
         <h1 class="nb-h1 mb-[var(--nb-rule)] max-w-[16ch]">
@@ -101,14 +101,15 @@ const taglineAfter = idx >= 0 ? tagline.slice(idx + highlight.length) : "";
       title={config.skills_title}
       subtitle={config.skills_description}
     />
-    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    <!-- The gap is one rule, and the notes are sized in whole rules, so each
+         note falls exactly inside the squares of the grid paper. -->
+    <div class="flex flex-wrap gap-[var(--nb-rule)]">
       {
         config.skills.map((group, i) => (
           <StickyNote
             title={group.skill_title}
             items={group.entries}
             bg={stickyColors[i % stickyColors.length]}
-            tilt={stickyTilts[i % stickyTilts.length]}
           />
         ))
       }
@@ -147,7 +148,7 @@ const taglineAfter = idx >= 0 ? tagline.slice(idx + highlight.length) : "";
                 bannerSrc={
                   bannerKey ? bannerImages[bannerKey].default.src : undefined
                 }
-                tilt={cardTilts[i % cardTilts.length]}
+                tapeTilt={tapeTilts[i % tapeTilts.length]}
               />
             );
           })}

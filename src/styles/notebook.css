@@ -167,7 +167,7 @@
   line-height: calc(var(--nb-rule) * 2);
   letter-spacing: -0.02em;
   color: var(--nb-ink);
-  transform: translateY(0.06em); /* baseline nudge onto the rule */
+  transform: translateY(0.1em); /* baseline nudge onto the rule */
 }
 /* Italic emphasis inside a heading (the "highlighted" word). */
 .nb-h1 em,
@@ -180,10 +180,12 @@
   font-family: var(--nb-font-heading);
   font-weight: 600;
   font-size: clamp(2rem, 4vw, 3rem);
-  line-height: calc(var(--nb-rule) * 1.5);
+  /* two rules per line, so a title always spans a whole number of rules and
+     its baseline can rest just above a line (see the translateY nudge) */
+  line-height: calc(var(--nb-rule) * 2);
   letter-spacing: -0.015em;
   color: var(--nb-ink);
-  transform: translateY(0.1em); /* baseline nudge onto the rule */
+  transform: translateY(0.34em); /* baseline nudge onto the rule */
 }
 
 .nb-lead {
@@ -191,6 +193,7 @@
   font-size: 1.2rem;
   line-height: var(--nb-rule); /* tracks the rules line for line */
   color: var(--nb-ink);
+  transform: translateY(0.6em); /* baseline nudge onto the rule */
 }
 
 .nb-body {
@@ -277,23 +280,43 @@
   );
 }
 
-/* Square grid (skills). */
+/* Square grid (skills): the HORIZONTAL lines live here (anchored to the
+   sheet top, like the ruled paper); the VERTICAL lines are a separate
+   .nb-grid-vlines layer anchored to the content column (below). */
 .nb-paper--grid {
-  background-image:
-    repeating-linear-gradient(
-      to right,
-      transparent 0,
-      transparent calc(var(--nb-rule) - 1px),
-      var(--paper-line) calc(var(--nb-rule) - 1px),
-      var(--paper-line) var(--nb-rule)
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent calc(var(--nb-rule) - 1px),
-      var(--paper-line) calc(var(--nb-rule) - 1px),
-      var(--paper-line) var(--nb-rule)
-    );
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--nb-rule) - 1px),
+    var(--paper-line) calc(var(--nb-rule) - 1px),
+    var(--paper-line) var(--nb-rule)
+  );
+}
+
+/* Vertical grid lines, anchored to the CONTENT COLUMN's left edge (one line
+   sits exactly on it) instead of the viewport edge. That way anything in the
+   content column sized in whole rules — like the sticky notes — falls exactly
+   inside the squares at every viewport width. The layer is widened by ±100
+   rules (the transform doesn't affect layout) so it always covers the full
+   sheet; the parent .nb-sheet__bg clips the excess. Lives inside the sheet's
+   background layer, so it inherits the ragged tear mask and runs into the rip
+   like everything else. */
+.nb-grid-vlines {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(
+    max(0px, (100% - var(--nb-content-max)) / 2) + var(--nb-content-pad-x)
+  );
+  width: calc(100% + var(--nb-rule) * 200);
+  transform: translateX(calc(var(--nb-rule) * -100));
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0,
+    transparent calc(var(--nb-rule) - 1px),
+    var(--paper-line) calc(var(--nb-rule) - 1px),
+    var(--paper-line) var(--nb-rule)
+  );
 }
 
 /* Isometric grid (projects) — three line families at 30° / 150° / vertical. */
@@ -368,6 +391,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
+  overflow: hidden; /* clips the widened .nb-grid-vlines layer */
 }
 .nb-sheet--torn > .nb-sheet__bg {
   bottom: calc(-1 * var(--nb-torn-overlap));
@@ -522,7 +546,7 @@
    ========================================================================== */
 
 .nb-polaroid {
-  --tilt: -3deg;
+  --tilt: 3deg; /* slight clockwise tilt */
   position: relative;
   display: inline-block;
   background: #fff;
@@ -585,7 +609,10 @@
   line-height: var(--nb-rule);
   color: var(--nb-ink-soft);
   max-width: 58ch;
-  margin-top: calc(var(--nb-rule) * 0.5);
+  /* no extra margin: the title's roomy 2-rule line-height already provides
+     the visual gap, and this keeps the header a whole number of rules tall */
+  margin-top: 0;
+  transform: translateY(0.6em); /* baseline nudge onto the rule */
 }
 /* Light tone for dark sheets. */
 .nb-tone-light .nb-h2 {
@@ -608,8 +635,15 @@
 
 .nb-sticky-note {
   --sticky-bg: var(--nb-sticky);
-  --sticky-tilt: -1.5deg;
   position: relative;
+  /* Sized in whole rules so the note sits exactly inside the squares of the
+     grid paper (its left edge starts on a vertical line — see
+     .nb-grid-vlines — and the section's vertical rhythm puts its top edge on
+     a horizontal one). Long content can still grow the note beyond the
+     minimum. */
+  width: calc(var(--nb-rule) * 8);
+  max-width: 100%;
+  min-height: calc(var(--nb-rule) * 8);
   background-color: var(--sticky-bg);
   background-image:
     var(--nb-paper-grain),
@@ -631,7 +665,6 @@
     linear-gradient(105deg, rgba(0, 0, 0, 0.035), rgba(0, 0, 0, 0) 35%);
   padding: 1.6rem 1.5rem 2rem;
   border-radius: 1px 1px 4px 2px;
-  transform: rotate(var(--sticky-tilt));
   /* tight contact shadow only — the lift comes from the corner wings below */
   box-shadow: 0 1px 1px rgba(46, 42, 34, 0.1);
   transition:
@@ -658,7 +691,7 @@
   transform: rotate(2.5deg);
 }
 .nb-sticky-note:hover {
-  transform: rotate(0deg) translateY(-3px);
+  transform: translateY(-3px);
   box-shadow: var(--nb-shadow-small);
 }
 .nb-sticky-note__title {
@@ -694,7 +727,6 @@
    ========================================================================== */
 
 .nb-taped-card {
-  --card-tilt: -1deg;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -702,7 +734,6 @@
   padding: 12px 12px 14px;
   border-radius: 2px;
   box-shadow: var(--nb-shadow-small);
-  transform: rotate(var(--card-tilt));
   transition:
     transform 220ms cubic-bezier(0.2, 0.7, 0.3, 1),
     box-shadow 220ms ease;
@@ -710,7 +741,7 @@
 }
 .nb-taped-card:hover,
 .nb-taped-card:focus-visible {
-  transform: rotate(0deg) translateY(-4px);
+  transform: translateY(-4px);
   box-shadow: var(--nb-shadow-big);
   outline: none;
   z-index: 5;
@@ -725,7 +756,8 @@
   left: 50%;
   width: 104px;
   height: 27px;
-  transform: translateX(-50%) rotate(-3deg);
+  /* --tape-tilt is set on the card root by the tapeTilt prop */
+  transform: translateX(-50%) rotate(var(--tape-tilt, -3deg));
   filter: drop-shadow(0 1px 1px rgba(46, 42, 34, 0.18));
   pointer-events: none;
 }

@@ -5,12 +5,13 @@ import type { CSSProperties } from "react";
  *
  * A darker matte adhesive band presses the top flat against the page; the
  * bottom curls toward the viewer (catch-light gradient + skewed shadow wings
- * under the corners) and paper-fiber grain covers the whole note. Straightens
- * on hover. All the rendering lives in src/styles/notebook.css.
+ * under the corners) and paper-fiber grain covers the whole note. Sits
+ * straight (no rotation) and is sized in whole rules so it falls inside the
+ * squares of the grid paper. All the rendering lives in
+ * src/styles/notebook.css.
  *
  * Configurable via props (all optional except title/items):
  *   bg         background color        (default --nb-sticky)
- *   tilt       resting rotation        (e.g. "-1.5deg")
  *   titleFont  heading font override   (default --nb-font-heading)
  *   listFont   skill-list font override(default --nb-font-mono)
  *
@@ -21,7 +22,6 @@ export interface StickyNoteProps {
   title: string;
   items: string[];
   bg?: string;
-  tilt?: string;
   titleFont?: string;
   listFont?: string;
   className?: string;
@@ -31,14 +31,12 @@ export function StickyNote({
   title,
   items,
   bg,
-  tilt,
   titleFont,
   listFont,
   className = "",
 }: StickyNoteProps) {
   const style: CSSProperties = {
     ...(bg ? { "--sticky-bg": bg } : {}),
-    ...(tilt ? { "--sticky-tilt": tilt } : {}),
   } as CSSProperties;
 
   return (

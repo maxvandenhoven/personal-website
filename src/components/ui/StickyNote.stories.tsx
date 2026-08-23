@@ -35,7 +35,6 @@ export const Mint: Story = {
     title: "Infrastructure",
     items: ["Docker", "PostgreSQL", "Linux"],
     bg: "var(--nb-sticky-2)",
-    tilt: "1.4deg",
   },
 };
 
@@ -44,7 +43,6 @@ export const Peach: Story = {
     title: "Frontend",
     items: ["React", "Astro", "Tailwind CSS"],
     bg: "var(--nb-sticky-3)",
-    tilt: "-0.8deg",
   },
 };
 

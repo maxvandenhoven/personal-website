@@ -115,13 +115,19 @@ const patternClass = pattern === "none" ? "" : `nb-paper--${pattern}`;
   class={`nb-sheet ${torn ? "nb-sheet--torn" : ""} ${className}`}
   style={styleVars}
 >
-  <!-- The paper: color + pattern + margin rule, masked ragged when torn. -->
+  <!-- The paper: color + pattern + margin rule, masked ragged when torn.
+       Grid sheets add a content-anchored vertical-lines layer so the squares
+       line up with the content column (see .nb-grid-vlines). -->
   <div class="nb-sheet__bg" aria-hidden="true">
     <div class={`nb-sheet__bg-fill nb-paper ${patternClass}`}>
+      {pattern === "grid" && <span class="nb-grid-vlines" />}
       {margin && <span class="nb-margin-rule" />}
     </div>
   </div>
-  <div class={`nb-sheet__body ${fullHeight ? "flex items-center" : ""}`}>
+  <!-- No vertical centering anywhere: content always starts a whole number of
+       rules below the sheet top, so text stays phase-locked to the paper's
+       lines at every viewport size. -->
+  <div class="nb-sheet__body">
     <div class="nb-content w-full">
       <slot />
     </div>
