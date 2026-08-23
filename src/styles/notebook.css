@@ -470,7 +470,7 @@
    sits on the content margin and is widened by ±100 rules, so a tick lands
    on the lattice at every viewport width; the clip wrapper hides the
    excess without clipping the mobile dropdown).
-   - minor ticks: short, every third of a rule
+   - minor ticks: short, five subdivisions per major (like a real ruler)
    - major ticks: taller, every rule — so they line up with the grid paper's
      vertical lines and with the hero/blog margin rule */
 .nb-ruler__ticks-clip {
@@ -492,7 +492,7 @@
     linear-gradient(to right, var(--nb-ruler-tick) 0 1px, transparent 1px),
     linear-gradient(to right, var(--nb-ruler-tick) 0 1px, transparent 1px);
   background-size:
-    calc(var(--nb-rule) / 3) 10px,
+    calc(var(--nb-rule) / 5) 10px,
     var(--nb-rule) 20px;
   background-repeat: repeat-x, repeat-x;
   background-position:
