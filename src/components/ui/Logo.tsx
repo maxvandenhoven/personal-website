@@ -3,12 +3,13 @@ interface LogoProps {
 }
 
 /**
- * Where the dark disc (centre 23,13.6) overlaps the orange one (centre 16,16),
- * both r = 10.5: a lens of two arcs. Drawn directly rather than with a clip
- * path, so the mark needs no document-unique ids.
+ * Where the dark disc (centre 23,13.6, r 10.5) overlaps the orange one
+ * (centre 16,16, r 10.5): a lens of two arcs. The outer arc runs 0.3 units
+ * outside the sun so its anti-aliased edge leaves no orange fringe. Drawn
+ * directly rather than with a clip path, so the mark needs no unique ids.
  */
 const SHADOW =
-  "M16.31 5.5A10.5 10.5 0 0 1 22.69 24.1A10.5 10.5 0 0 1 16.31 5.5Z";
+  "M16.67 5.22A10.8 10.8 0 0 1 23.14 24.1A10.5 10.5 0 0 1 16.67 5.22Z";
 
 /**
  * The brand mark: an orange disc partly eclipsed by dark ink, after the
