@@ -148,7 +148,7 @@ There are no hydrated React islands. Components render to static HTML, and one b
 - `motion-toggle.ts`: play/pause button in the header
 - `nav-menu.ts`: the menu button that replaces the inline navigation below 900px
 - `lib/riso/engine.ts`: animates every `canvas[data-figure]`, loading each artwork on demand
-- `lib/riso/background.ts`: the page's dot grid that warms up near the pointer
+- `lib/riso/background.ts`: the page's dot grid, which warms up near the mouse (touch and pen input leave it grey)
 
 Each controller returns a cleanup function; Storybook's preview uses them to make stories interactive.
 

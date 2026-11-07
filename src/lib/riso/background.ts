@@ -2,9 +2,12 @@ import { readPalette } from "./palette";
 import { isPaused, subscribePaused } from "./motion";
 
 /**
- * Page background: a faint dot grid that warms up near the pointer, drawn on a
- * fixed full-viewport canvas. Only redraws when the pointer, scroll position or
+ * Page background: a faint dot grid that warms up near the mouse, drawn on a
+ * fixed full-viewport canvas. Only redraws when the mouse, scroll position or
  * viewport changes.
+ *
+ * Touch and pen input is ignored: on phones the glow would follow every scroll
+ * gesture, so they only get the plain grey dots.
  */
 
 const SPACING = 28;
@@ -28,6 +31,7 @@ export function startBackground(canvas: HTMLCanvasElement): void {
   window.addEventListener(
     "pointermove",
     (event) => {
+      if (event.pointerType !== "mouse") return;
       target.x = event.clientX;
       target.y = event.clientY;
       // Jump straight to the first known position instead of sliding in from offscreen.
