@@ -1,152 +1,110 @@
 ---
 import "../styles/global.css";
+import { Footer, Header } from "../components/layout";
+import { getSiteConfig } from "../lib/content";
+import { cx } from "../lib/cx";
+import type { NavPage } from "../lib/navigation";
 
 interface Props {
-  title: string;
+  /** Page name, shown before the site name in the tab title; omit on the homepage. */
+  title?: string;
   description: string;
+  /** Highlighted in the navigation. */
+  currentPage?: NavPage;
+  /** Absolute or site-relative image for link previews. */
   ogImage?: string;
+  /** Overrides the canonical URL, e.g. for articles first published elsewhere. */
+  canonical?: string;
+  /** Spacing between the top-level blocks of <main>. */
+  spacing?: "sections" | "compact";
+  /** Show the interactive dot-grid background; off for long-form reading. */
+  background?: boolean;
 }
 
-const { title, description, ogImage } = Astro.props;
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const {
+  title,
+  description,
+  currentPage,
+  ogImage,
+  canonical,
+  spacing = "compact",
+  background = true,
+} = Astro.props;
+const site = await getSiteConfig();
+const pageTitle = title ? `${title} · ${site.name}` : site.name;
+const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.site);
+const ogImageUrl = ogImage ? new URL(ogImage, Astro.site) : undefined;
 ---
 
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={site.name}
+      href="/rss.xml"
+    />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:title" content={title} />
+    <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
-    {
-      ogImage && (
-        <meta property="og:image" content={new URL(ogImage, Astro.site)} />
-      )
-    }
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta
+      name="twitter:card"
+      content={ogImageUrl ? "summary_large_image" : "summary"}
+    />
+    <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
-    {
-      ogImage && (
-        <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
-      )
-    }
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@700&family=Space+Mono&display=swap"
       rel="stylesheet"
-    />
-
-    <link
-      rel="alternate"
-      type="application/rss+xml"
-      title="RSS Feed"
-      href="/rss.xml"
+      href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Martian+Mono:wght@400;500&display=swap"
     />
   </head>
-  <body class="bg-surface-100 text-text-primary min-h-screen antialiased">
-    <header class="border-b-2 border-[#000] bg-white">
-      <nav
-        class="relative mx-auto flex h-14 max-w-[1100px] items-center justify-between px-8"
+  <body>
+    {
+      background && (
+        <canvas
+          data-riso-background
+          aria-hidden="true"
+          class="pointer-events-none fixed inset-0 z-0 size-full"
+        />
+      )
+    }
+    <div id="top" class="max-w-site relative z-1 mx-auto">
+      <Header name={site.name} currentPage={currentPage} />
+      <main
+        class={cx(
+          "flex flex-col pt-8 md:pt-12",
+          spacing === "sections" ? "gap-section" : "gap-12",
+        )}
       >
-        <a
-          href="/"
-          class="font-heading absolute left-1/2 -translate-x-1/2 text-[17px] font-bold tracking-[-0.02em] md:static md:left-auto md:translate-x-0"
-        >
-          Max van den Hoven
-        </a>
-        <div class="hidden items-center gap-8 md:flex">
-          <a
-            href="/"
-            class="border-b-2 border-transparent text-sm font-bold tracking-[0.01em] transition-[border-color] duration-75 hover:border-[#000]"
-          >
-            Home
-          </a>
-          <a
-            href="/blog"
-            class="border-b-2 border-transparent text-sm font-bold tracking-[0.01em] transition-[border-color] duration-75 hover:border-[#000]"
-          >
-            Blog
-          </a>
-          <a
-            href="/projects"
-            class="border-b-2 border-transparent text-sm font-bold tracking-[0.01em] transition-[border-color] duration-75 hover:border-[#000]"
-          >
-            Projects
-          </a>
-        </div>
-        <button
-          type="button"
-          id="hamburger-btn"
-          class="btn-lift ml-auto grid h-10 w-10 place-items-center rounded-md border-2 border-[#000] bg-white md:hidden"
-          aria-label="Open menu"
-          aria-expanded="false"
-        >
-          <svg
-            class="h-5 w-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-          >
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </button>
-      </nav>
-      <div id="mobile-menu" class="hidden border-t-2 border-[#000] md:hidden">
-        <div class="flex flex-col">
-          <a
-            href="/"
-            class="border-surface-300 hover:bg-surface-100 border-b px-8 py-3 text-sm font-bold tracking-[0.01em]"
-          >
-            Home
-          </a>
-          <a
-            href="/blog"
-            class="border-surface-300 hover:bg-surface-100 border-b px-8 py-3 text-sm font-bold tracking-[0.01em]"
-          >
-            Blog
-          </a>
-          <a
-            href="/projects"
-            class="hover:bg-surface-100 px-8 py-3 text-sm font-bold tracking-[0.01em]"
-          >
-            Projects
-          </a>
-        </div>
-      </div>
-    </header>
+        <slot />
+      </main>
+    </div>
+    <Footer
+      name={site.name}
+      email={site.email}
+      socials={site.socials}
+      contact={site.contact}
+    />
     <script>
-      const hamburgerBtn = document.getElementById("hamburger-btn");
-      const mobileMenu = document.getElementById("mobile-menu");
-      hamburgerBtn?.addEventListener("click", () => {
-        const isOpen = mobileMenu?.classList.toggle("hidden") === false;
-        hamburgerBtn.setAttribute("aria-expanded", String(isOpen));
-      });
+      import "../scripts/main";
     </script>
-    <main>
-      <slot />
-    </main>
-    <footer>
-      <div
-        class="text-text-secondary mx-auto max-w-[1100px] px-8 pt-2 pb-10 text-center text-[13px]"
-      >
-        &copy; {new Date().getFullYear()} Max van den Hoven
-      </div>
-    </footer>
   </body>
 </html>

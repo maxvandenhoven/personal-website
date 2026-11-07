@@ -1,40 +1,46 @@
+# Homepage sections, in the order they appear.
 - id: config
-  name: Max van den Hoven
-  job_title: Software Engineer
-  hero_tagline: Building things that work
-  hero_description: I'm a software engineer who enjoys building robust systems and exploring new technologies. This is my corner of the internet where I share what I'm working on and what I've learned along the way.
-  github_link: https://github.com/maxvandenhoven
-  linkedin_link: https://www.linkedin.com/in/maxvdhoven
-  twitter_link: https://twitter.com/maxvandenhoven
-  email_link: mailto:max.hoven@gmail.com
-  skills_description: A mix of tools and technologies I work with regularly.
-  skills:
-    - skill_title: Languages
-      entries:
-        - Python
-        - TypeScript
-        - Rust
-        - Go
-    - skill_title: Infrastructure
-      entries:
-        - Docker
-        - PostgreSQL
-        - Linux
-  marquee_skills:
-    - Python
-    - TypeScript
-    - Rust
-    - Go
-    - Docker
-    - PostgreSQL
-    - Linux
-    - React
-    - Astro
-    - Tailwind CSS
-    - FastAPI
-    - Git
+  hero:
+    title: Building ML and AI systems
+    description: I'm an AI/ML Engineer at Xebia who enjoys solving practical problems with well-engineered systems. My work spans machine learning, AI, and infrastructure, with an emphasis on finding solutions that fit the problem and the constraints they need to work within.
+    portrait_alt: Portrait of Max van den Hoven
+  about:
+    title: A bit about me
+    lede: I enjoy solving problems where I can see the impact of what I build.
+    # Paragraphs support inline links: [text](https://...)
+    paragraphs:
+      - I care about engineering things well, but try to keep that ambition grounded in what the work needs to achieve. A straightforward solution can be the right one if it solves the problem within the available time, budget, and practical constraints, even without the newest technology or a complex architecture.
+      - Side projects give me a fun setting to explore technology and develop skills I can bring back to work. I enjoy building in the open and sharing what I learn through writing and talks, as well as helping people learn from each other as a co-organizer of the [Eindhoven Data Community](https://www.meetup.com/nl-nl/eindhoven-data-community/).
+      - I also enjoy running and completed my first marathon in 2026 (and yes, it was hard).
+    education:
+      title: How I got here
+      steps:
+        - school: Tilburg University
+          degree: BSc. Econometrics & Operations Research
+          description: I was drawn to Operations Research, where problems often involved tangible physical systems I could reason about.
+        - school: Tilburg University
+          degree: MSc. Business Analytics & Operations Research
+          description: My first master's thesis led me deeper into ML and AI, and I wanted to explore the technical side further.
+        - school: Eindhoven University of Technology
+          degree: MSc. Data Science & AI
+          description: I chose a second master's to develop that technical depth and build on what I had learned.
+    # Folders in content/skills, in display order
+    skills:
+      - languages
+      - machine-learning
+      - ai-agents
+      - infrastructure
   featured_projects:
-    - test-project
+    title: Side projects
+    # Folders in content/projects, in display order
+    projects:
+      - skill-evals
+      - hive
+      - imposter
+      - personal-website
   featured_blogs:
-    - the-risks-of-unprotected-agents-and-how-to-mitigate-them
-    - hello-world
+    title: Writing
+    # Folders in content/blogs, in display order
+    blogs:
+      - the-risks-of-unprotected-agents-and-how-to-mitigate-them
+      - 7-practical-tips-for-demand-forecasting-experimentation-and-modeling

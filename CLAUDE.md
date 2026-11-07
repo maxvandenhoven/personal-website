@@ -51,48 +51,67 @@ Additional npm scripts (used by Makefile and lint-staged):
 ### Styling
 
 - Never use raw hex/rgb colors — always use Tailwind theme tokens defined in `src/styles/global.css`
-- Design tokens (colors, spacing, fonts, radii, shadows) live in the `@theme` block in `src/styles/global.css` (Tailwind v4 CSS-based config)
-- Light mode only for now; dark mode placeholder values are commented out in `global.css`
-- System font stacks as defaults until a CDN font is chosen
+- Design tokens (colors, type scale, spacing, radii, shadows, breakpoints) live in the `@theme` block in `src/styles/global.css` (Tailwind v4 CSS-based config). Use the named scales (`text-md`, `leading-copy`, `tracking-eyebrow`, `gap-gutter`, `p-inset`, ...) rather than arbitrary values
+- Token names must not collide across namespaces: Tailwind resolves `max-w-*` against `--spacing-*` before `--container-*`
+- The riso ink colors are read at runtime by the canvas renderer, so they live in a `@theme static` block
+- Light mode only for now; every color goes through a token so dark mode only needs new values
+- Fonts: Schibsted Grotesk (`font-sans`) and Martian Mono (`font-mono`) from Google Fonts
 
 ### Components
 
 - Components live in `src/components/` organized by function:
-  - `ui/` — primitives (Button, Card, Modal, Tag, SearchBar)
-  - `layout/` — structural (Header, Footer, Container, Section)
-  - `blog/` — blog-specific (BlogCard, BlogList, TagFilter)
-  - `projects/` — project-specific (HexGrid, HexButton, ProjectModal)
+  - `ui/` — primitives (Card, CardGrid, Chip, Pill, Tag, RisoFigure, FilterableList, ...)
+  - `layout/` — structural (Header, NavMenu, Footer, Section, SectionHeading, PageHeading)
+  - `home/` — homepage sections (Hero, AboutStory, StudyPath, SkillGrid)
+  - `blog/` and `projects/` — BlogCard and ProjectCard
+  - `riso/` — MotionToggle
+- Components are React `.tsx` files rendered to static HTML by Astro (no `client:*` hydration). Interactivity lives in `src/scripts/` controllers that bind to `data-*` attributes, loaded once by `BaseLayout`
+- Pages get their data through `src/lib/content.ts`, not by querying collections directly
 - One component per `.tsx` file, PascalCase naming
 - Each subfolder has an `index.ts` barrel export
 - Custom component library — no external UI libraries
 
 ### Storybook
 
-- Every React component gets a co-located `.stories.ts` file (e.g. `Tag.stories.ts` next to `Tag.tsx`)
+- Every React component gets a co-located `.stories.tsx` file (e.g. `Tag.stories.tsx` next to `Tag.tsx`); shared sample data lives in `src/components/fixtures.ts`
 - Add `tags: ["autodocs"]` in the story meta to auto-generate a docs page from the TypeScript interface
-- Storybook imports `global.css` so components render with the real Tailwind theme
+- Storybook imports `global.css` (with the Tailwind Vite plugin) and runs the client controllers, so figures animate and controls work in stories
+- Stories must not import modules that use `astro:*` virtual modules (e.g. `src/lib/content.ts` at runtime); type-only imports are fine
 - Astro components (`.astro`) are server-only and cannot be used in Storybook — only React `.tsx` components
 
 ### Content Authoring
 
-Blog posts and projects are managed as folders under `content/`.
+Site and homepage text live in YAML. Skills, blog posts and projects are self-contained folders under `content/`, each with an `index.md` and an `artwork.ts`; the listing pages show all of them, and `content/homepage.yaml` picks which ones the homepage shows, by folder name and in display order. Field reference: see ARCHITECTURE.md.
 
 **Adding a blog post:**
 
-1. Create `content/blogs/[slug]/`
-2. Add `index.md` with required frontmatter (see ARCHITECTURE.md for fields)
-3. Add `banner.png` for the listing card and post header
-4. Optionally add `images/` folder for inline images (reference with relative paths: `![alt](./images/photo.png)`)
-5. Set `status: published` when ready (drafts are excluded from the build)
+1. Create `content/blogs/[slug]/index.md` with the required frontmatter, including `artwork_alt`
+2. Add `content/blogs/[slug]/artwork.ts` (see "Artworks" below)
+3. Choose one:
+   - **Hosted here**: write the article as the Markdown body; it gets a page at `/blog/[slug]`. Optionally add `banner.jpg` (the `og:image`) and an `images/` folder for inline images (`![alt](./images/photo.png)`)
+   - **Published elsewhere**: set `external: { url, name }` and leave the body empty; the card reads "Read on <name>"
+4. New posts can start with `draft: true`: drafts show up in `make dev` but are left out of the build. Remove it (or set `false`) to publish
+
+`docs/content.md` documents every frontmatter field, `homepage.yaml`, `site.yaml`, `artwork.ts` and the Markdown the article template supports.
 
 **Adding a project:**
 
-1. Create `content/projects/[slug]/`
-2. Add `index.md` with required frontmatter (see ARCHITECTURE.md for fields)
-3. Add `logo.svg` for the hex grid button
-4. Set `status: published` when ready
+1. Create `content/projects/[slug]/index.md` with the required frontmatter, including `status` (e.g. "Open source") and `artwork_alt`
+2. Add `content/projects/[slug]/artwork.ts`
 
-**Homepage config:**
+**Adding a skill category:** create `content/skills/[slug]/index.md` (`title`, `items`) and a small square `artwork.ts` glyph.
 
-- Edit `content/homepage.yaml` to update homepage text, social links, skills, and featured items
+**Featuring on the homepage:** add the folder name to `about.skills`, `featured_projects.projects` or `featured_blogs.blogs` in `content/homepage.yaml`. The build fails on folders that don't exist or are drafts.
+
+**Site and homepage config:**
+
+- `content/site.yaml` — name, meta description, email, social links, contact block, and the projects/blog page intros
+- `content/homepage.yaml` — hero, about text (inline `[links](https://...)` supported), education, and the skills, projects and posts to show
 - See `.claude/PROMPTS.md` for implementation prompts to use in future sessions
+
+### Artworks
+
+- Each skill, blog post and project owns its animated illustration in `artwork.ts`, default-exporting `defineArtwork({ create, startTime? })` from `@/lib/riso/artwork`. `create` returns a motif: a function `(painter, width, height, time)` that draws one frame through the riso `Painter`. Shared helpers live in `src/lib/riso/` (`geometry`, `math`, `motifs/eclipse`)
+- To reuse another entry's artwork, re-export it: `export { default } from "../../projects/hive/artwork";`
+- Artworks are discovered by path and loaded lazily per page; every visible entry needs one, or the build fails. All of them appear in the `UI/RisoFigure` → "All artworks" story
+- Keep figures at card size or the article column width: they redraw every frame, so their cost grows with their area

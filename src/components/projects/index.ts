@@ -1,1 +1,1 @@
-export { HexGrid } from "./HexGrid";
+export { ProjectCard } from "./ProjectCard";

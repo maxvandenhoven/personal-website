@@ -1,0 +1,19 @@
+# Site-wide settings: shown in the header, footer and on every page.
+- id: config
+  name: Max van den Hoven
+  description: Max van den Hoven is an AI/ML Engineer at Xebia who enjoys applying engineering to ML and AI, building side projects, and sharing what he learns.
+  email: max.hoven@gmail.com
+  socials:
+    - platform: github
+      url: https://github.com/maxvandenhoven
+    - platform: linkedin
+      url: https://www.linkedin.com/in/maxvdhoven
+  contact:
+    title: Get in touch
+    description: If you're working on something similar or would like to discuss a project or a talk, I'd enjoy hearing from you.
+  projects_page:
+    description: Side projects by Max van den Hoven, exploring agent evaluation, game-playing AI, and web development through hands-on experiments.
+    lead: These projects explore game-playing AI, agent evaluation, and web development through hands-on experiments.
+  blog_page:
+    description: Max van den Hoven shares lessons from ML engineering work and experiments with AI agents in articles published on the Xebia blog.
+    lead: These articles examine practical ML and AI engineering decisions, drawing on forecasting work and experiments with autonomous agents.

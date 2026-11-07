@@ -1,58 +1,34 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { BlogList } from "../../components/blog";
+import { BlogCard } from "../../components/blog";
+import { PageHeading } from "../../components/layout";
+import { FilterableList } from "../../components/ui";
+import { getPosts, getSiteConfig } from "../../lib/content";
+import { collectTags } from "../../lib/tags";
+import { sectionIndex } from "../../lib/navigation";
 
-const bannerImages = import.meta.glob<{ default: ImageMetadata }>(
-  "/content/blogs/*/banner.{jpg,jpeg,png,webp}",
-  { eager: true },
-);
-
-const posts = (await getCollection("blogs"))
-  .filter((post) => post.data.status === "published")
-  .sort(
-    (a, b) =>
-      new Date(b.data.publish_date).getTime() -
-      new Date(a.data.publish_date).getTime(),
-  );
-
-const serializedPosts = posts.map((post) => {
-  const bannerKey = Object.keys(bannerImages).find((key) =>
-    key.startsWith(`/content/blogs/${post.id}/banner.`),
-  );
-  return {
-    title: post.data.title,
-    description: post.data.description,
-    publishDate: post.data.publish_date,
-    readingTime: post.data.reading_time,
-    tags: post.data.tags,
-    slug: post.id,
-    bannerSrc: bannerKey ? bannerImages[bannerKey].default.src : undefined,
-  };
-});
+const site = await getSiteConfig();
+const posts = await getPosts();
 ---
 
 <BaseLayout
-  title="Blog — Max van den Hoven"
-  description="Field notes on building software, exploring new technologies, and lessons learned along the way."
+  title="Blog"
+  description={site.blog_page.description}
+  currentPage="blog"
 >
-  <section class="py-16">
-    <div class="mx-auto max-w-[1100px] px-8">
-      <p
-        class="text-text-secondary mb-6 text-sm font-bold tracking-[0.12em] uppercase"
-      >
-        Blog
-      </p>
-      <h1
-        class="font-heading mb-6 text-[clamp(42px,6vw,64px)] leading-[1.0] font-bold tracking-[-0.04em]"
-      >
-        Read my writing
-      </h1>
-      <p class="text-text-secondary max-w-[500px] text-lg leading-relaxed">
-        Field notes on building software, exploring new technologies, and
-        lessons learned along the way.
-      </p>
-    </div>
-  </section>
-  <BlogList client:load posts={serializedPosts} />
+  <PageHeading
+    id="blog-h"
+    index={sectionIndex("blog")}
+    title="Blog"
+    lead={site.blog_page.lead}
+  />
+  <FilterableList
+    label="Browse articles"
+    tags={collectTags(posts)}
+    total={posts.length}
+    noun={{ singular: "article", plural: "articles" }}
+    emptyMessage="No articles match this topic."
+  >
+    {posts.map((post) => <BlogCard post={post} />)}
+  </FilterableList>
 </BaseLayout>

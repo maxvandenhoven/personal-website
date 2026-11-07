@@ -8,7 +8,7 @@ import eslintConfigPrettier from "eslint-config-prettier";
 
 export default [
   {
-    ignores: ["dist/", ".astro/", "node_modules/"],
+    ignores: ["dist/", ".astro/", "node_modules/", "storybook-static/"],
   },
   {
     files: ["**/*.{ts,tsx}"],
@@ -27,7 +27,7 @@ export default [
       ...reactHooks.configs.recommended.rules,
       "@typescript-eslint/no-unused-vars": [
         "error",
-        { argsIgnorePattern: "^_" },
+        { argsIgnorePattern: "^_", ignoreRestSiblings: true },
       ],
     },
   },
