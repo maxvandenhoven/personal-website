@@ -16,7 +16,7 @@ export const Default: Story = {};
 export const WithAction: Story = {
   args: {
     index: "02 / Projects",
-    title: "Projects and experiments",
+    title: "Side projects",
     action: { href: "#", label: "All projects" },
   },
 };
