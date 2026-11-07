@@ -35,6 +35,10 @@ Second-level headings start a new section. Lists hold their own:
 
 > Block quotes set off quoted material with a rule in the accent colour. They can span several lines and still read comfortably.
 
+A horizontal rule separates loosely related parts:
+
+---
+
 ## Code
 
 Code blocks are highlighted with the site's own colours:
@@ -90,8 +94,6 @@ A small image keeps its natural size:
 | Seasonal naive    | 12.4 |            0s |
 | Gradient boosting |  8.1 |           42s |
 | Ensemble          |  7.6 |         3m 5s |
-
----
 
 That's all. Footnotes are supported as well.[^1]
 

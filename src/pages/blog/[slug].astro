@@ -65,7 +65,8 @@ const banner = bannerKey ? banners[bannerKey].default.src : undefined;
     <div class="prose">
       <Content />
     </div>
-    <footer class="border-rule border-t pt-6">
+    <!-- No rule above: footnotes bring their own, and the button stands on its own -->
+    <footer>
       <Pill href="/blog">
         All articles <Arrow className="group-hover:translate-x-1" />
       </Pill>
