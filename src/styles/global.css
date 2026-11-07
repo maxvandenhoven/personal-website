@@ -292,10 +292,11 @@
     border-top: 1px solid var(--color-rule);
   }
 
-  /* Images keep their natural size up to the column width */
+  /* Images keep their natural size up to the column width; smaller ones are centred */
   .prose img {
     display: block;
     max-width: 100%;
+    margin-inline: auto;
     height: auto;
     border-radius: var(--radius-art);
     outline: 1px solid var(--color-rule);
@@ -345,20 +346,28 @@
     text-transform: uppercase;
   }
 
-  /* Tables scroll sideways on narrow screens */
+  /* Tables are as wide as their content and centred; too-wide ones scroll sideways */
   .prose table {
     display: block;
+    width: fit-content;
     max-width: 100%;
+    margin-inline: auto;
     overflow-x: auto;
     border-collapse: collapse;
     font-size: var(--text-md);
     font-variant-numeric: tabular-nums;
   }
   .prose :is(th, td) {
-    padding: 0.6em 1em 0.6em 0;
+    padding: 0.6em 0.75em;
     border-bottom: 1px solid var(--color-rule);
     text-align: left;
     vertical-align: top;
+  }
+  .prose :is(th, td):first-child {
+    padding-left: 0;
+  }
+  .prose :is(th, td):last-child {
+    padding-right: 0;
   }
   .prose :is(th, td)[align="right"] {
     text-align: right;
