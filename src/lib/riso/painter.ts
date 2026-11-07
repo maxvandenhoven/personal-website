@@ -44,15 +44,18 @@ export interface PrintSettings {
 }
 
 /**
- * 0.5 px layer offset, 20% ink grain, 10% paper tint, 32 lpi, knockout.
- * (The pitch used to be 3.25, but whole-pixel rounding made it 3 on standard
- * displays, which is the look the site was designed on.)
+ * 0.5 px layer offset, 20% ink grain, 10% paper tint, knockout.
+ *
+ * The halftone pitch is 2 CSS px (48 lpi). Cells are never smaller than
+ * MIN_SCREEN_CELL canvas pixels, so standard 1x displays get 3 px (32 lpi):
+ * there the dots blur into smooth tints, while high-density displays resolve
+ * each dot and need the finer screen to look the same.
  */
 export const PRINT_SETTINGS: Readonly<PrintSettings> = {
   misreg: 0.5,
   grain: 0.2,
   ground: 0.1,
-  pitch: 3,
+  pitch: 2,
   knock: "knock",
   regSeed: 3,
 };
@@ -100,6 +103,8 @@ const SCREEN_ANGLES = [15, 75, 45];
  * pattern is scaled down.
  */
 const SCREEN_SUPERSAMPLE = 2;
+/** Smallest halftone cell, in canvas pixels, that still draws a recognisable dot. */
+const MIN_SCREEN_CELL = 3;
 const TEXTURE_SEED = 911;
 const FIBRE_TILE = 420;
 const MAX_CACHED_PAPERS = 24;
@@ -233,14 +238,13 @@ export function createPainter(
 
   /**
    * Halftone screen for a drum at a given coverage, with a cell of exactly
-   * `pitch` CSS pixels at any pixel ratio. When that is a whole number of canvas
-   * pixels the tile is drawn 1:1 and stays crisp; otherwise it is drawn
-   * supersampled and scaled down, instead of rounding the cell (which made the
-   * screen up to 15% coarser on high-density displays).
+   * `pitch` CSS pixels (but at least MIN_SCREEN_CELL canvas pixels). When that
+   * is a whole number of canvas pixels the tile is drawn 1:1 and stays crisp;
+   * otherwise it is drawn supersampled and scaled down, rather than rounded.
    */
   function screen(drum: number, tint: number): CanvasPattern {
     const q = Math.round(tint * 20) / 20;
-    const period = Math.max(3, settings.pitch * dpr);
+    const period = Math.max(MIN_SCREEN_CELL, settings.pitch * dpr);
     const whole = Math.abs(period - Math.round(period)) < 0.01;
     const cell = whole
       ? Math.round(period)
