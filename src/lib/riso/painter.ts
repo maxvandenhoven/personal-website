@@ -46,8 +46,8 @@ export interface PrintSettings {
 /**
  * 0.5 px layer offset, 20% ink grain, 10% paper tint, knockout.
  *
- * The halftone pitch is 2 CSS px (48 lpi). Cells are never smaller than
- * MIN_SCREEN_CELL canvas pixels, so standard 1x displays get 3 px (32 lpi):
+ * The halftone pitch is about 2 CSS px (~48 lpi). Cells are never smaller
+ * than MIN_SCREEN_CELL canvas pixels, so standard 1x displays get ~3 px (~32 lpi):
  * there the dots blur into smooth tints, while high-density displays resolve
  * each dot and need the finer screen to look the same.
  */
@@ -95,14 +95,8 @@ export interface Painter {
 type Style = string | CanvasPattern;
 type Draw = (ctx: CanvasRenderingContext2D, style: Style) => void;
 
-/** Screen angles per drum, as on a real riso. */
+/** Screen angles per drum, as on a real riso (snapped to whole pixels, see screen()). */
 const SCREEN_ANGLES = [15, 75, 45];
-/**
- * Resolution of halftone tiles whose cell isn't a whole number of canvas pixels.
- * 2x keeps dots as even as on a 1x display; higher factors alias when the
- * pattern is scaled down.
- */
-const SCREEN_SUPERSAMPLE = 2;
 /** Smallest halftone cell, in canvas pixels, that still draws a recognisable dot. */
 const MIN_SCREEN_CELL = 3;
 const TEXTURE_SEED = 911;
@@ -256,20 +250,24 @@ export function createPainter(
   }
 
   /**
-   * Halftone screen for a drum at a given coverage, with a cell of exactly
-   * `pitch` CSS pixels (but at least MIN_SCREEN_CELL canvas pixels). When that
-   * is a whole number of canvas pixels the tile is drawn 1:1 and stays crisp;
-   * otherwise it is drawn supersampled and scaled down, rather than rounded.
+   * Halftone screen for a drum at a given coverage, with cells of about
+   * `pitch` CSS pixels (but at least MIN_SCREEN_CELL canvas pixels).
+   *
+   * The screen's grid is snapped so each step is a whole number of canvas
+   * pixels (rational-tangent screening): 15 degrees becomes (3, 1), 45 becomes
+   * (2, 2), and so on. Every dot then lands on the pixel grid the same way. At
+   * the exact angles, steps of fractional pixels drew each dot slightly
+   * differently, which showed up as a repeating moire of light patches.
    */
   function screen(drum: number, tint: number): CanvasPattern {
     const q = Math.round(tint * 20) / 20;
     const period = Math.max(MIN_SCREEN_CELL, settings.pitch * dpr);
-    const whole = Math.abs(period - Math.round(period)) < 0.01;
-    const cell = whole
-      ? Math.round(period)
-      : Math.round(period * SCREEN_SUPERSAMPLE);
-    const scale = period / cell;
-    const key = `${drum}|${q}|${cell}|${scale}`;
+    const angle = (SCREEN_ANGLES[drum] * Math.PI) / 180;
+    const stepX = Math.round(period * Math.cos(angle));
+    const stepY = Math.round(period * Math.sin(angle));
+    const step = Math.hypot(stepX, stepY);
+    const cell = Math.max(MIN_SCREEN_CELL, Math.round(step));
+    const key = `${q}|${stepX}|${stepY}`;
     const cached = patterns.get(key);
     if (cached) return cached;
 
@@ -301,7 +299,9 @@ export function createPainter(
     }
     const pattern = repeatPattern(layers[0].ctx, tile);
     pattern.setTransform(
-      new DOMMatrix().rotate(SCREEN_ANGLES[drum]).scale(scale),
+      new DOMMatrix()
+        .rotate((Math.atan2(stepY, stepX) * 180) / Math.PI)
+        .scale(step / cell),
     );
     patterns.set(key, pattern);
     return pattern;
