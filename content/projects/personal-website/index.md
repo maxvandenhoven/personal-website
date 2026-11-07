@@ -6,6 +6,5 @@ tags:
   - Web development
   - Generative art
 status: Open source
-order: 4
 artwork_alt: Markdown files are built block by block into a static page, and then only a few islands on the page come alive
 ---

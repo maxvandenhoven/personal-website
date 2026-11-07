@@ -1,5 +1,5 @@
 /** Sample content shared by the Storybook stories. */
-import type { PostSummary, ProjectSummary } from "../lib/content";
+import type { PostSummary, ProjectSummary, SkillSummary } from "../lib/content";
 import type { SocialLink } from "../lib/social";
 
 export const sampleSocials: SocialLink[] = [
@@ -62,3 +62,37 @@ export const samplePost: PostSummary = {
   dateLabel: "31 Jul 2026",
   readingTime: "17 min read",
 };
+
+export const sampleSkills: SkillSummary[] = [
+  {
+    slug: "languages",
+    title: "Languages",
+    artwork: "skills/languages",
+    items: ["Python", "SQL", "TypeScript"],
+  },
+  {
+    slug: "machine-learning",
+    title: "Machine learning",
+    artwork: "skills/machine-learning",
+    items: ["Forecasting", "Gradient boosting", "MLflow"],
+  },
+  {
+    slug: "ai-agents",
+    title: "AI agents",
+    artwork: "skills/ai-agents",
+    items: [
+      "Claude Code",
+      "Codex",
+      "Google ADK",
+      "Evaluation",
+      "Sandboxing",
+      "Search",
+    ],
+  },
+  {
+    slug: "infrastructure",
+    title: "Infrastructure",
+    artwork: "skills/infrastructure",
+    items: ["Docker", "Terraform"],
+  },
+];

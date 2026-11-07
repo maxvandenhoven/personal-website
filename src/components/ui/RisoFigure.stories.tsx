@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { GLYPHS } from "../../lib/riso/catalog";
 import { ARTWORK_IDS } from "../../lib/riso/registry";
 import { RisoFigure } from "./RisoFigure";
 
@@ -8,7 +7,7 @@ const meta = {
   component: RisoFigure,
   tags: ["autodocs"],
   argTypes: {
-    figure: { control: "select", options: [...ARTWORK_IDS, ...GLYPHS] },
+    figure: { control: "select", options: ARTWORK_IDS },
   },
   args: {
     figure: "projects/skill-evals",
@@ -24,7 +23,7 @@ export const Artwork: Story = {};
 
 export const Glyph: Story = {
   args: {
-    figure: "languages",
+    figure: "skills/languages",
     label: undefined,
     className: "rounded-chip size-10",
   },
@@ -53,12 +52,8 @@ export const AllArtworks: Story = {
 export const AllGlyphs: Story = {
   render: () => (
     <div className="flex gap-3">
-      {GLYPHS.map((glyph) => (
-        <RisoFigure
-          key={glyph}
-          figure={glyph}
-          className="rounded-chip size-10"
-        />
+      {ARTWORK_IDS.filter((id) => id.startsWith("skills/")).map((id) => (
+        <RisoFigure key={id} figure={id} className="rounded-chip size-10" />
       ))}
     </div>
   ),

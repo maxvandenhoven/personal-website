@@ -24,48 +24,23 @@
         - school: Eindhoven University of Technology
           degree: MSc. Data Science & AI
           description: I chose a second master's to develop that technical depth and build on what I had learned.
-    # glyph: languages | machine-learning | ai-agents | infrastructure
+    # Folders in content/skills, in display order
     skills:
-      - title: Languages
-        glyph: languages
-        items:
-          - Python
-          - SQL
-          - TypeScript
-      - title: Machine learning
-        glyph: machine-learning
-        items:
-          - Forecasting
-          - Gradient boosting
-          - Time-aware validation
-          - MLflow
-      - title: AI agents
-        glyph: ai-agents
-        items:
-          - Claude Code
-          - Codex
-          - Google ADK
-          - Evaluation
-          - Sandboxing
-          - Search
-      - title: Infrastructure
-        glyph: infrastructure
-        items:
-          - Docker
-          - Google Cloud
-          - Terraform
-          - GitHub Actions
-          - OpenTelemetry
-          - Linux
+      - languages
+      - machine-learning
+      - ai-agents
+      - infrastructure
   featured_projects:
     title: Side projects
-    slugs:
+    # Folders in content/projects, in display order
+    projects:
       - skill-evals
       - hive
       - imposter
       - personal-website
   featured_blogs:
     title: Writing
-    slugs:
+    # Folders in content/blogs, in display order
+    blogs:
       - the-risks-of-unprotected-agents-and-how-to-mitigate-them
       - 7-practical-tips-for-demand-forecasting-experimentation-and-modeling

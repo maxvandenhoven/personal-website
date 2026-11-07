@@ -1,7 +1,6 @@
-import { defineCollection } from "astro:content";
+import { defineCollection, reference } from "astro:content";
 import { z } from "astro/zod";
 import { glob, file } from "astro/loaders";
-import { GLYPHS } from "./lib/riso/catalog";
 import { SOCIAL_PLATFORMS } from "./lib/social";
 
 /** Drafts are shown by `make dev` but left out of the build. */
@@ -9,9 +8,15 @@ const draft = z.boolean().default(false);
 
 /**
  * Description of the animated artwork in the entry's folder (artwork.ts), for
- * screen readers. Every published entry needs an artwork.
+ * screen readers. Every visible entry needs an artwork.
  */
 const artwork_alt = z.string();
+
+/*
+ * Skills, projects and blog posts are self-contained folders under content/
+ * (index.md + artwork.ts). The homepage picks which ones to show by folder
+ * name; the listing pages show all of them.
+ */
 
 const blogs = defineCollection({
   loader: glob({ pattern: "*/index.md", base: "content/blogs" }),
@@ -48,9 +53,17 @@ const projects = defineCollection({
     tags: z.array(z.string()),
     /** Shown on the card, e.g. "Open source" or "In development". */
     status: z.string(),
-    /** Position on the projects page; lower comes first. */
-    order: z.number().int(),
     artwork_alt,
+    draft,
+  }),
+});
+
+const skills = defineCollection({
+  loader: glob({ pattern: "*/index.md", base: "content/skills" }),
+  schema: z.object({
+    title: z.string(),
+    items: z.array(z.string()),
+    /* The artwork is a small decorative glyph next to the title, so it needs no alt text. */
     draft,
   }),
 });
@@ -105,23 +118,20 @@ const homepage = defineCollection({
           }),
         ),
       }),
-      skills: z.array(
-        z.object({
-          title: z.string(),
-          glyph: z.enum(GLYPHS),
-          items: z.array(z.string()),
-        }),
-      ),
+      /** Folders in content/skills, in display order. */
+      skills: z.array(reference("skills")),
     }),
     featured_projects: z.object({
       title: z.string(),
-      slugs: z.array(z.string()),
+      /** Folders in content/projects, in display order. */
+      projects: z.array(reference("projects")),
     }),
     featured_blogs: z.object({
       title: z.string(),
-      slugs: z.array(z.string()),
+      /** Folders in content/blogs, in display order. */
+      blogs: z.array(reference("blogs")),
     }),
   }),
 });
 
-export const collections = { blogs, projects, site, homepage };
+export const collections = { blogs, projects, skills, site, homepage };

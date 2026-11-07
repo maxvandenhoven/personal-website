@@ -82,7 +82,7 @@ Additional npm scripts (used by Makefile and lint-staged):
 
 ### Content Authoring
 
-Site and homepage text live in YAML; blog posts and projects are folders under `content/`, each with an `index.md` and an `artwork.ts`. Field reference: see ARCHITECTURE.md.
+Site and homepage text live in YAML. Skills, blog posts and projects are self-contained folders under `content/`, each with an `index.md` and an `artwork.ts`; the listing pages show all of them, and `content/homepage.yaml` picks which ones the homepage shows, by folder name and in display order. Field reference: see ARCHITECTURE.md.
 
 **Adding a blog post:**
 
@@ -97,19 +97,22 @@ Site and homepage text live in YAML; blog posts and projects are folders under `
 
 **Adding a project:**
 
-1. Create `content/projects/[slug]/index.md` with the required frontmatter, including `status` (e.g. "Open source"), `order` and `artwork_alt`
+1. Create `content/projects/[slug]/index.md` with the required frontmatter, including `status` (e.g. "Open source") and `artwork_alt`
 2. Add `content/projects/[slug]/artwork.ts`
+
+**Adding a skill category:** create `content/skills/[slug]/index.md` (`title`, `items`) and a small square `artwork.ts` glyph.
+
+**Featuring on the homepage:** add the folder name to `about.skills`, `featured_projects.projects` or `featured_blogs.blogs` in `content/homepage.yaml`. The build fails on folders that don't exist or are drafts.
 
 **Site and homepage config:**
 
 - `content/site.yaml` — name, meta description, email, social links, contact block, and the projects/blog page intros
-- `content/homepage.yaml` — hero, about text (inline `[links](https://...)` supported), education, skills, and the featured project and blog slugs
+- `content/homepage.yaml` — hero, about text (inline `[links](https://...)` supported), education, and the skills, projects and posts to show
 - See `.claude/PROMPTS.md` for implementation prompts to use in future sessions
 
 ### Artworks
 
-- Each blog post and project owns its animated illustration in `artwork.ts`, default-exporting `defineArtwork({ create, startTime? })` from `@/lib/riso/artwork`. `create` returns a motif: a function `(painter, width, height, time)` that draws one frame through the riso `Painter`. Shared helpers live in `src/lib/riso/` (`geometry`, `math`, `motifs/eclipse`)
+- Each skill, blog post and project owns its animated illustration in `artwork.ts`, default-exporting `defineArtwork({ create, startTime? })` from `@/lib/riso/artwork`. `create` returns a motif: a function `(painter, width, height, time)` that draws one frame through the riso `Painter`. Shared helpers live in `src/lib/riso/` (`geometry`, `math`, `motifs/eclipse`)
 - To reuse another entry's artwork, re-export it: `export { default } from "../../projects/hive/artwork";`
 - Artworks are discovered by path and loaded lazily per page; every visible entry needs one, or the build fails. All of them appear in the `UI/RisoFigure` → "All artworks" story
-- The homepage skill glyphs are site design rather than content, so they stay in `src/lib/riso/motifs/glyphs.ts` (names in `catalog.ts`)
 - Keep figures at card size or the article column width: they redraw every frame, so their cost grows with their area

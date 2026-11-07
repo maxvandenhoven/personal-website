@@ -30,6 +30,15 @@ export interface ProjectSummary {
   status: string;
 }
 
+/** A skill category on the homepage. */
+export interface SkillSummary {
+  slug: string;
+  title: string;
+  /** Figure ID of the skill's glyph. */
+  artwork: string;
+  items: string[];
+}
+
 /** Everything a blog card needs. */
 export interface PostSummary {
   slug: string;
@@ -79,26 +88,47 @@ export async function getHomepageConfig() {
   return entry.data;
 }
 
-/** Pick items by slug in the given order, failing the build on unknown or draft slugs. */
-export function selectBySlug<T extends { slug: string }>(
+/**
+ * Pick the entries the homepage links to, in the homepage's order, failing the
+ * build on folders that don't exist or are drafts.
+ */
+export async function selectFeatured<T extends { slug: string }>(
   items: readonly T[],
-  slugs: readonly string[],
-  kind: string,
-): T[] {
-  return slugs.map((slug) => {
-    const item = items.find((candidate) => candidate.slug === slug);
-    if (!item)
+  references: readonly { id: string }[],
+  collection: CollectionKey,
+): Promise<T[]> {
+  return Promise.all(
+    references.map(async ({ id }) => {
+      const item = items.find((candidate) => candidate.slug === id);
+      if (item) return item;
+      const reason = (await getEntry(collection, id))
+        ? "is a draft"
+        : "does not exist";
       throw new Error(
-        `Featured ${kind} "${slug}" does not exist or is a draft`,
+        `content/homepage.yaml shows content/${collection}/${id}, which ${reason}`,
       );
-    return item;
-  });
+    }),
+  );
 }
 
+/** Visible skill categories, alphabetically by title. */
+export async function getSkills(): Promise<SkillSummary[]> {
+  const entries = await getCollection("skills", isVisible);
+  return entries
+    .sort((a, b) => a.data.title.localeCompare(b.data.title))
+    .map(({ id, data }) => ({
+      slug: id,
+      title: data.title,
+      artwork: requireArtwork("skills", id),
+      items: data.items,
+    }));
+}
+
+/** Visible projects, alphabetically by title. */
 export async function getProjects(): Promise<ProjectSummary[]> {
   const entries = await getCollection("projects", isVisible);
   return entries
-    .sort((a, b) => a.data.order - b.data.order)
+    .sort((a, b) => a.data.title.localeCompare(b.data.title))
     .map(({ id, data }) => ({
       slug: id,
       title: data.title,

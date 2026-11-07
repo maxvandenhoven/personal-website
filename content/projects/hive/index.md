@@ -8,6 +8,5 @@ tags:
   - Search
   - Evaluation
 status: In development
-order: 2
 artwork_alt: Hexagonal tiles form a cluster as possible placements are scored and one is selected
 ---

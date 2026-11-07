@@ -16,16 +16,19 @@ personal-website/
 ├── .storybook/                   # Storybook config; preview runs the client controllers
 ├── content/                      # CMS content (not in src/ — treated as data)
 │   ├── site.yaml                 # Site-wide settings: name, socials, contact, listing page copy
-│   ├── homepage.yaml             # Homepage sections
+│   ├── homepage.yaml             # Homepage text, and which skills/projects/posts it shows
 │   ├── headshot.png              # Hero portrait (optimized to WebP at build time)
 │   ├── blogs/[slug]/
 │   │   ├── index.md              # Frontmatter, plus the article as Markdown if hosted here
 │   │   ├── artwork.ts            # The post's animated illustration
 │   │   ├── banner.jpg            # Optional; og:image for a hosted article
 │   │   └── images/               # Optional inline images (relative paths)
-│   └── projects/[slug]/
-│       ├── index.md              # Frontmatter only
-│       └── artwork.ts            # The project's animated illustration
+│   ├── projects/[slug]/
+│   │   ├── index.md              # Frontmatter only
+│   │   └── artwork.ts            # The project's animated illustration
+│   └── skills/[slug]/
+│       ├── index.md              # Title and items of a skill category
+│       └── artwork.ts            # The category's small glyph
 ├── docs/
 │   └── reference/                # Static HTML design reference (kept exactly as designed)
 ├── public/                       # Static assets served as-is (favicon, CNAME)
@@ -64,16 +67,16 @@ personal-website/
 Rendered from `content/site.yaml` and `content/homepage.yaml`:
 
 1. **Hero**: title, description, social buttons, portrait
-2. **01 / About**: lede and paragraphs (inline `[links](...)` supported), education timeline, skill categories (each with an animated glyph)
-3. **02 / Projects**: featured project cards, in the order listed in `featured_projects.slugs`
-4. **03 / Blog**: featured article cards, in the order listed in `featured_blogs.slugs`
+2. **01 / About**: lede and paragraphs (inline `[links](...)` supported), education timeline, and the skill categories listed in `about.skills`
+3. **02 / Projects**: the project cards listed in `featured_projects.projects`
+4. **03 / Blog**: the article cards listed in `featured_blogs.blogs`
 5. **04 / Contact**: the site-wide footer
 
-Unknown or unpublished featured slugs fail the build.
+Each list names folders under `content/`, in display order. Skills, projects and posts are self-contained (index.md + artwork.ts) and don't know whether they are featured; the homepage decides. Folders that don't exist or are drafts fail the build.
 
 ### Projects (`/projects`) and Blog (`/blog`)
 
-Page heading plus a card grid with single-select topic filters built from the items' tags. Projects are sorted by `order`; articles by `publish_date`, newest first.
+Page heading plus a card grid with single-select topic filters built from the items' tags. They show every visible entry: projects alphabetically by title, articles by `publish_date`, newest first.
 
 ### Article (`/blog/[slug]`)
 
@@ -115,14 +118,23 @@ description: string
 github_link: https://...
 tags: string[]
 status: string # Shown on the card, e.g. "Open source", "In development"
-order: number # Position on the projects page, lower first
 artwork_alt: string
 draft: boolean # Optional, default false
 ```
 
+### Skill (`content/skills/[slug]/index.md`)
+
+```yaml
+title: string # e.g. "AI agents"
+items: string[] # Shown as chips
+draft: boolean # Optional, default false
+```
+
+The skill's artwork is a decorative glyph beside the title, so it has no alt text.
+
 ### Artworks (`content/<collection>/<slug>/artwork.ts`)
 
-Every visible blog post and project needs an `artwork.ts` next to its `index.md` (the build fails otherwise). It default-exports `defineArtwork({ create, startTime? })` from `@/lib/riso/artwork`, where `create` returns a motif: a function that draws one frame through the riso `Painter`. Artworks can be shared by re-exporting another entry's (`export { default } from "../../projects/hive/artwork";`).
+Every visible skill, blog post and project needs an `artwork.ts` next to its `index.md` (the build fails otherwise). It default-exports `defineArtwork({ create, startTime? })` from `@/lib/riso/artwork`, where `create` returns a motif: a function that draws one frame through the riso `Painter`. Artworks can be shared by re-exporting another entry's (`export { default } from "../../projects/hive/artwork";`).
 
 ### Site config (`content/site.yaml`) and homepage (`content/homepage.yaml`)
 
@@ -144,8 +156,7 @@ Each controller returns a cleanup function; Storybook's preview uses them to mak
 
 - `artwork.ts`: the `Artwork` type and `defineArtwork` helper used by the content artworks
 - `registry.ts`: finds `content/*/*/artwork.ts` with `import.meta.glob` and maps figure IDs (`"projects/hive"`) to lazily loaded artworks, so each page only downloads the artworks it shows
-- `catalog.ts`: the homepage skill glyph names, shared with the content schema (DOM-free)
-- `motifs/`: the glyphs, the shared eclipse marker and the `Motif` type
+- `motifs/`: the shared eclipse marker and the `Motif` type
 - `painter.ts`: splits shapes into three halftone ink layers, then composites them with grain and misregistration, using the fixed `PRINT_SETTINGS`
 - `motion.ts`: the shared paused state (starts paused for visitors who prefer reduced motion)
 - `palette.ts`: reads the ink colours from the CSS design tokens
@@ -184,6 +195,6 @@ Figures redraw at 20 fps, only while on screen, and start paused when the visito
 ## Future Considerations
 
 - **Dark mode toggle**: alternative token values plus a toggle in the header
-- **Auto-featured content**: GitHub Action to update the featured slugs with the most recent items
+- **Auto-featured content**: GitHub Action to update the featured lists in `homepage.yaml` with the most recent items
 - **Analytics**: Self-hosted Umami on homelab (e.g., `analytics.maxvandenhoven.com`)
 - **Tag pages**: Static pages at `/blog/tag/[tag]` for SEO

@@ -11,19 +11,30 @@ import {
   getPosts,
   getProjects,
   getSiteConfig,
-  selectBySlug,
+  getSkills,
+  selectFeatured,
 } from "../lib/content";
 import { sectionIndex } from "../lib/navigation";
 import headshot from "../../content/headshot.png";
 
 const site = await getSiteConfig();
 const home = await getHomepageConfig();
-const projects = selectBySlug(
-  await getProjects(),
-  home.featured_projects.slugs,
-  "project",
+// homepage.yaml picks which skills, projects and posts to show, and in what order.
+const skills = await selectFeatured(
+  await getSkills(),
+  home.about.skills,
+  "skills",
 );
-const posts = selectBySlug(await getPosts(), home.featured_blogs.slugs, "blog");
+const projects = await selectFeatured(
+  await getProjects(),
+  home.featured_projects.projects,
+  "projects",
+);
+const posts = await selectFeatured(
+  await getPosts(),
+  home.featured_blogs.blogs,
+  "blogs",
+);
 
 // The portrait is full width below 900px and roughly half the 1180px column above it.
 const portrait = await getImage({
@@ -65,7 +76,7 @@ const portrait = await getImage({
         steps={home.about.education.steps}
       />
     </div>
-    <SkillGrid skills={home.about.skills} />
+    <SkillGrid skills={skills} />
   </Section>
 
   <Section id="work" aria-labelledby="work-h">

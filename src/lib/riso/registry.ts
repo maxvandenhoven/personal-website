@@ -1,9 +1,7 @@
 import type { Artwork } from "./artwork";
-import { isGlyph } from "./catalog";
-import { GLYPH_MOTIFS } from "./motifs/glyphs";
 
 /**
- * Maps figure IDs to artworks. Artworks are found by convention at
+ * Maps figure IDs ("<collection>/<slug>") to artworks. Artworks are found by convention at
  * content/<collection>/<slug>/artwork.ts and loaded lazily, so a page only
  * downloads the artworks it shows.
  */
@@ -35,10 +33,6 @@ export function hasArtwork(id: string): boolean {
 
 /** Resolve a figure ID to its artwork, or undefined if there is none. */
 export async function loadFigure(id: string): Promise<Artwork | undefined> {
-  if (isGlyph(id)) {
-    const motif = GLYPH_MOTIFS[id];
-    return { create: () => motif };
-  }
   const load = loaders.get(id);
   return load ? (await load()).default : undefined;
 }

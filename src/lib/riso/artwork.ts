@@ -1,7 +1,7 @@
 import type { Motif } from "./motifs/types";
 
 /**
- * An animated illustration. Each blog post and project keeps its own in
+ * An animated illustration. Each skill, blog post and project keeps its own in
  * `content/<collection>/<slug>/artwork.ts`, default-exporting `defineArtwork(...)`.
  */
 export interface Artwork {
