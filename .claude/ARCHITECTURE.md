@@ -4,7 +4,7 @@
 
 A static personal website with three pages: homepage, blog, and projects. Content is managed through a file-based CMS — Markdown files with frontmatter and two YAML config files under `content/`. The site is built with Astro (static generation), with React components rendered to static HTML at build time, styled with Tailwind CSS, and deployed to GitHub Pages via GitHub Actions.
 
-The visual design follows the reference mockups in `docs/reference/`: one calm, centered column on paper-coloured ground, with generative illustrations inside framed figures. The illustrations are animated canvases printed as three-ink risographs (halftone screens, ink grain, slight misregistration between layers), tunable through a "Print settings" panel.
+The visual design follows the reference mockups in `docs/reference/`: one calm, centered column on paper-coloured ground, with generative illustrations inside framed figures. The illustrations are animated canvases printed as three-ink risographs (halftone screens, ink grain, slight misregistration between layers).
 
 ## Folder Structure
 
@@ -37,9 +37,9 @@ personal-website/
 │   │   ├── home/                 # Hero, AboutStory, StudyPath, SkillGrid
 │   │   ├── blog/                 # BlogCard
 │   │   ├── projects/             # ProjectCard
-│   │   ├── riso/                 # MotionToggle, PrintSettings
+│   │   ├── riso/                 # MotionToggle
 │   │   └── fixtures.ts           # Sample data for stories
-│   ├── layouts/BaseLayout.astro  # <head>, header, footer, print settings, client script
+│   ├── layouts/BaseLayout.astro  # <head>, header, footer, client script
 │   ├── lib/
 │   │   ├── content.ts            # Build-time content queries and card view models
 │   │   ├── navigation.ts         # Nav links and numbered section labels ("02 / Projects")
@@ -134,7 +134,6 @@ There are no hydrated React islands. Components render to static HTML, and one b
 
 - `tag-filter.ts`: topic filters on listing pages (`[data-tag-filter]`, cards expose `data-tags`)
 - `motion-toggle.ts`: play/pause button in the header
-- `print-settings.ts`: the print settings dock
 - `lib/riso/engine.ts`: animates every `canvas[data-figure]`, loading each artwork on demand
 - `lib/riso/background.ts`: the page's dot grid that warms up near the pointer
 
@@ -146,8 +145,8 @@ Each controller returns a cleanup function; Storybook's preview uses them to mak
 - `registry.ts`: finds `content/*/*/artwork.ts` with `import.meta.glob` and maps figure IDs (`"projects/hive"`) to lazily loaded artworks, so each page only downloads the artworks it shows
 - `catalog.ts`: the homepage skill glyph names, shared with the content schema (DOM-free)
 - `motifs/`: the glyphs, the shared eclipse marker and the `Motif` type
-- `painter.ts`: splits shapes into three halftone ink layers, then composites them with grain and misregistration
-- `settings.ts`: observable print settings (persisted in `localStorage`) and the paused state
+- `painter.ts`: splits shapes into three halftone ink layers, then composites them with grain and misregistration, using the fixed `PRINT_SETTINGS`
+- `motion.ts`: the shared paused state (starts paused for visitors who prefer reduced motion)
 - `palette.ts`: reads the ink colours from the CSS design tokens
 
 Figures redraw at 20 fps, only while on screen, and start paused when the visitor prefers reduced motion. Rendering cost grows with a figure's area, so keep figures at card size or the text column width.

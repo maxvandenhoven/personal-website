@@ -1,7 +1,6 @@
 import type { PathFn } from "./geometry";
 import { clamp, hash, seededRandom } from "./math";
 import type { RisoPalette } from "./palette";
-import type { PrintSettings } from "./settings";
 
 /**
  * Ink coverage per colour key, as [drum, tint] pairs.
@@ -28,12 +27,38 @@ const COVERAGE = {
 
 export type InkKey = keyof typeof COVERAGE;
 
+/** How the risograph is printed. */
+export interface PrintSettings {
+  /** Maximum offset between ink layers, in CSS pixels. */
+  misreg: number;
+  /** Strength of the ink grain and blotch textures, 0-1. */
+  grain: number;
+  /** Light ink tint over the whole paper, 0-1. */
+  ground: number;
+  /** Halftone cell size in CSS pixels (96 / pitch = lines per inch). */
+  pitch: number;
+  /** Whether overlapping shapes knock out the layers below or overprint them. */
+  knock: "knock" | "over";
+  /** Seed for the direction of the layer offsets. */
+  regSeed: number;
+}
+
+/** 0.5 px layer offset, 20% ink grain, 10% paper tint, 30 lpi, knockout. */
+export const PRINT_SETTINGS: Readonly<PrintSettings> = {
+  misreg: 0.5,
+  grain: 0.2,
+  ground: 0.1,
+  pitch: 3.25,
+  knock: "knock",
+  regSeed: 3,
+};
+
 export interface PaintOptions {
   /** Overall opacity, scaling the coverage of every layer. */
   alpha?: number;
   /** Nudges coverage up or down by roughly 18% per step. */
   tone?: number;
-  /** Overprint this shape even when the settings ask for knockout. */
+  /** Overprint this shape even when the print settings use knockout. */
   over?: boolean;
 }
 
@@ -162,7 +187,7 @@ function createTextures(ctx: CanvasRenderingContext2D): Textures {
  */
 export function createPainter(
   palette: RisoPalette,
-  getSettings: () => Readonly<PrintSettings>,
+  settings: Readonly<PrintSettings> = PRINT_SETTINGS,
 ): Painter {
   const layers = [0, 1, 2].map(() => {
     const canvas = document.createElement("canvas");
@@ -199,7 +224,7 @@ export function createPainter(
   /** Halftone screen for a drum at a given coverage. */
   function screen(drum: number, tint: number): CanvasPattern {
     const q = Math.round(tint * 20) / 20;
-    const cell = Math.max(3, Math.round(getSettings().pitch * dpr));
+    const cell = Math.max(3, Math.round(settings.pitch * dpr));
     const key = `${drum}|${q}|${cell}`;
     const cached = patterns.get(key);
     if (cached) return cached;
@@ -266,7 +291,7 @@ export function createPainter(
       ctx.restore();
     };
 
-    if (getSettings().knock === "knock" && !options.over) {
+    if (settings.knock === "knock" && !options.over) {
       for (const { ctx } of layers) {
         withClip(ctx, () => {
           ctx.globalCompositeOperation = "destination-out";
@@ -314,7 +339,7 @@ export function createPainter(
         layer.ctx.globalCompositeOperation = "source-over";
         layer.ctx.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
       }
-      const { ground } = getSettings();
+      const { ground } = settings;
       if (ground > 0.01) {
         layers[2].ctx.fillStyle = screen(2, ground);
         layers[2].ctx.fillRect(0, 0, W, H);
@@ -357,7 +382,7 @@ export function createPainter(
     end() {
       if (!target) return;
       const x = target;
-      const { grain, misreg, regSeed } = getSettings();
+      const { grain, misreg, regSeed } = settings;
       x.setTransform(1, 0, 0, 1, 0, 0);
       x.globalCompositeOperation = "source-over";
       x.globalAlpha = 1;

@@ -7,7 +7,7 @@ const meta = {
   title: "UI/Pill",
   component: Pill,
   tags: ["autodocs"],
-  args: { children: "Print settings" },
+  args: { children: "Pause" },
 } satisfies Meta<typeof Pill>;
 
 export default meta;

@@ -41,12 +41,10 @@
     transparent
   );
 
-  /* Brand mark and the swatch on the print settings button */
+  /* Brand mark */
   --color-brand-ground: #0d0e13;
   --color-brand-cream: #eee3c8;
   --color-brand-red: #d7272f;
-  --color-swatch-slate: #6a7f9d;
-  --color-swatch-sun: #e9b13c;
 
   /* Syntax highlighting in articles (alongside ink, muted and accent) */
   --color-code-string: #3f6b3a;
@@ -189,49 +187,6 @@
 }
 
 @layer components {
-  /* Slider in the print settings sheet; --fill is kept in sync by the controller */
-  .range-input {
-    --fill: 50%;
-    appearance: none;
-    width: 100%;
-    height: 20px;
-    margin: 0;
-    background: transparent;
-    cursor: pointer;
-  }
-  .range-input::-webkit-slider-runnable-track {
-    height: 3px;
-    background: linear-gradient(
-      to right,
-      var(--color-ink) 0 var(--fill),
-      var(--color-rule) var(--fill) 100%
-    );
-  }
-  .range-input::-webkit-slider-thumb {
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    margin-top: -5.5px;
-    border: 2px solid var(--color-accent);
-    border-radius: 50%;
-    background: var(--color-card);
-  }
-  .range-input::-moz-range-track {
-    height: 3px;
-    background: var(--color-rule);
-  }
-  .range-input::-moz-range-progress {
-    height: 3px;
-    background: var(--color-ink);
-  }
-  .range-input::-moz-range-thumb {
-    width: 10px;
-    height: 10px;
-    border: 2px solid var(--color-accent);
-    border-radius: 50%;
-    background: var(--color-card);
-  }
-
   /*
    * Rendered Markdown in articles. Body text uses the ink colour (not muted) and
    * a generous line height for long-form reading.

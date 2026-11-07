@@ -1,6 +1,5 @@
 import { mountFigures } from "../lib/riso/engine";
 import { initMotionToggles } from "./motion-toggle";
-import { initPrintSettings } from "./print-settings";
 import { initTagFilters } from "./tag-filter";
 
 /**
@@ -11,7 +10,6 @@ export function initControllers(root: ParentNode = document): () => void {
   const cleanups = [
     initTagFilters(root),
     initMotionToggles(root),
-    initPrintSettings(root),
     mountFigures(root),
   ];
   return () => cleanups.forEach((cleanup) => cleanup());

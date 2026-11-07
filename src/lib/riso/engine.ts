@@ -2,13 +2,13 @@ import type { Motif } from "./motifs/types";
 import { createPainter, type Painter } from "./painter";
 import { readPalette } from "./palette";
 import { loadFigure } from "./registry";
-import { getRisoState, subscribeRiso } from "./settings";
+import { isPaused, subscribePaused } from "./motion";
 
 /**
  * Drives every `<canvas data-figure="...">` on the page from one animation loop.
  * Figures only render while on screen, redraw at 20 fps (the prints move "on
  * twos" like hand-drawn animation, which also keeps the page light), and repaint
- * immediately when the print settings change.
+ * immediately when resized or paused.
  */
 
 const FIGURE_SELECTOR = "canvas[data-figure]";
@@ -36,8 +36,8 @@ function invalidateAll(): void {
 
 function setup(): void {
   if (painter) return;
-  painter = createPainter(readPalette(), getRisoState);
-  subscribeRiso(invalidateAll);
+  painter = createPainter(readPalette());
+  subscribePaused(invalidateAll);
   if ("IntersectionObserver" in window) {
     observer = new IntersectionObserver(
       (entries) => {
@@ -56,7 +56,7 @@ function setup(): void {
 function renderFrame(now: number): void {
   const dt = Math.min(MAX_STEP_SECONDS, (now - lastFrame) / 1000);
   lastFrame = now;
-  const { paused } = getRisoState();
+  const paused = isPaused();
   const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
   painter?.setDpr(dpr);
 

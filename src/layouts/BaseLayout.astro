@@ -1,7 +1,6 @@
 ---
 import "../styles/global.css";
 import { Footer, Header } from "../components/layout";
-import { PrintSettings } from "../components/riso";
 import { getSiteConfig } from "../lib/content";
 import { cx } from "../lib/cx";
 import type { NavPage } from "../lib/navigation";
@@ -104,7 +103,6 @@ const ogImageUrl = ogImage ? new URL(ogImage, Astro.site) : undefined;
       socials={site.socials}
       contact={site.contact}
     />
-    <PrintSettings />
     <script>
       import "../scripts/main";
     </script>

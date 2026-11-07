@@ -1,8 +1,4 @@
-import {
-  getRisoState,
-  subscribeRiso,
-  updateRisoState,
-} from "../lib/riso/settings";
+import { isPaused, setPaused, subscribePaused } from "../lib/riso/motion";
 
 /** Play/pause buttons rendered by MotionToggle. Returns a function that detaches them. */
 export function initMotionToggles(root: ParentNode = document): () => void {
@@ -12,19 +8,15 @@ export function initMotionToggles(root: ParentNode = document): () => void {
   for (const button of root.querySelectorAll<HTMLButtonElement>(
     "[data-motion-toggle]",
   )) {
-    const sync = ({ paused }: { paused: boolean }) => {
+    const sync = (paused: boolean) => {
       const label = paused ? "Play animations" : "Pause animations";
       button.setAttribute("aria-pressed", String(paused));
       button.setAttribute("aria-label", label);
       button.title = label;
     };
-    button.addEventListener(
-      "click",
-      () => updateRisoState({ paused: !getRisoState().paused }),
-      { signal },
-    );
-    signal.addEventListener("abort", subscribeRiso(sync));
-    sync(getRisoState());
+    button.addEventListener("click", () => setPaused(!isPaused()), { signal });
+    signal.addEventListener("abort", subscribePaused(sync));
+    sync(isPaused());
   }
 
   return () => controller.abort();

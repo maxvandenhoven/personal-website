@@ -65,7 +65,7 @@ Additional npm scripts (used by Makefile and lint-staged):
   - `layout/` — structural (Header, Footer, Section, SectionHeading, PageHeading)
   - `home/` — homepage sections (Hero, AboutStory, StudyPath, SkillGrid)
   - `blog/` and `projects/` — BlogCard and ProjectCard
-  - `riso/` — MotionToggle and PrintSettings
+  - `riso/` — MotionToggle
 - Components are React `.tsx` files rendered to static HTML by Astro (no `client:*` hydration). Interactivity lives in `src/scripts/` controllers that bind to `data-*` attributes, loaded once by `BaseLayout`
 - Pages get their data through `src/lib/content.ts`, not by querying collections directly
 - One component per `.tsx` file, PascalCase naming

@@ -1,5 +1,5 @@
 import { readPalette } from "./palette";
-import { getRisoState, subscribeRiso } from "./settings";
+import { isPaused, subscribePaused } from "./motion";
 
 /**
  * Page background: a faint dot grid that warms up near the pointer, drawn on a
@@ -41,11 +41,11 @@ export function startBackground(canvas: HTMLCanvasElement): void {
   );
   window.addEventListener("resize", invalidate);
   window.addEventListener("scroll", invalidate, { passive: true });
-  subscribeRiso(invalidate);
+  subscribePaused(invalidate);
 
   function draw(): void {
     if (Math.abs(target.x - pointer.x) + Math.abs(target.y - pointer.y) > 0.5) {
-      const k = getRisoState().paused ? 1 : POINTER_EASING;
+      const k = isPaused() ? 1 : POINTER_EASING;
       pointer.x += (target.x - pointer.x) * k;
       pointer.y += (target.y - pointer.y) * k;
       dirty = true;
