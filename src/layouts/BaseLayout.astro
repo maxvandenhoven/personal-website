@@ -18,6 +18,8 @@ interface Props {
   canonical?: string;
   /** Spacing between the top-level blocks of <main>. */
   spacing?: "sections" | "compact";
+  /** Show the interactive dot-grid background; off for long-form reading. */
+  background?: boolean;
 }
 
 const {
@@ -27,6 +29,7 @@ const {
   ogImage,
   canonical,
   spacing = "compact",
+  background = true,
 } = Astro.props;
 const site = await getSiteConfig();
 const pageTitle = title ? `${title} · ${site.name}` : site.name;
@@ -75,10 +78,15 @@ const ogImageUrl = ogImage ? new URL(ogImage, Astro.site) : undefined;
     />
   </head>
   <body>
-    <canvas
-      data-riso-background
-      aria-hidden="true"
-      class="pointer-events-none fixed inset-0 z-0 size-full"></canvas>
+    {
+      background && (
+        <canvas
+          data-riso-background
+          aria-hidden="true"
+          class="pointer-events-none fixed inset-0 z-0 size-full"
+        />
+      )
+    }
     <div id="top" class="max-w-site relative z-1 mx-auto">
       <Header name={site.name} currentPage={currentPage} />
       <main

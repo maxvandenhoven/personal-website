@@ -1,9 +1,10 @@
-import { circle, figurePadding, roundedRect } from "../geometry";
-import { hash } from "../math";
-import type { InkKey } from "../painter";
-import type { Motif } from "./types";
+import { defineArtwork } from "@/lib/riso/artwork";
+import { circle, figurePadding, roundedRect } from "@/lib/riso/geometry";
+import { hash } from "@/lib/riso/math";
+import type { InkKey } from "@/lib/riso/painter";
+import type { Motif } from "@/lib/riso/motifs/types";
 
-export interface SandboxesOptions {
+interface SandboxesOptions {
   columns: number;
   /** Index of the column left unguarded. */
   openColumn: number;
@@ -12,7 +13,7 @@ export interface SandboxesOptions {
 const AGENT_COLORS: readonly InkKey[] = ["cream", "orange", "steel"];
 
 /** Unprotected agents: agents moving inside rounded sandboxes, with one unguarded lane where agents wander out. */
-export function sandboxes({ columns: n, openColumn }: SandboxesOptions): Motif {
+function sandboxes({ columns: n, openColumn }: SandboxesOptions): Motif {
   return (P, W, H, t) => {
     P.background("ink");
     const pad = figurePadding(W, H);
@@ -77,3 +78,7 @@ export function sandboxes({ columns: n, openColumn }: SandboxesOptions): Motif {
     }
   };
 }
+
+export default defineArtwork({
+  create: () => sandboxes({ columns: 8, openColumn: 5 }),
+});

@@ -1,9 +1,10 @@
-import { figurePadding, roundedRect } from "../geometry";
-import { clamp, ease, hash } from "../math";
-import { drawEclipse } from "./eclipse";
-import type { Motif } from "./types";
+import { defineArtwork } from "@/lib/riso/artwork";
+import { figurePadding, roundedRect } from "@/lib/riso/geometry";
+import { clamp, ease, hash } from "@/lib/riso/math";
+import { drawEclipse } from "@/lib/riso/motifs/eclipse";
+import type { Motif } from "@/lib/riso/motifs/types";
 
-export interface TrialsOptions {
+interface TrialsOptions {
   cols: number;
   rows: number;
   speed: number;
@@ -13,7 +14,7 @@ export interface TrialsOptions {
  * skill-evals: rows of discs that light up or stay eclipsed as an evaluation
  * sweep passes, with the skill on the left and without it on the right.
  */
-export function trials({ cols: C, rows: R, speed }: TrialsOptions): Motif {
+function trials({ cols: C, rows: R, speed }: TrialsOptions): Motif {
   return (P, W, H, t) => {
     P.background("ink");
     const pad = figurePadding(W, H);
@@ -60,3 +61,7 @@ export function trials({ cols: C, rows: R, speed }: TrialsOptions): Motif {
     }
   };
 }
+
+export default defineArtwork({
+  create: () => trials({ cols: 6, rows: 4, speed: 2.2 }),
+});

@@ -1,16 +1,17 @@
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob, file } from "astro/loaders";
-import { GLYPHS, ILLUSTRATIONS } from "./lib/riso/catalog";
+import { GLYPHS } from "./lib/riso/catalog";
 import { SOCIAL_PLATFORMS } from "./lib/social";
 
-const status = z.enum(["draft", "published"]);
+/** Drafts are shown by `make dev` but left out of the build. */
+const draft = z.boolean().default(false);
 
-/** Every card shows an animated risograph illustration, described for screen readers. */
-const illustration = {
-  figure: z.enum(ILLUSTRATIONS),
-  figure_alt: z.string(),
-};
+/**
+ * Description of the animated artwork in the entry's folder (artwork.ts), for
+ * screen readers. Every published entry needs an artwork.
+ */
+const artwork_alt = z.string();
 
 const blogs = defineCollection({
   loader: glob({ pattern: "*/index.md", base: "content/blogs" }),
@@ -19,21 +20,20 @@ const blogs = defineCollection({
     description: z.string(),
     reading_time: z.string(),
     tags: z.array(z.string()),
-    status,
     publish_date: z.iso.date(),
-    /** Shown as "Updated <date>" and used for sorting when set. */
-    updated_date: z.iso.date().optional(),
     /**
-     * Where the article was originally published. Cards link there, and a local
-     * copy (if the post has a body) points its canonical URL at it.
+     * Set for articles published on another site: the card links to `url` and
+     * reads "Read on <name>". Leave it out to host the article here, written as
+     * the Markdown body.
      */
     external: z
       .object({
         url: z.url(),
-        site: z.string(),
+        name: z.string(),
       })
       .optional(),
-    ...illustration,
+    artwork_alt,
+    draft,
   }),
 });
 
@@ -46,12 +46,12 @@ const projects = defineCollection({
     description: z.string(),
     github_link: z.url(),
     tags: z.array(z.string()),
-    /** Short state shown on the card, e.g. "Open source" or "In development". */
-    stage: z.string(),
+    /** Shown on the card, e.g. "Open source" or "In development". */
+    status: z.string(),
     /** Position on the projects page; lower comes first. */
     order: z.number().int(),
-    status,
-    ...illustration,
+    artwork_alt,
+    draft,
   }),
 });
 

@@ -1,10 +1,11 @@
-import { circle, roundedRect } from "../geometry";
-import { clamp, ease, hash } from "../math";
-import type { InkKey } from "../painter";
-import { drawEclipse } from "./eclipse";
-import type { Motif } from "./types";
+import { defineArtwork } from "@/lib/riso/artwork";
+import { circle, roundedRect } from "@/lib/riso/geometry";
+import { clamp, ease, hash } from "@/lib/riso/math";
+import type { InkKey } from "@/lib/riso/painter";
+import { drawEclipse } from "@/lib/riso/motifs/eclipse";
+import type { Motif } from "@/lib/riso/motifs/types";
 
-export interface SiteOptions {
+interface SiteOptions {
   speed: number;
 }
 
@@ -27,7 +28,7 @@ const HYDRATE_AT = 5.2;
  * This website: Markdown files are built block by block into a static page,
  * and then only a few islands on the page come alive.
  */
-export function site({ speed }: SiteOptions): Motif {
+function site({ speed }: SiteOptions): Motif {
   return (P, W, H, t) => {
     P.background("ink");
     const phase = (t * speed) % CYCLE;
@@ -231,3 +232,5 @@ export function site({ speed }: SiteOptions): Motif {
     }
   };
 }
+
+export default defineArtwork({ create: () => site({ speed: 1 }) });

@@ -6,12 +6,9 @@ tags:
   - Machine learning
   - Forecasting
   - Evaluation
-status: published
 publish_date: "2026-09-03"
-updated_date: "2026-09-03"
 external:
   url: https://xebia.com/blog/7-practical-tips-for-demand-forecasting-experimentation-and-modeling/
-  site: Xebia
-figure: forecast
-figure_alt: Rounded bars of past demand scrolling toward a now line, followed by widening forecast intervals
+  name: Xebia
+artwork_alt: Rounded bars of past demand scrolling toward a now line, followed by widening forecast intervals
 ---

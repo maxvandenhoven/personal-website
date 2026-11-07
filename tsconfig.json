@@ -4,6 +4,9 @@
   "exclude": ["dist", "storybook-static", "docs/reference"],
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }

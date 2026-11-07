@@ -3,17 +3,13 @@ import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
 import { render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { PageHeading } from "../../components/layout";
-import { Arrow, RisoFigure, TagList } from "../../components/ui";
-import {
-  getPublishedPosts,
-  hasLocalPage,
-  toPostSummary,
-} from "../../lib/content";
+import { Arrow, Pill, RisoFigure, TagList } from "../../components/ui";
+import { getBlogPosts, isLocalPost, toPostSummary } from "../../lib/content";
 import { sectionIndex } from "../../lib/navigation";
 
-/** Posts that only live elsewhere (no Markdown body) get no page of their own. */
+/** Only posts hosted here get a page; the others link to where they were published. */
 export const getStaticPaths = (async () => {
-  const posts = (await getPublishedPosts()).filter(hasLocalPage);
+  const posts = (await getBlogPosts()).filter(isLocalPost);
   return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
 }) satisfies GetStaticPaths;
 
@@ -21,7 +17,6 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 const { post } = Astro.props as Props;
 const { Content } = await render(post);
 const summary = toPostSummary(post);
-const { external } = post.data;
 
 const banners = import.meta.glob<{ default: ImageMetadata }>(
   "/content/blogs/*/banner.{jpg,jpeg,png,webp}",
@@ -38,7 +33,7 @@ const banner = bannerKey ? banners[bannerKey].default.src : undefined;
   description={post.data.description}
   currentPage="blog"
   ogImage={banner}
-  canonical={external?.url}
+  background={false}
 >
   <article class="flex flex-col gap-12">
     <PageHeading
@@ -48,41 +43,33 @@ const banner = bannerKey ? banners[bannerKey].default.src : undefined;
       lead={post.data.description}
     >
       <div
-        class="border-rule leading-label text-muted text-2xs flex flex-wrap items-center justify-between gap-4 border-t pt-4 font-mono"
+        class="border-rule leading-label text-muted text-2xs max-w-article flex flex-wrap items-center justify-between gap-4 border-t pt-4 font-mono"
       >
         <span>
-          <time datetime={post.data.updated_date ?? post.data.publish_date}
-            >{summary.dateLabel}</time
-          > · {summary.readingTime}
+          <time datetime={post.data.publish_date}>{summary.dateLabel}</time> · {
+            summary.readingTime
+          }
         </span>
         <TagList tags={post.data.tags} />
       </div>
     </PageHeading>
-    <!-- Kept to the text column: figures are redrawn every frame, so their cost grows with their area -->
+    <!-- Kept to the text column: figures redraw every frame, so their cost grows with their area -->
     <figure
-      class="rounded-card border-rule bg-card p-frame mx-auto w-full max-w-prose border"
+      class="rounded-card border-rule bg-card p-frame max-w-article w-full border"
     >
       <RisoFigure
-        figure={post.data.figure}
-        label={post.data.figure_alt}
+        figure={summary.artwork}
+        label={summary.artworkAlt}
         className="rounded-art aspect-video w-full"
       />
     </figure>
-    <div class="prose mx-auto w-full max-w-prose">
+    <div class="prose max-w-article">
       <Content />
     </div>
-    {
-      external && (
-        <p class="mx-auto w-full max-w-prose">
-          <a
-            href={external.url}
-            class="group text-muted hover:text-ink font-mono text-xs"
-          >
-            Originally published on {external.site}{" "}
-            <Arrow className="group-hover:translate-x-1" />
-          </a>
-        </p>
-      )
-    }
+    <footer class="border-rule max-w-article border-t pt-6">
+      <Pill href="/blog">
+        All articles <Arrow className="group-hover:translate-x-1" />
+      </Pill>
+    </footer>
   </article>
 </BaseLayout>

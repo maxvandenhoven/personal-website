@@ -1,3 +1,4 @@
+import type { Glyph } from "../catalog";
 import { circle, roundedRect } from "../geometry";
 import { clamp, ease, hash } from "../math";
 import type { InkKey } from "../painter";
@@ -8,7 +9,7 @@ const TILE_COLORS: readonly InkKey[] = ["cream", "steel", "slate", "orange"];
 const LAYER_COLORS: readonly InkKey[] = ["navy", "slate", "steel"];
 
 /** Languages: a cursor walks a 3x3 grid and retypes each tile. */
-export const languagesGlyph: Motif = (P, W, _H, t) => {
+const languagesGlyph: Motif = (P, W, _H, t) => {
   P.background("ink");
   const m = W * 0.16;
   const c = (W - 2 * m) / 3;
@@ -33,7 +34,7 @@ export const languagesGlyph: Motif = (P, W, _H, t) => {
 };
 
 /** Machine learning: a short series where the last bar is the forecast. */
-export const machineLearningGlyph: Motif = (P, W, _H, t) => {
+const machineLearningGlyph: Motif = (P, W, _H, t) => {
   P.background("ink");
   const m = W * 0.16;
   const g = W - 2 * m;
@@ -49,7 +50,7 @@ export const machineLearningGlyph: Motif = (P, W, _H, t) => {
 };
 
 /** AI agents: four runs that pass or fail. */
-export const aiAgentsGlyph: Motif = (P, W, _H, t) => {
+const aiAgentsGlyph: Motif = (P, W, _H, t) => {
   P.background("ink");
   const m = W * 0.16;
   const c = (W - 2 * m) / 2;
@@ -72,7 +73,7 @@ export const aiAgentsGlyph: Motif = (P, W, _H, t) => {
 };
 
 /** Infrastructure: three layers with a packet passing down through them. */
-export const infrastructureGlyph: Motif = (P, W, _H, t) => {
+const infrastructureGlyph: Motif = (P, W, _H, t) => {
   P.background("ink");
   const m = W * 0.16;
   const g = W - 2 * m;
@@ -83,4 +84,11 @@ export const infrastructureGlyph: Motif = (P, W, _H, t) => {
   const y = m + ((t * 0.45) % 1) * g;
   const x = m + g * (0.2 + 0.6 * (0.5 + 0.5 * Math.sin(t * 1.7)));
   P.fill(circle(x, y, h * 0.2), "cream");
+};
+
+export const GLYPH_MOTIFS: Record<Glyph, Motif> = {
+  languages: languagesGlyph,
+  "machine-learning": machineLearningGlyph,
+  "ai-agents": aiAgentsGlyph,
+  infrastructure: infrastructureGlyph,
 };

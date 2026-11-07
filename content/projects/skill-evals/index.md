@@ -7,9 +7,7 @@ tags:
   - AI agents
   - Evaluation
   - Sandboxing
-stage: Open source
+status: Open source
 order: 1
-figure: trials
-figure_alt: Rows of discs that light up or stay eclipsed as an evaluation sweep passes, with the skill on the left and without it on the right
-status: published
+artwork_alt: Rows of discs that light up or stay eclipsed as an evaluation sweep passes, with the skill on the left and without it on the right
 ---

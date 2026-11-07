@@ -1,8 +1,9 @@
-import { circle, figurePadding, roundedRect } from "../geometry";
-import { clamp, hash } from "../math";
-import type { Motif } from "./types";
+import { defineArtwork } from "@/lib/riso/artwork";
+import { circle, figurePadding, roundedRect } from "@/lib/riso/geometry";
+import { clamp, hash } from "@/lib/riso/math";
+import type { Motif } from "@/lib/riso/motifs/types";
 
-export interface ForecastOptions {
+interface ForecastOptions {
   bars: number;
   speed: number;
 }
@@ -17,7 +18,7 @@ const seasonal = (k: number) =>
  * Demand forecasting: rounded bars of past demand scrolling toward a "now" line,
  * followed by widening forecast intervals.
  */
-export function forecast({ bars: N, speed }: ForecastOptions): Motif {
+function forecast({ bars: N, speed }: ForecastOptions): Motif {
   return (P, W, H, t) => {
     P.background("ink");
     const pad = figurePadding(W, H);
@@ -85,3 +86,7 @@ export function forecast({ bars: N, speed }: ForecastOptions): Motif {
     );
   };
 }
+
+export default defineArtwork({
+  create: () => forecast({ bars: 26, speed: 1.2 }),
+});

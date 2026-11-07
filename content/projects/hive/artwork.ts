@@ -1,9 +1,10 @@
-import { circle, hexagon } from "../geometry";
-import { clamp, ease, hash } from "../math";
-import type { InkKey } from "../painter";
-import type { Motif } from "./types";
+import { defineArtwork } from "@/lib/riso/artwork";
+import { circle, hexagon } from "@/lib/riso/geometry";
+import { clamp, ease, hash } from "@/lib/riso/math";
+import type { InkKey } from "@/lib/riso/painter";
+import type { Motif } from "@/lib/riso/motifs/types";
 
-export interface HiveOptions {
+interface HiveOptions {
   /** Number of tiles in a finished cluster. */
   tiles: number;
   speed: number;
@@ -122,7 +123,7 @@ function playGame(count: number, epoch: number): Game {
 }
 
 /** hive: hexagonal tiles form a cluster as possible placements are scored and one is selected. */
-export function hive({ tiles: N, speed }: HiveOptions): Motif {
+function hive({ tiles: N, speed }: HiveOptions): Motif {
   let cachedEpoch = Number.NaN;
   let game: Game | null = null;
 
@@ -202,3 +203,8 @@ export function hive({ tiles: N, speed }: HiveOptions): Motif {
     });
   };
 }
+
+export default defineArtwork({
+  create: () => hive({ tiles: 13, speed: 0.9 }),
+  startTime: 2,
+});

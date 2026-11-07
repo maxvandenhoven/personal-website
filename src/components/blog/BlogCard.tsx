@@ -10,8 +10,8 @@ export function BlogCard({ post }: BlogCardProps) {
     <Card
       href={post.href}
       external={post.external}
-      figure={post.figure}
-      figureAlt={post.figureAlt}
+      artwork={post.artwork}
+      artworkAlt={post.artworkAlt}
       title={post.title}
       description={post.description}
       tags={post.tags}

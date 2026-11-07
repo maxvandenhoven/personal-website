@@ -1,19 +1,12 @@
 /**
- * Names of every risograph figure, kept free of DOM code so the content schema
- * (src/content.config.ts) and server-rendered components can import them.
+ * Figure IDs. Kept free of DOM code so the content schema and server-rendered
+ * components can import them.
+ *
+ * - Glyphs are the small square figures for the homepage skill categories.
+ * - Artworks belong to a blog post or project and are identified by
+ *   "<collection>/<slug>", e.g. "projects/hive" (see registry.ts).
  */
 
-/** Large 16:9 illustrations for project and blog cards. */
-export const ILLUSTRATIONS = [
-  "trials",
-  "hive",
-  "imposter",
-  "site",
-  "sandboxes",
-  "forecast",
-] as const;
-
-/** Small square glyphs for the skill categories. */
 export const GLYPHS = [
   "languages",
   "machine-learning",
@@ -21,12 +14,8 @@ export const GLYPHS = [
   "infrastructure",
 ] as const;
 
-export type Illustration = (typeof ILLUSTRATIONS)[number];
 export type Glyph = (typeof GLYPHS)[number];
-export type FigureId = Illustration | Glyph;
 
-const FIGURE_IDS: ReadonlySet<string> = new Set([...ILLUSTRATIONS, ...GLYPHS]);
-
-export function isFigureId(value: string): value is FigureId {
-  return FIGURE_IDS.has(value);
+export function isGlyph(value: string): value is Glyph {
+  return (GLYPHS as readonly string[]).includes(value);
 }

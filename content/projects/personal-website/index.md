@@ -5,9 +5,7 @@ github_link: https://github.com/maxvandenhoven/personal-website
 tags:
   - Web development
   - Generative art
-stage: Open source
+status: Open source
 order: 4
-figure: site
-figure_alt: Markdown files are built block by block into a static page, and then only a few islands on the page come alive
-status: published
+artwork_alt: Markdown files are built block by block into a static page, and then only a few islands on the page come alive
 ---

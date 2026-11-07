@@ -14,11 +14,11 @@ export const sampleProject: ProjectSummary = {
   description:
     "A framework for evaluating agent skills across models and coding agents. By comparing isolated runs with and without a skill, it helps check whether the agent selects the instructions, follows the workflow, and produces a better result.",
   tags: ["AI agents", "Evaluation", "Sandboxing"],
-  figure: "trials",
-  figureAlt:
+  artwork: "projects/skill-evals",
+  artworkAlt:
     "Rows of discs that light up or stay eclipsed as an evaluation sweep passes",
   url: "https://github.com/maxvandenhoven/skill-evals",
-  stage: "Open source",
+  status: "Open source",
 };
 
 export const sampleProjects: ProjectSummary[] = [
@@ -30,10 +30,10 @@ export const sampleProjects: ProjectSummary[] = [
     description:
       "Hive is a two-player game in which insect tiles are used to surround the opponent's queen.",
     tags: ["Games", "Search", "Evaluation"],
-    figure: "hive",
-    figureAlt:
+    artwork: "projects/hive",
+    artworkAlt:
       "Hexagonal tiles form a cluster as possible placements are scored",
-    stage: "In development",
+    status: "In development",
   },
   {
     ...sampleProject,
@@ -43,8 +43,8 @@ export const sampleProjects: ProjectSummary[] = [
     description:
       "Built with Astro, React, and TypeScript, this site also gives me somewhere to experiment with generative illustrations.",
     tags: ["Web development", "Generative art"],
-    figure: "site",
-    figureAlt: "Markdown files are built block by block into a static page",
+    artwork: "projects/personal-website",
+    artworkAlt: "Markdown files are built block by block into a static page",
   },
 ];
 
@@ -54,8 +54,8 @@ export const samplePost: PostSummary = {
   description:
     "Running coding agents unattended raises questions about the access and credentials they need.",
   tags: ["AI agents", "Sandboxing", "Security"],
-  figure: "sandboxes",
-  figureAlt: "Agents moving inside rounded sandboxes, with one unguarded lane",
+  artwork: "blogs/the-risks-of-unprotected-agents-and-how-to-mitigate-them",
+  artworkAlt: "Agents moving inside rounded sandboxes, with one unguarded lane",
   href: "https://xebia.com/blog/the-risks-of-unprotected-agents-and-how-to-mitigate-them/",
   external: true,
   linkLabel: "Read on Xebia",

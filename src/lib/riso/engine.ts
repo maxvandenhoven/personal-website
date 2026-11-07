@@ -1,8 +1,7 @@
-import { isFigureId } from "./catalog";
-import { FIGURES } from "./figures";
 import type { Motif } from "./motifs/types";
 import { createPainter, type Painter } from "./painter";
 import { readPalette } from "./palette";
+import { loadFigure } from "./registry";
 import { getRisoState, subscribeRiso } from "./settings";
 
 /**
@@ -87,40 +86,57 @@ function renderFrame(now: number): void {
   frameRequest = figures.size > 0 ? requestAnimationFrame(renderFrame) : 0;
 }
 
+/** Canvases whose artwork is still loading, so they are not mounted twice. */
+const loading = new Set<HTMLCanvasElement>();
+
+function startLoop(): void {
+  if (frameRequest) return;
+  lastFrame = performance.now();
+  frameRequest = requestAnimationFrame(renderFrame);
+}
+
 /**
  * Start animating every figure canvas inside `root`. Canvases that are already
- * mounted are skipped. Returns a function that unmounts the figures again.
+ * mounted are skipped. Artworks load asynchronously, so a figure starts as soon
+ * as its module arrives. Returns a function that unmounts the figures again.
  */
 export function mountFigures(root: ParentNode = document): () => void {
   setup();
   const mounted: HTMLCanvasElement[] = [];
+  let active = true;
+
   for (const canvas of root.querySelectorAll<HTMLCanvasElement>(
     FIGURE_SELECTOR,
   )) {
+    if (figures.has(canvas) || loading.has(canvas)) continue;
     const id = canvas.dataset.figure ?? "";
-    if (figures.has(canvas)) continue;
-    if (!isFigureId(id)) {
-      console.warn(`Unknown figure "${id}"`);
-      continue;
-    }
-    const spec = FIGURES[id];
-    figures.set(canvas, {
-      motif: spec.create(),
-      clock: spec.startTime ?? 0,
-      dirty: true,
-      visible: true,
-      lastDrawn: 0,
-    });
-    observer?.observe(canvas);
+    loading.add(canvas);
     mounted.push(canvas);
-  }
-
-  if (mounted.length > 0 && !frameRequest) {
-    lastFrame = performance.now();
-    frameRequest = requestAnimationFrame(renderFrame);
+    loadFigure(id)
+      .then((artwork) => {
+        if (!active) return;
+        if (!artwork) {
+          console.warn(`No artwork found for figure "${id}"`);
+          return;
+        }
+        figures.set(canvas, {
+          motif: artwork.create(),
+          clock: artwork.startTime ?? 0,
+          dirty: true,
+          visible: true,
+          lastDrawn: 0,
+        });
+        observer?.observe(canvas);
+        startLoop();
+      })
+      .catch((error: unknown) =>
+        console.error(`Failed to load figure "${id}"`, error),
+      )
+      .finally(() => loading.delete(canvas));
   }
 
   return () => {
+    active = false;
     for (const canvas of mounted) {
       figures.delete(canvas);
       observer?.unobserve(canvas);

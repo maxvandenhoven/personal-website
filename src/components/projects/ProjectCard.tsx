@@ -10,13 +10,13 @@ export function ProjectCard({ project }: ProjectCardProps) {
     <Card
       href={project.url}
       external
-      figure={project.figure}
-      figureAlt={project.figureAlt}
+      artwork={project.artwork}
+      artworkAlt={project.artworkAlt}
       title={project.title}
       monospaceTitle={project.monospaceTitle}
       description={project.description}
       tags={project.tags}
-      meta={project.stage}
+      meta={project.status}
       action="View on GitHub"
     />
   );

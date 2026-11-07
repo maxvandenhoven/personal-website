@@ -1,11 +1,16 @@
-import { getCollection, getEntry, type CollectionEntry } from "astro:content";
+import {
+  getCollection,
+  getEntry,
+  type CollectionEntry,
+  type CollectionKey,
+} from "astro:content";
 import { formatDate } from "./format";
-import type { Illustration } from "./riso/catalog";
+import { artworkId, hasArtwork } from "./riso/registry";
 
 /**
  * Build-time access to the CMS in content/. Pages use these helpers instead of
- * querying collections directly, so filtering, sorting and the shape of the data
- * passed to components live in one place.
+ * querying collections directly, so filtering, sorting, validation and the
+ * shape of the data passed to components live in one place.
  */
 
 export type BlogEntry = CollectionEntry<"blogs">;
@@ -17,10 +22,12 @@ export interface ProjectSummary {
   monospaceTitle: boolean;
   description: string;
   tags: string[];
-  figure: Illustration;
-  figureAlt: string;
+  /** Figure ID of the project's artwork. */
+  artwork: string;
+  artworkAlt: string;
   url: string;
-  stage: string;
+  /** e.g. "Open source" or "In development". */
+  status: string;
 }
 
 /** Everything a blog card needs. */
@@ -29,16 +36,31 @@ export interface PostSummary {
   title: string;
   description: string;
   tags: string[];
-  figure: Illustration;
-  figureAlt: string;
+  /** Figure ID of the post's artwork. */
+  artwork: string;
+  artworkAlt: string;
   href: string;
   /** Whether `href` points to another site. */
   external: boolean;
-  /** Call to action, e.g. "Read on Xebia". */
+  /** Call to action, e.g. "Read on Xebia" or "Read article". */
   linkLabel: string;
-  /** "31 Jul 2026", or "Updated 3 Sep 2026" for revised articles. */
+  /** e.g. "31 Jul 2026". */
   dateLabel: string;
   readingTime: string;
+}
+
+/** Drafts are visible while developing (`make dev`) and excluded from the build. */
+function isVisible({ data }: { data: { draft: boolean } }): boolean {
+  return import.meta.env.DEV || !data.draft;
+}
+
+/** Fail the build when a visible entry has no artwork.ts next to its index.md. */
+function requireArtwork(collection: CollectionKey, slug: string): string {
+  const id = artworkId(collection, slug);
+  if (!hasArtwork(id)) {
+    throw new Error(`Missing artwork: add content/${id}/artwork.ts`);
+  }
+  return id;
 }
 
 export async function getSiteConfig() {
@@ -57,7 +79,7 @@ export async function getHomepageConfig() {
   return entry.data;
 }
 
-/** Pick items by slug in the given order, failing the build on unknown or unpublished slugs. */
+/** Pick items by slug in the given order, failing the build on unknown or draft slugs. */
 export function selectBySlug<T extends { slug: string }>(
   items: readonly T[],
   slugs: readonly string[],
@@ -67,17 +89,14 @@ export function selectBySlug<T extends { slug: string }>(
     const item = items.find((candidate) => candidate.slug === slug);
     if (!item)
       throw new Error(
-        `Featured ${kind} "${slug}" does not exist or is not published`,
+        `Featured ${kind} "${slug}" does not exist or is a draft`,
       );
     return item;
   });
 }
 
 export async function getProjects(): Promise<ProjectSummary[]> {
-  const entries = await getCollection(
-    "projects",
-    ({ data }) => data.status === "published",
-  );
+  const entries = await getCollection("projects", isVisible);
   return entries
     .sort((a, b) => a.data.order - b.data.order)
     .map(({ id, data }) => ({
@@ -86,37 +105,37 @@ export async function getProjects(): Promise<ProjectSummary[]> {
       monospaceTitle: data.monospace_title,
       description: data.description,
       tags: data.tags,
-      figure: data.figure,
-      figureAlt: data.figure_alt,
+      artwork: requireArtwork("projects", id),
+      artworkAlt: data.artwork_alt,
       url: data.github_link,
-      stage: data.stage,
+      status: data.status,
     }));
 }
 
-/** Date used for ordering: the last revision if there is one. */
-function sortDate(post: BlogEntry): string {
-  return post.data.updated_date ?? post.data.publish_date;
+/** Whether the post is hosted on this site (rather than linking elsewhere). */
+export function isLocalPost(post: BlogEntry): boolean {
+  return !post.data.external;
 }
 
-/** Whether the post has its own page on this site (it has a Markdown body). */
-export function hasLocalPage(post: BlogEntry): boolean {
-  return Boolean(post.body?.trim());
-}
-
-/** Published posts, most recently published or updated first. */
-export async function getPublishedPosts(): Promise<BlogEntry[]> {
-  const entries = await getCollection(
-    "blogs",
-    ({ data }) => data.status === "published",
-  );
+/** Visible posts, newest first. Each is either hosted here or links elsewhere, never both. */
+export async function getBlogPosts(): Promise<BlogEntry[]> {
+  const entries = await getCollection("blogs", isVisible);
   for (const post of entries) {
-    if (!post.data.external && !hasLocalPage(post)) {
+    const hasBody = Boolean(post.body?.trim());
+    if (post.data.external && hasBody) {
       throw new Error(
-        `Blog post "${post.id}" needs either a Markdown body or an external link`,
+        `Blog post "${post.id}" links to ${post.data.external.name} but also has a Markdown body; remove one of them`,
+      );
+    }
+    if (!post.data.external && !hasBody) {
+      throw new Error(
+        `Blog post "${post.id}" needs a Markdown body or an external link`,
       );
     }
   }
-  return entries.sort((a, b) => sortDate(b).localeCompare(sortDate(a)));
+  return entries.sort((a, b) =>
+    b.data.publish_date.localeCompare(a.data.publish_date),
+  );
 }
 
 export function toPostSummary(post: BlogEntry): PostSummary {
@@ -126,18 +145,16 @@ export function toPostSummary(post: BlogEntry): PostSummary {
     title: data.title,
     description: data.description,
     tags: data.tags,
-    figure: data.figure,
-    figureAlt: data.figure_alt,
-    href: data.external?.url ?? `/blog/${post.id}`,
+    artwork: requireArtwork("blogs", post.id),
+    artworkAlt: data.artwork_alt,
+    href: data.external?.url ?? `/blog/${post.id}/`,
     external: Boolean(data.external),
-    linkLabel: data.external ? `Read on ${data.external.site}` : "Read article",
-    dateLabel: data.updated_date
-      ? `Updated ${formatDate(data.updated_date)}`
-      : formatDate(data.publish_date),
+    linkLabel: data.external ? `Read on ${data.external.name}` : "Read article",
+    dateLabel: formatDate(data.publish_date),
     readingTime: data.reading_time,
   };
 }
 
 export async function getPosts(): Promise<PostSummary[]> {
-  return (await getPublishedPosts()).map(toPostSummary);
+  return (await getBlogPosts()).map(toPostSummary);
 }

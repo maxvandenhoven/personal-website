@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { GLYPHS, ILLUSTRATIONS } from "../../lib/riso/catalog";
+import { GLYPHS } from "../../lib/riso/catalog";
+import { ARTWORK_IDS } from "../../lib/riso/registry";
 import { RisoFigure } from "./RisoFigure";
 
 const meta = {
@@ -7,10 +8,10 @@ const meta = {
   component: RisoFigure,
   tags: ["autodocs"],
   argTypes: {
-    figure: { control: "select", options: [...ILLUSTRATIONS, ...GLYPHS] },
+    figure: { control: "select", options: [...ARTWORK_IDS, ...GLYPHS] },
   },
   args: {
-    figure: "trials",
+    figure: "projects/skill-evals",
     label: "Rows of discs that light up as an evaluation sweep passes",
     className: "rounded-art aspect-video w-[480px]",
   },
@@ -19,7 +20,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Illustration: Story = {};
+export const Artwork: Story = {};
 
 export const Glyph: Story = {
   args: {
@@ -29,16 +30,21 @@ export const Glyph: Story = {
   },
 };
 
-export const AllIllustrations: Story = {
+/** Every content/<collection>/<slug>/artwork.ts, drafts included. */
+export const AllArtworks: Story = {
   render: () => (
     <div className="grid grid-cols-2 gap-6">
-      {ILLUSTRATIONS.map((figure) => (
-        <RisoFigure
-          key={figure}
-          figure={figure}
-          label={figure}
-          className="rounded-art aspect-video w-full"
-        />
+      {ARTWORK_IDS.map((id) => (
+        <figure key={id} className="flex flex-col gap-2">
+          <RisoFigure
+            figure={id}
+            label={id}
+            className="rounded-art aspect-video w-full"
+          />
+          <figcaption className="text-muted text-2xs font-mono">
+            {id}
+          </figcaption>
+        </figure>
       ))}
     </div>
   ),
@@ -47,10 +53,10 @@ export const AllIllustrations: Story = {
 export const AllGlyphs: Story = {
   render: () => (
     <div className="flex gap-3">
-      {GLYPHS.map((figure) => (
+      {GLYPHS.map((glyph) => (
         <RisoFigure
-          key={figure}
-          figure={figure}
+          key={glyph}
+          figure={glyph}
           className="rounded-chip size-10"
         />
       ))}

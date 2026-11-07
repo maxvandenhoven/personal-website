@@ -1,9 +1,10 @@
-import { circle, roundedRect } from "../geometry";
-import { clamp, ease, hash } from "../math";
-import type { InkKey } from "../painter";
-import type { Motif } from "./types";
+import { defineArtwork } from "@/lib/riso/artwork";
+import { circle, roundedRect } from "@/lib/riso/geometry";
+import { clamp, ease, hash } from "@/lib/riso/math";
+import type { InkKey } from "@/lib/riso/painter";
+import type { Motif } from "@/lib/riso/motifs/types";
 
-export interface ImposterOptions {
+interface ImposterOptions {
   players: number;
   speed: number;
 }
@@ -24,7 +25,7 @@ function pop(progress: number): number {
  * imposter: seats around a table take turns giving clues, then cast votes as
  * lines across the table, and the imposter is revealed.
  */
-export function imposter({ players: N, speed }: ImposterOptions): Motif {
+function imposter({ players: N, speed }: ImposterOptions): Motif {
   return (P, W, H, t) => {
     P.background("ink");
     const cx = W / 2;
@@ -129,3 +130,8 @@ export function imposter({ players: N, speed }: ImposterOptions): Motif {
     }
   };
 }
+
+export default defineArtwork({
+  create: () => imposter({ players: 7, speed: 1 }),
+  startTime: 1,
+});

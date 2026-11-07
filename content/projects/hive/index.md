@@ -7,9 +7,7 @@ tags:
   - Games
   - Search
   - Evaluation
-stage: In development
+status: In development
 order: 2
-figure: hive
-figure_alt: Hexagonal tiles form a cluster as possible placements are scored and one is selected
-status: published
+artwork_alt: Hexagonal tiles form a cluster as possible placements are scored and one is selected
 ---

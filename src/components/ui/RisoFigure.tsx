@@ -1,8 +1,8 @@
-import type { FigureId } from "../../lib/riso/catalog";
 import { ArtFrame } from "./ArtFrame";
 
 interface RisoFigureProps {
-  figure: FigureId;
+  /** A glyph name or an artwork ID such as "projects/hive". */
+  figure: string;
   /** Description for screen readers; omit for purely decorative figures. */
   label?: string;
   /** Size, aspect ratio and corner radius of the frame. */
@@ -11,7 +11,8 @@ interface RisoFigureProps {
 
 /**
  * An animated risograph figure. Renders an empty canvas; the riso engine
- * (src/lib/riso/engine.ts) finds it by its `data-figure` attribute and paints it.
+ * (src/lib/riso/engine.ts) finds it by its `data-figure` attribute, loads the
+ * matching artwork and paints it.
  */
 export function RisoFigure({ figure, label, className }: RisoFigureProps) {
   const a11y = label

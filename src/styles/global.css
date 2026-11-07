@@ -2,6 +2,8 @@
 
 /* The reference mockups in docs/ are plain HTML; keep their class names out of the generated CSS. */
 @source not "../../docs";
+/* Emitted by the Markdown pipeline (footnote headings), so not found in our sources. */
+@source inline("sr-only");
 
 /*
  * Design tokens. The page itself stays calm (paper, ink, one accent); the generative
@@ -45,6 +47,11 @@
   --color-brand-red: #d7272f;
   --color-swatch-slate: #6a7f9d;
   --color-swatch-sun: #e9b13c;
+
+  /* Syntax highlighting in articles (alongside ink, muted and accent) */
+  --color-code-string: #3f6b3a;
+  --color-code-function: #2f5d8a;
+  --color-code-constant: #8a5a00;
 
   --font-sans: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "Martian Mono", ui-monospace, Menlo, monospace;
@@ -92,6 +99,8 @@
   --container-measure: 46ch;
   --container-measure-md: 48ch;
   --container-measure-lg: 56ch;
+  /* Article column: ~65 characters of body text; a fixed width so every block lines up */
+  --container-article: 680px;
 
   --radius-*: initial;
   --radius-chip: 6px;
@@ -223,22 +232,42 @@
     background: var(--color-card);
   }
 
-  /* Rendered Markdown in blog posts */
+  /*
+   * Rendered Markdown in articles. Body text uses the ink colour (not muted) and
+   * a generous line height for long-form reading.
+   */
   .prose {
     font-size: var(--text-lg);
     line-height: var(--leading-prose);
     color: var(--color-ink);
+    overflow-wrap: break-word;
+
+    /* Shiki's css-variables theme (astro.config.ts) */
+    --astro-code-foreground: var(--color-ink);
+    --astro-code-background: var(--color-card);
+    --astro-code-token-keyword: var(--color-accent);
+    --astro-code-token-string: var(--color-code-string);
+    --astro-code-token-string-expression: var(--color-code-string);
+    --astro-code-token-function: var(--color-code-function);
+    --astro-code-token-constant: var(--color-code-constant);
+    --astro-code-token-parameter: var(--color-ink);
+    --astro-code-token-comment: var(--color-muted);
+    --astro-code-token-punctuation: var(--color-muted);
+    --astro-code-token-link: var(--color-accent);
+    --astro-code-token-inserted: var(--color-code-string);
+    --astro-code-token-deleted: var(--color-accent);
   }
   .prose > * + * {
     margin-top: 1.25em;
   }
-  .prose h2,
-  .prose h3,
-  .prose h4 {
+
+  /* Headings; h1 in a body is treated as a section heading, since the page has its own */
+  .prose :is(h1, h2, h3, h4) {
     margin-top: 2.2em;
+    scroll-margin-top: calc(var(--spacing) * 24);
     line-height: var(--leading-heading);
   }
-  .prose h2 {
+  .prose :is(h1, h2) {
     font-size: var(--text-4xl);
     line-height: var(--leading-display);
   }
@@ -250,21 +279,27 @@
     font-weight: var(--font-weight-title);
     letter-spacing: var(--tracking-title);
   }
-  .prose :is(h2, h3, h4) + * {
+  .prose :is(h1, h2, h3, h4) + * {
     margin-top: 0.75em;
   }
+
   .prose a {
     text-decoration: underline;
     text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 1px;
     text-underline-offset: 3px;
     transition: color 0.2s;
   }
   .prose a:hover {
     color: var(--color-accent);
   }
-  .prose ul,
-  .prose ol {
-    padding-left: 1.25em;
+  .prose strong {
+    font-weight: var(--font-weight-title);
+  }
+
+  /* Lists */
+  .prose :is(ul, ol) {
+    padding-left: 1.4em;
   }
   .prose ul {
     list-style-type: disc;
@@ -272,56 +307,123 @@
   .prose ol {
     list-style-type: decimal;
   }
-  .prose li + li {
+  .prose li + li,
+  .prose li > :is(ul, ol) {
     margin-top: 0.4em;
   }
   .prose li::marker {
     color: var(--color-accent);
   }
-  .prose strong {
-    font-weight: var(--font-weight-title);
+  .prose ol > li::marker {
+    font-family: var(--font-mono);
+    font-size: 0.8em;
   }
+  .prose ul.contains-task-list {
+    padding-left: 0;
+    list-style: none;
+  }
+  .prose .task-list-item input {
+    margin-right: 0.6em;
+    accent-color: var(--color-accent);
+  }
+
   .prose blockquote {
     padding-left: var(--spacing-inset);
     border-left: 2px solid var(--color-accent);
     color: var(--color-muted);
   }
-  .prose img {
-    max-width: 100%;
-    border: 1px solid var(--color-rule);
-    border-radius: var(--radius-art);
-  }
   .prose hr {
-    border-top: 1px solid var(--color-rule);
     margin-block: 2.5em;
+    border-top: 1px solid var(--color-rule);
   }
-  .prose code {
+
+  /* Images keep their natural size up to the column width */
+  .prose img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-art);
+    outline: 1px solid var(--color-rule);
+    outline-offset: -1px;
+  }
+
+  /* Inline code and keyboard keys */
+  .prose :is(code, kbd) {
     font-family: var(--font-mono);
-    font-size: 0.82em;
+    font-size: 0.8em;
   }
-  .prose :not(pre) > code {
+  .prose :not(pre) > code,
+  .prose kbd {
     padding: 0.15em 0.4em;
     border-radius: var(--radius-chip);
     background: var(--color-chip);
   }
+  .prose kbd {
+    border: 1px solid var(--color-rule);
+  }
+
+  /* Code blocks: framed like cards, scrolling sideways instead of wrapping */
   .prose pre {
     padding: var(--spacing-inset);
     overflow-x: auto;
+    border: 1px solid var(--color-rule);
     border-radius: var(--radius-card);
     font-size: var(--text-sm);
     line-height: var(--leading-copy);
+    tab-size: 2;
   }
   .prose pre code {
     font-size: inherit;
   }
+  .prose pre span[style*="token-comment"] {
+    font-style: italic;
+  }
+  .prose pre[data-language]:not([data-language="plaintext"])::before {
+    content: attr(data-language);
+    display: block;
+    margin-bottom: var(--spacing-frame);
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  /* Tables scroll sideways on narrow screens */
   .prose table {
-    width: 100%;
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
     border-collapse: collapse;
     font-size: var(--text-md);
+    font-variant-numeric: tabular-nums;
   }
   .prose :is(th, td) {
-    padding: 0.5em 0.75em;
+    padding: 0.6em 1em 0.6em 0;
     border-bottom: 1px solid var(--color-rule);
     text-align: left;
+    vertical-align: top;
+  }
+  .prose :is(th, td)[align="right"] {
+    text-align: right;
+  }
+  .prose th {
+    border-bottom-color: var(--color-ink);
+    font-weight: var(--font-weight-title);
+  }
+
+  /* Footnotes */
+  .prose .footnotes {
+    margin-top: 3em;
+    padding-top: var(--spacing-inset);
+    border-top: 1px solid var(--color-rule);
+    color: var(--color-muted);
+    font-size: var(--text-md);
+  }
+  .prose [data-footnote-ref] {
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 0.75em;
   }
 }

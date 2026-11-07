@@ -1,10 +1,10 @@
 import rss from "@astrojs/rss";
 import type { APIContext } from "astro";
-import { getPublishedPosts, getSiteConfig, hasLocalPage } from "../lib/content";
+import { getBlogPosts, getSiteConfig } from "../lib/content";
 
 export async function GET(context: APIContext) {
   const site = await getSiteConfig();
-  const posts = await getPublishedPosts();
+  const posts = await getBlogPosts();
 
   return rss({
     title: site.name,
@@ -15,11 +15,7 @@ export async function GET(context: APIContext) {
       pubDate: new Date(post.data.publish_date),
       description: post.data.description,
       categories: post.data.tags,
-      // Prefer the local copy; posts without one only exist on the external site.
-      link:
-        post.data.external && !hasLocalPage(post)
-          ? post.data.external.url
-          : `/blog/${post.id}/`,
+      link: post.data.external?.url ?? `/blog/${post.id}/`,
     })),
   });
 }

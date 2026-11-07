@@ -14,8 +14,9 @@ const meta = {
   ],
   args: {
     href: "#",
-    figure: "forecast",
-    figureAlt: "Bars of past demand followed by widening forecast intervals",
+    artwork:
+      "blogs/7-practical-tips-for-demand-forecasting-experimentation-and-modeling",
+    artworkAlt: "Bars of past demand followed by widening forecast intervals",
     title:
       "7 practical tips for demand forecasting: experimentation and modeling",
     description:
@@ -35,7 +36,7 @@ export const MonospaceTitle: Story = {
   args: {
     title: "imposter",
     monospaceTitle: true,
-    figure: "imposter",
+    artwork: "projects/imposter",
     meta: "Open source",
     action: "View on GitHub",
   },

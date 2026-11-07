@@ -7,9 +7,7 @@ tags:
   - AI agents
   - Games
   - Observability
-stage: Open source
+status: Open source
 order: 3
-figure: imposter
-figure_alt: Seats around a table take turns giving clues, then cast votes as lines across the table, and the imposter is revealed
-status: published
+artwork_alt: Seats around a table take turns giving clues, then cast votes as lines across the table, and the imposter is revealed
 ---

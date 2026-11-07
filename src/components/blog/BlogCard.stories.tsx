@@ -28,7 +28,7 @@ export const LocalArticle: Story = {
       href: "/blog/hello-world",
       external: false,
       linkLabel: "Read article",
-      dateLabel: "Updated 3 Sep 2026",
+      dateLabel: "1 Aug 2026",
     },
   },
 };

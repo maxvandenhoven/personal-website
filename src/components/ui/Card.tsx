@@ -1,4 +1,3 @@
-import type { Illustration } from "../../lib/riso/catalog";
 import { Arrow } from "./Arrow";
 import { RisoFigure } from "./RisoFigure";
 import { TagList } from "./TagList";
@@ -7,14 +6,16 @@ export interface CardProps {
   href: string;
   /** Opens in a new tab. */
   external?: boolean;
-  figure: Illustration;
-  figureAlt: string;
+  /** Figure ID of the artwork, e.g. "projects/hive". */
+  artwork: string;
+  /** Description of the artwork for screen readers. */
+  artworkAlt: string;
   title: string;
   /** Set the title in the monospace font, for repository-style names. */
   monospaceTitle?: boolean;
   description: string;
   tags: readonly string[];
-  /** Left side of the footer, e.g. "Open source" or a date. */
+  /** Left side of the footer, e.g. a project status or a date. */
   meta: string;
   /** Call to action on the right of the footer, e.g. "View on GitHub". */
   action: string;
@@ -27,8 +28,8 @@ export interface CardProps {
 export function Card({
   href,
   external = false,
-  figure,
-  figureAlt,
+  artwork,
+  artworkAlt,
   title,
   monospaceTitle = false,
   description,
@@ -44,8 +45,8 @@ export function Card({
       className="group rounded-card border-rule bg-card px-frame pt-frame pb-inset hover:border-ink hover:shadow-lift flex flex-col gap-5 border transition-[border-color,transform,box-shadow] duration-250 hover:-translate-y-[3px]"
     >
       <RisoFigure
-        figure={figure}
-        label={figureAlt}
+        figure={artwork}
+        label={artworkAlt}
         className="rounded-art aspect-video w-full"
       />
       <div className="px-card-text flex flex-1 flex-col gap-3">
