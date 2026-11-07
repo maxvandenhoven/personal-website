@@ -1,7 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Icon, type IconName } from "./Icon";
 
-const NAMES: IconName[] = ["github", "linkedin", "play", "pause", "close"];
+const NAMES: IconName[] = [
+  "github",
+  "linkedin",
+  "play",
+  "pause",
+  "menu",
+  "close",
+];
 
 const meta = {
   title: "UI/Icon",

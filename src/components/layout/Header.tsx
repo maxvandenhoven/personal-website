@@ -1,6 +1,7 @@
 import { NAV_LINKS, type NavPage } from "../../lib/navigation";
 import { MotionToggle } from "../riso/MotionToggle";
 import { Logo } from "../ui/Logo";
+import { NavMenu } from "./NavMenu";
 
 interface HeaderProps {
   name: string;
@@ -8,7 +9,10 @@ interface HeaderProps {
   currentPage?: NavPage;
 }
 
-/** Sticky, translucent site header that bleeds to the viewport edges. */
+/**
+ * Sticky, translucent site header that bleeds to the viewport edges. Below the
+ * md breakpoint the inline links make way for a menu button.
+ */
 export function Header({ name, currentPage }: HeaderProps) {
   return (
     <header className="bg-paper/88 border-rule -mx-page px-page sticky top-0 z-20 border-b backdrop-blur-[10px]">
@@ -36,6 +40,7 @@ export function Header({ name, currentPage }: HeaderProps) {
           ))}
         </div>
         <MotionToggle className="max-md:ml-auto" />
+        <NavMenu currentPage={currentPage} className="md:hidden" />
       </nav>
     </header>
   );

@@ -35,7 +35,8 @@ const banner = bannerKey ? banners[bannerKey].default.src : undefined;
   ogImage={banner}
   background={false}
 >
-  <article class="flex flex-col gap-12">
+  <!-- One centred reading column, heading included, so every block lines up -->
+  <article class="max-w-article mx-auto flex w-full flex-col gap-12">
     <PageHeading
       id="post-h"
       index={sectionIndex("blog")}
@@ -43,7 +44,7 @@ const banner = bannerKey ? banners[bannerKey].default.src : undefined;
       lead={post.data.description}
     >
       <div
-        class="border-rule leading-label text-muted text-2xs max-w-article flex flex-wrap items-center justify-between gap-4 border-t pt-4 font-mono"
+        class="border-rule leading-label text-muted text-2xs flex flex-wrap items-center justify-between gap-4 border-t pt-4 font-mono"
       >
         <span>
           <time datetime={post.data.publish_date}>{summary.dateLabel}</time> · {
@@ -54,19 +55,17 @@ const banner = bannerKey ? banners[bannerKey].default.src : undefined;
       </div>
     </PageHeading>
     <!-- Kept to the text column: figures redraw every frame, so their cost grows with their area -->
-    <figure
-      class="rounded-card border-rule bg-card p-frame max-w-article w-full border"
-    >
+    <figure class="rounded-card border-rule bg-card p-frame w-full border">
       <RisoFigure
         figure={summary.artwork}
         label={summary.artworkAlt}
         className="rounded-art aspect-video w-full"
       />
     </figure>
-    <div class="prose max-w-article">
+    <div class="prose">
       <Content />
     </div>
-    <footer class="border-rule max-w-article border-t pt-6">
+    <footer class="border-rule border-t pt-6">
       <Pill href="/blog">
         All articles <Arrow className="group-hover:translate-x-1" />
       </Pill>

@@ -62,7 +62,7 @@ Additional npm scripts (used by Makefile and lint-staged):
 
 - Components live in `src/components/` organized by function:
   - `ui/` — primitives (Card, CardGrid, Chip, Pill, Tag, RisoFigure, FilterableList, ...)
-  - `layout/` — structural (Header, Footer, Section, SectionHeading, PageHeading)
+  - `layout/` — structural (Header, NavMenu, Footer, Section, SectionHeading, PageHeading)
   - `home/` — homepage sections (Hero, AboutStory, StudyPath, SkillGrid)
   - `blog/` and `projects/` — BlogCard and ProjectCard
   - `riso/` — MotionToggle

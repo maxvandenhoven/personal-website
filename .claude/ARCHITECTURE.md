@@ -33,7 +33,7 @@ personal-website/
 │   ├── content.config.ts         # Content collections and their schemas
 │   ├── components/               # React components, rendered statically by Astro
 │   │   ├── ui/                   # Primitives: Card, Chip, Pill, Tag, RisoFigure, ...
-│   │   ├── layout/               # Header, Footer, Section, SectionHeading, PageHeading
+│   │   ├── layout/               # Header, NavMenu, Footer, Section, SectionHeading, PageHeading
 │   │   ├── home/                 # Hero, AboutStory, StudyPath, SkillGrid
 │   │   ├── blog/                 # BlogCard
 │   │   ├── projects/             # ProjectCard
@@ -77,7 +77,7 @@ Page heading plus a card grid with single-select topic filters built from the it
 
 ### Article (`/blog/[slug]`)
 
-Generated for posts hosted on this site (no `external` link). Same heading, spacing and column as the rest of the site, then the post's artwork and the rendered Markdown in a 680px reading column. The interactive dot-grid background is turned off on these pages so the text stays legible; the artwork still animates.
+Generated for posts hosted on this site (no `external` link). Same heading style and spacing as the rest of the site, with everything (heading, artwork, rendered Markdown) in one centred 680px reading column. The interactive dot-grid background is turned off on these pages so the text stays legible; the artwork still animates.
 
 The prose styles in `global.css` cover headings (with anchor offsets for the sticky header), lists and task lists, block quotes, images (natural size up to the column width), inline code and `kbd`, code blocks (Shiki's `css-variables` theme mapped to the design tokens, labelled with their language, scrolling sideways), tables and footnotes. `content/blogs/hello-world` is a draft that uses all of them.
 
@@ -134,6 +134,7 @@ There are no hydrated React islands. Components render to static HTML, and one b
 
 - `tag-filter.ts`: topic filters on listing pages (`[data-tag-filter]`, cards expose `data-tags`)
 - `motion-toggle.ts`: play/pause button in the header
+- `nav-menu.ts`: the menu button that replaces the inline navigation below 900px
 - `lib/riso/engine.ts`: animates every `canvas[data-figure]`, loading each artwork on demand
 - `lib/riso/background.ts`: the page's dot grid that warms up near the pointer
 

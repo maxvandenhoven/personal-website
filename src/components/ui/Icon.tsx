@@ -29,6 +29,17 @@ const ICONS = {
       </>
     ),
   },
+  menu: {
+    viewBox: "0 0 14 14",
+    body: (
+      <path
+        d="M2 3.5h10M2 7h10M2 10.5h10"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    ),
+  },
   close: {
     viewBox: "0 0 12 12",
     body: (
