@@ -41,12 +41,6 @@
     transparent
   );
 
-  /* Brand mark */
-  --color-brand-ground: #0d0e13;
-  --color-brand-cream: #eee3c8;
-  --color-brand-red: #d7272f;
-  --color-brand-slate: #6a7f9d;
-
   /* Syntax highlighting in articles (alongside ink, muted and accent) */
   --color-code-string: #3f6b3a;
   --color-code-function: #2f5d8a;
