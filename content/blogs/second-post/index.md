@@ -3,10 +3,11 @@ title: Second Post (Draft)
 description: A draft post that should not appear in listings.
 reading_time: 2 min read
 tags:
-  - draft
-  - testing
+  - Testing
 status: draft
 publish_date: "2026-08-02"
+figure: trials
+figure_alt: Rows of discs that light up or stay eclipsed as an evaluation sweep passes
 ---
 
 # Second Post

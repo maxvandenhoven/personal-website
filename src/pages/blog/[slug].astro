@@ -1,76 +1,88 @@
 ---
 import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { PageHeading } from "../../components/layout";
+import { Arrow, RisoFigure, TagList } from "../../components/ui";
+import {
+  getPublishedPosts,
+  hasLocalPage,
+  toPostSummary,
+} from "../../lib/content";
+import { sectionIndex } from "../../lib/navigation";
 
-const bannerImages = import.meta.glob<{ default: ImageMetadata }>(
-  "/content/blogs/*/banner.{jpg,jpeg,png,webp}",
-  { eager: true },
-);
-
+/** Posts that only live elsewhere (no Markdown body) get no page of their own. */
 export const getStaticPaths = (async () => {
-  const posts = (await getCollection("blogs")).filter(
-    (post) => post.data.status === "published",
-  );
-  return posts.map((post) => ({
-    params: { slug: post.id },
-    props: { post },
-  }));
+  const posts = (await getPublishedPosts()).filter(hasLocalPage);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
 }) satisfies GetStaticPaths;
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 const { post } = Astro.props as Props;
 const { Content } = await render(post);
+const summary = toPostSummary(post);
+const { external } = post.data;
 
-const bannerKey = Object.keys(bannerImages).find((key) =>
+const banners = import.meta.glob<{ default: ImageMetadata }>(
+  "/content/blogs/*/banner.{jpg,jpeg,png,webp}",
+  { eager: true },
+);
+const bannerKey = Object.keys(banners).find((key) =>
   key.startsWith(`/content/blogs/${post.id}/banner.`),
 );
-const bannerSrc = bannerKey ? bannerImages[bannerKey].default.src : undefined;
-
-function formatDate(dateStr: string): string {
-  return new Date(dateStr + "T00:00:00").toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
+const banner = bannerKey ? banners[bannerKey].default.src : undefined;
 ---
 
 <BaseLayout
-  title={`${post.data.title} — Max van den Hoven`}
+  title={post.data.title}
   description={post.data.description}
+  currentPage="blog"
+  ogImage={banner}
+  canonical={external?.url}
 >
-  <article>
-    <header class="mx-auto max-w-[1100px] px-8 pt-16 pb-10">
-      <p class="text-text-secondary mb-4 text-sm">
-        <time datetime={post.data.publish_date}>
-          {formatDate(post.data.publish_date)}
-        </time>
-        &nbsp;&middot;&nbsp;
-        {post.data.reading_time}
-      </p>
-      <h1
-        class="font-heading mb-5 text-4xl leading-[1.1] font-bold tracking-[-0.03em]"
+  <article class="flex flex-col gap-12">
+    <PageHeading
+      id="post-h"
+      index={sectionIndex("blog")}
+      title={post.data.title}
+      lead={post.data.description}
+    >
+      <div
+        class="border-rule leading-label text-muted text-2xs flex flex-wrap items-center justify-between gap-4 border-t pt-4 font-mono"
       >
-        {post.data.title}
-      </h1>
-      <p class="text-text-secondary text-lg leading-relaxed">
-        {post.data.description}
-      </p>
-    </header>
-    {
-      bannerSrc && (
-        <div class="mx-auto max-w-[850px] px-8 pb-10">
-          <img
-            src={bannerSrc}
-            alt=""
-            class="w-full rounded-[14px] border-2 border-[#000] object-cover"
-          />
-        </div>
-      )
-    }
-    <div class="prose mx-auto max-w-[850px] px-8 pb-16">
+        <span>
+          <time datetime={post.data.updated_date ?? post.data.publish_date}
+            >{summary.dateLabel}</time
+          > · {summary.readingTime}
+        </span>
+        <TagList tags={post.data.tags} />
+      </div>
+    </PageHeading>
+    <!-- Kept to the text column: figures are redrawn every frame, so their cost grows with their area -->
+    <figure
+      class="rounded-card border-rule bg-card p-frame mx-auto w-full max-w-prose border"
+    >
+      <RisoFigure
+        figure={post.data.figure}
+        label={post.data.figure_alt}
+        className="rounded-art aspect-video w-full"
+      />
+    </figure>
+    <div class="prose mx-auto w-full max-w-prose">
       <Content />
     </div>
+    {
+      external && (
+        <p class="mx-auto w-full max-w-prose">
+          <a
+            href={external.url}
+            class="group text-muted hover:text-ink font-mono text-xs"
+          >
+            Originally published on {external.site}{" "}
+            <Arrow className="group-hover:translate-x-1" />
+          </a>
+        </p>
+      )
+    }
   </article>
 </BaseLayout>

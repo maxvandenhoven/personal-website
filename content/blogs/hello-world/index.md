@@ -3,10 +3,12 @@ title: Hello World
 description: My first blog post to test the content pipeline.
 reading_time: 3 min read
 tags:
-  - meta
-  - webdev
-status: published
+  - Meta
+  - Web development
+status: draft
 publish_date: "2026-08-01"
+figure: site
+figure_alt: Markdown files are built block by block into a static page, and then only a few islands on the page come alive
 ---
 
 # Hello World

@@ -1,12 +1,18 @@
 ---
-title: The Risks of Unprotected Agents and How to Mitigate Them
-description: As AI agents become more autonomous, mistakes can have serious consequences. This blog explores practical ways to contain risks using sandboxing, credential isolation, and security controls.
+title: The risks of unprotected agents and how to mitigate them
+description: Running coding agents unattended raises questions about the access and credentials they need. This article examines how isolation, credential proxying, and scoped permissions work together to limit the damage from mistakes or malicious instructions.
 reading_time: 17 min read
 tags:
-  - agents
-  - sandboxing
+  - AI agents
+  - Sandboxing
+  - Security
 status: published
 publish_date: "2026-07-31"
+external:
+  url: https://xebia.com/blog/the-risks-of-unprotected-agents-and-how-to-mitigate-them/
+  site: Xebia
+figure: sandboxes
+figure_alt: Agents moving inside rounded sandboxes, with one unguarded lane where agents wander out
 ---
 
 > This article is adapted from the [Xebia blog](https://xebia.com/blog/the-risks-of-unprotected-agents-and-how-to-mitigate-them/) with some minor edits.
