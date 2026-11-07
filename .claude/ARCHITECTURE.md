@@ -19,10 +19,13 @@ personal-website/
 │   ├── homepage.yaml             # Homepage sections
 │   ├── headshot.png              # Hero portrait (optimized to WebP at build time)
 │   ├── blogs/[slug]/
-│   │   ├── index.md              # Frontmatter + optional Markdown body
-│   │   ├── banner.jpg            # Optional; used as og:image for the post page
+│   │   ├── index.md              # Frontmatter, plus the article as Markdown if hosted here
+│   │   ├── artwork.ts            # The post's animated illustration
+│   │   ├── banner.jpg            # Optional; og:image for a hosted article
 │   │   └── images/               # Optional inline images (relative paths)
-│   └── projects/[slug]/index.md  # Frontmatter only
+│   └── projects/[slug]/
+│       ├── index.md              # Frontmatter only
+│       └── artwork.ts            # The project's animated illustration
 ├── docs/
 │   └── reference/                # Static HTML design reference (kept exactly as designed)
 ├── public/                       # Static assets served as-is (favicon, CNAME)
@@ -70,11 +73,13 @@ Unknown or unpublished featured slugs fail the build.
 
 ### Projects (`/projects`) and Blog (`/blog`)
 
-Page heading plus a card grid with single-select topic filters built from the items' tags. Projects are sorted by `order`; articles by `updated_date` (or `publish_date`), newest first.
+Page heading plus a card grid with single-select topic filters built from the items' tags. Projects are sorted by `order`; articles by `publish_date`, newest first.
 
 ### Article (`/blog/[slug]`)
 
-Generated only for published posts with a Markdown body. Shows the heading, metadata, the post's figure and the rendered Markdown (Shiki syntax highlighting). When the post has `external` set, its canonical URL points at the original publication.
+Generated for posts hosted on this site (no `external` link). Same heading, spacing and column as the rest of the site, then the post's artwork and the rendered Markdown in a 680px reading column. The interactive dot-grid background is turned off on these pages so the text stays legible; the artwork still animates.
+
+The prose styles in `global.css` cover headings (with anchor offsets for the sticky header), lists and task lists, block quotes, images (natural size up to the column width), inline code and `kbd`, code blocks (Shiki's `css-variables` theme mapped to the design tokens, labelled with their language, scrolling sideways), tables and footnotes. `content/blogs/hello-world` is a draft that uses all of them.
 
 ### 404
 
@@ -82,7 +87,7 @@ Page heading with a link back to the homepage.
 
 ## Content Schema
 
-Schemas live in `src/content.config.ts`; drafts (`status: draft`) are excluded everywhere.
+Schemas live in `src/content.config.ts`. Entries with `draft: true` show up while running `make dev` but are left out of the build, RSS and sitemap.
 
 ### Blog (`content/blogs/[slug]/index.md`)
 
@@ -91,17 +96,15 @@ title: string
 description: string # Card text and meta description
 reading_time: string # e.g. "17 min read"
 tags: string[] # Topics, used for filtering, e.g. ["AI agents", "Security"]
-status: draft | published
 publish_date: YYYY-MM-DD
-updated_date: YYYY-MM-DD # Optional; shown as "Updated <date>" and used for sorting
-external: # Optional; where the article was originally published
+external: # Optional: the article lives on another site
   url: https://...
-  site: Xebia # Card call to action becomes "Read on Xebia"
-figure: trials | hive | imposter | site | sandboxes | forecast
-figure_alt: string # Screen reader description of the animation
+  name: Xebia # Card call to action becomes "Read on Xebia"
+artwork_alt: string # Screen reader description of artwork.ts
+draft: boolean # Optional, default false
 ```
 
-A post needs a Markdown body, an `external` link, or both. Cards link to `external.url` when set, otherwise to the local page.
+A post is either hosted here (no `external`, the article is the Markdown body) or links elsewhere (`external` set, no body); the build fails on anything in between.
 
 ### Project (`content/projects/[slug]/index.md`)
 
@@ -111,12 +114,15 @@ monospace_title: boolean # Optional; set repository-style names in the mono font
 description: string
 github_link: https://...
 tags: string[]
-stage: string # e.g. "Open source", "In development"
+status: string # Shown on the card, e.g. "Open source", "In development"
 order: number # Position on the projects page, lower first
-status: draft | published
-figure: (as for blogs)
-figure_alt: string
+artwork_alt: string
+draft: boolean # Optional, default false
 ```
+
+### Artworks (`content/<collection>/<slug>/artwork.ts`)
+
+Every visible blog post and project needs an `artwork.ts` next to its `index.md` (the build fails otherwise). It default-exports `defineArtwork({ create, startTime? })` from `@/lib/riso/artwork`, where `create` returns a motif: a function that draws one frame through the riso `Painter`. Artworks can be shared by re-exporting another entry's (`export { default } from "../../projects/hive/artwork";`).
 
 ### Site config (`content/site.yaml`) and homepage (`content/homepage.yaml`)
 
@@ -129,16 +135,17 @@ There are no hydrated React islands. Components render to static HTML, and one b
 - `tag-filter.ts`: topic filters on listing pages (`[data-tag-filter]`, cards expose `data-tags`)
 - `motion-toggle.ts`: play/pause button in the header
 - `print-settings.ts`: the print settings dock
-- `lib/riso/engine.ts`: animates every `canvas[data-figure]`
+- `lib/riso/engine.ts`: animates every `canvas[data-figure]`, loading each artwork on demand
 - `lib/riso/background.ts`: the page's dot grid that warms up near the pointer
 
 Each controller returns a cleanup function; Storybook's preview uses them to make stories interactive.
 
 ### Risograph renderer (`src/lib/riso/`)
 
-- `catalog.ts`: figure IDs, shared with the content schema (DOM-free)
-- `figures.ts`: maps each ID to a motif and its options
-- `motifs/`: one drawing function per illustration or glyph
+- `artwork.ts`: the `Artwork` type and `defineArtwork` helper used by the content artworks
+- `registry.ts`: finds `content/*/*/artwork.ts` with `import.meta.glob` and maps figure IDs (`"projects/hive"`) to lazily loaded artworks, so each page only downloads the artworks it shows
+- `catalog.ts`: the homepage skill glyph names, shared with the content schema (DOM-free)
+- `motifs/`: the glyphs, the shared eclipse marker and the `Motif` type
 - `painter.ts`: splits shapes into three halftone ink layers, then composites them with grain and misregistration
 - `settings.ts`: observable print settings (persisted in `localStorage`) and the paused state
 - `palette.ts`: reads the ink colours from the CSS design tokens
@@ -148,9 +155,9 @@ Figures redraw at 20 fps, only while on screen, and start paused when the visito
 ## SEO
 
 - **Open Graph tags** in `BaseLayout`; article pages use `banner.*` as `og:image` when present.
-- **Canonical URLs**: per page; syndicated articles point to the original.
+- **Canonical URLs**: per page.
 - **Sitemap**: generated by `@astrojs/sitemap`.
-- **RSS feed**: `/rss.xml`, all published posts.
+- **RSS feed**: `/rss.xml`, all published posts; external ones link to their original site.
 - **Site URL**: `https://maxvandenhoven.com` (configured in `astro.config.ts`).
 
 ## Deployment
@@ -170,6 +177,7 @@ Figures redraw at 20 fps, only while on screen, and start paused when the visito
 - **Design tokens** in the `@theme` block of `src/styles/global.css`: colours (paper, ink, muted, rule, card, chip, accent, footer, brand), fonts, a named type scale, line heights, letter spacing, radii, shadows, breakpoints (560 / 900 / 1100px) and semantic spacing (`frame`, `inset`, `gutter`, `col-gap`, `section`) that widens at larger breakpoints.
 - **Riso inks** (`--color-riso-*`, `--color-art`) live in a `@theme static` block so they are always emitted for the canvas renderer to read.
 - **Fonts**: Schibsted Grotesk (text) and Martian Mono (labels, code) from Google Fonts.
+- **Code highlighting**: `--color-code-*` tokens plus ink, muted and accent, applied through Shiki's `--astro-code-*` variables.
 - **Light mode only**; all colours go through tokens, so a dark theme only needs new token values.
 - **No external UI libraries**.
 

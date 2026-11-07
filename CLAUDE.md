@@ -82,19 +82,23 @@ Additional npm scripts (used by Makefile and lint-staged):
 
 ### Content Authoring
 
-Site and homepage text live in YAML; blog posts and projects are folders under `content/`. Field reference: see ARCHITECTURE.md.
+Site and homepage text live in YAML; blog posts and projects are folders under `content/`, each with an `index.md` and an `artwork.ts`. Field reference: see ARCHITECTURE.md.
 
 **Adding a blog post:**
 
-1. Create `content/blogs/[slug]/index.md` with the required frontmatter, including a `figure` (one of the riso illustrations) and `figure_alt`
-2. Either write the article as the Markdown body (it gets a page at `/blog/[slug]`), or set `external` to link to where it was published, or both
-3. Optionally add `banner.jpg` (used as the `og:image`) and an `images/` folder for inline images (`![alt](./images/photo.png)`)
-4. Set `status: published` when ready (drafts are excluded from the build)
+1. Create `content/blogs/[slug]/index.md` with the required frontmatter, including `artwork_alt`
+2. Add `content/blogs/[slug]/artwork.ts` (see "Artworks" below)
+3. Choose one:
+   - **Hosted here**: write the article as the Markdown body; it gets a page at `/blog/[slug]`. Optionally add `banner.jpg` (the `og:image`) and an `images/` folder for inline images (`![alt](./images/photo.png)`)
+   - **Published elsewhere**: set `external: { url, name }` and leave the body empty; the card reads "Read on <name>"
+4. New posts can start with `draft: true`: drafts show up in `make dev` but are left out of the build. Remove it (or set `false`) to publish
+
+`content/blogs/hello-world` is a draft that uses every supported Markdown element; use it to check the article template.
 
 **Adding a project:**
 
-1. Create `content/projects/[slug]/index.md` with the required frontmatter, including `figure`, `figure_alt`, `stage` and `order`
-2. Set `status: published` when ready
+1. Create `content/projects/[slug]/index.md` with the required frontmatter, including `status` (e.g. "Open source"), `order` and `artwork_alt`
+2. Add `content/projects/[slug]/artwork.ts`
 
 **Site and homepage config:**
 
@@ -102,8 +106,10 @@ Site and homepage text live in YAML; blog posts and projects are folders under `
 - `content/homepage.yaml` — hero, about text (inline `[links](https://...)` supported), education, skills, and the featured project and blog slugs
 - See `.claude/PROMPTS.md` for implementation prompts to use in future sessions
 
-### Adding an illustration
+### Artworks
 
-1. Write a motif in `src/lib/riso/motifs/` (a function drawing one frame through the `Painter`)
-2. Add its ID to `ILLUSTRATIONS` or `GLYPHS` in `src/lib/riso/catalog.ts` and register it in `src/lib/riso/figures.ts`
-3. It can then be used as `figure:` in content and appears in the `UI/RisoFigure` story
+- Each blog post and project owns its animated illustration in `artwork.ts`, default-exporting `defineArtwork({ create, startTime? })` from `@/lib/riso/artwork`. `create` returns a motif: a function `(painter, width, height, time)` that draws one frame through the riso `Painter`. Shared helpers live in `src/lib/riso/` (`geometry`, `math`, `motifs/eclipse`)
+- To reuse another entry's artwork, re-export it: `export { default } from "../../projects/hive/artwork";`
+- Artworks are discovered by path and loaded lazily per page; every visible entry needs one, or the build fails. All of them appear in the `UI/RisoFigure` → "All artworks" story
+- The homepage skill glyphs are site design rather than content, so they stay in `src/lib/riso/motifs/glyphs.ts` (names in `catalog.ts`)
+- Keep figures at card size or the article column width: they redraw every frame, so their cost grows with their area
