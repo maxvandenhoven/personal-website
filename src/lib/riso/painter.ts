@@ -43,12 +43,16 @@ export interface PrintSettings {
   regSeed: number;
 }
 
-/** 0.5 px layer offset, 20% ink grain, 10% paper tint, 30 lpi, knockout. */
+/**
+ * 0.5 px layer offset, 20% ink grain, 10% paper tint, 32 lpi, knockout.
+ * (The pitch used to be 3.25, but whole-pixel rounding made it 3 on standard
+ * displays, which is the look the site was designed on.)
+ */
 export const PRINT_SETTINGS: Readonly<PrintSettings> = {
   misreg: 0.5,
   grain: 0.2,
   ground: 0.1,
-  pitch: 3.25,
+  pitch: 3,
   knock: "knock",
   regSeed: 3,
 };
@@ -90,6 +94,12 @@ type Draw = (ctx: CanvasRenderingContext2D, style: Style) => void;
 
 /** Screen angles per drum, as on a real riso. */
 const SCREEN_ANGLES = [15, 75, 45];
+/**
+ * Resolution of halftone tiles whose cell isn't a whole number of canvas pixels.
+ * 2x keeps dots as even as on a 1x display; higher factors alias when the
+ * pattern is scaled down.
+ */
+const SCREEN_SUPERSAMPLE = 2;
 const TEXTURE_SEED = 911;
 const FIBRE_TILE = 420;
 const MAX_CACHED_PAPERS = 24;
@@ -221,11 +231,22 @@ export function createPainter(
     return canvas;
   }
 
-  /** Halftone screen for a drum at a given coverage. */
+  /**
+   * Halftone screen for a drum at a given coverage, with a cell of exactly
+   * `pitch` CSS pixels at any pixel ratio. When that is a whole number of canvas
+   * pixels the tile is drawn 1:1 and stays crisp; otherwise it is drawn
+   * supersampled and scaled down, instead of rounding the cell (which made the
+   * screen up to 15% coarser on high-density displays).
+   */
   function screen(drum: number, tint: number): CanvasPattern {
     const q = Math.round(tint * 20) / 20;
-    const cell = Math.max(3, Math.round(settings.pitch * dpr));
-    const key = `${drum}|${q}|${cell}`;
+    const period = Math.max(3, settings.pitch * dpr);
+    const whole = Math.abs(period - Math.round(period)) < 0.01;
+    const cell = whole
+      ? Math.round(period)
+      : Math.round(period * SCREEN_SUPERSAMPLE);
+    const scale = period / cell;
+    const key = `${drum}|${q}|${cell}|${scale}`;
     const cached = patterns.get(key);
     if (cached) return cached;
 
@@ -256,7 +277,9 @@ export function createPainter(
       ctx.fill();
     }
     const pattern = repeatPattern(layers[0].ctx, tile);
-    pattern.setTransform(new DOMMatrix().rotate(SCREEN_ANGLES[drum]));
+    pattern.setTransform(
+      new DOMMatrix().rotate(SCREEN_ANGLES[drum]).scale(scale),
+    );
     patterns.set(key, pattern);
     return pattern;
   }
