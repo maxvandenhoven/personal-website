@@ -107,6 +107,8 @@ const SCREEN_SUPERSAMPLE = 2;
 const MIN_SCREEN_CELL = 3;
 const TEXTURE_SEED = 911;
 const FIBRE_TILE = 420;
+const BLOTCH_CELLS = 16;
+const BLOTCH_TILE = 360;
 const MAX_CACHED_PAPERS = 24;
 
 function createCanvas(size: number, height = size): HTMLCanvasElement {
@@ -151,17 +153,34 @@ function createTextures(ctx: CanvasRenderingContext2D): Textures {
   }
   grainCtx.putImageData(grainData, 0, 0);
 
-  const speckle = createCanvas(16);
+  // Blotches: a 16x16 speckle enlarged to 360 px. Enlarging a single copy
+  // clamps at its edges, which left hard seams wherever the pattern repeats,
+  // so a 3x3 grid of copies is enlarged and only the middle one is kept.
+  const speckle = createCanvas(BLOTCH_CELLS * 3);
   const speckleCtx = context2d(speckle);
-  const speckleData = speckleCtx.createImageData(16, 16);
+  const speckleData = speckleCtx.createImageData(BLOTCH_CELLS, BLOTCH_CELLS);
   for (let i = 0; i < speckleData.data.length; i += 4) {
     speckleData.data[i + 3] = Math.pow(random(), 2.5) * 200;
   }
-  speckleCtx.putImageData(speckleData, 0, 0);
-  const blotchTile = createCanvas(360);
+  for (let ty = 0; ty < 3; ty++) {
+    for (let tx = 0; tx < 3; tx++) {
+      speckleCtx.putImageData(
+        speckleData,
+        tx * BLOTCH_CELLS,
+        ty * BLOTCH_CELLS,
+      );
+    }
+  }
+  const blotchTile = createCanvas(BLOTCH_TILE);
   const blotchCtx = context2d(blotchTile);
   blotchCtx.imageSmoothingQuality = "high";
-  blotchCtx.drawImage(speckle, 0, 0, 360, 360);
+  blotchCtx.drawImage(
+    speckle,
+    -BLOTCH_TILE,
+    -BLOTCH_TILE,
+    BLOTCH_TILE * 3,
+    BLOTCH_TILE * 3,
+  );
 
   const fibre = createCanvas(FIBRE_TILE);
   const fibreCtx = context2d(fibre);
