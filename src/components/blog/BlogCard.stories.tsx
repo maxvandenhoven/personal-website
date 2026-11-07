@@ -25,7 +25,7 @@ export const LocalArticle: Story = {
   args: {
     post: {
       ...samplePost,
-      href: "/blog/hello-world",
+      href: "/blog/example-post",
       external: false,
       linkLabel: "Read article",
       dateLabel: "1 Aug 2026",

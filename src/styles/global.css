@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* The reference mockups in docs/ are plain HTML; keep their class names out of the generated CSS. */
+/* docs/ is prose for humans, not site source; keep its words out of the generated CSS. */
 @source not "../../docs";
 /* Emitted by the Markdown pipeline (footnote headings), so not found in our sources. */
 @source inline("sr-only");

@@ -4,7 +4,7 @@
 
 A static personal website with three pages: homepage, blog, and projects. Content is managed through a file-based CMS — Markdown files with frontmatter and two YAML config files under `content/`. The site is built with Astro (static generation), with React components rendered to static HTML at build time, styled with Tailwind CSS, and deployed to GitHub Pages via GitHub Actions.
 
-The visual design follows the reference mockups in `docs/reference/`: one calm, centered column on paper-coloured ground, with generative illustrations inside framed figures. The illustrations are animated canvases printed as three-ink risographs (halftone screens, ink grain, slight misregistration between layers).
+The visual design is one calm, centered column on paper-coloured ground, with generative illustrations inside framed figures. The illustrations are animated canvases printed as three-ink risographs (halftone screens, ink grain, slight misregistration between layers).
 
 ## Folder Structure
 
@@ -30,7 +30,8 @@ personal-website/
 │       ├── index.md              # Title and items of a skill category
 │       └── artwork.ts            # The category's small glyph
 ├── docs/
-│   └── reference/                # Static HTML design reference (kept exactly as designed)
+│   ├── content.md                # Authoring guide: frontmatter, YAML config, artworks, Markdown
+│   └── github-pages-setup.md     # Deployment and custom domain setup
 ├── public/                       # Static assets served as-is (favicon, CNAME)
 ├── src/
 │   ├── content.config.ts         # Content collections and their schemas
@@ -82,7 +83,7 @@ Page heading plus a card grid with single-select topic filters built from the it
 
 Generated for posts hosted on this site (no `external` link). Same heading style and spacing as the rest of the site, with everything (heading, artwork, rendered Markdown) in one centred 680px reading column. The interactive dot-grid background is turned off on these pages so the text stays legible; the artwork still animates.
 
-The prose styles in `global.css` cover headings (with anchor offsets for the sticky header), lists and task lists, block quotes, images (natural size up to the column width), inline code and `kbd`, code blocks (Shiki's `css-variables` theme mapped to the design tokens, labelled with their language, scrolling sideways), tables and footnotes. `content/blogs/hello-world` is a draft that uses all of them.
+The prose styles in `global.css` cover headings (with anchor offsets for the sticky header), lists and task lists, block quotes, images (natural size up to the column width), inline code and `kbd`, code blocks (Shiki's `css-variables` theme mapped to the design tokens, labelled with their language, scrolling sideways), tables and footnotes. `docs/content.md` lists the supported Markdown for authors.
 
 ### 404
 

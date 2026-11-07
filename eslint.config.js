@@ -8,13 +8,7 @@ import eslintConfigPrettier from "eslint-config-prettier";
 
 export default [
   {
-    ignores: [
-      "dist/",
-      ".astro/",
-      "node_modules/",
-      "storybook-static/",
-      "docs/reference/",
-    ],
+    ignores: ["dist/", ".astro/", "node_modules/", "storybook-static/"],
   },
   {
     files: ["**/*.{ts,tsx}"],

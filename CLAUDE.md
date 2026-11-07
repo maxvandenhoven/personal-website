@@ -56,7 +56,6 @@ Additional npm scripts (used by Makefile and lint-staged):
 - The riso ink colors are read at runtime by the canvas renderer, so they live in a `@theme static` block
 - Light mode only for now; every color goes through a token so dark mode only needs new values
 - Fonts: Schibsted Grotesk (`font-sans`) and Martian Mono (`font-mono`) from Google Fonts
-- The visual reference is `docs/reference/` (static HTML mockups). Keep those files as they are; `docs/reference/README.md` explains how to view them
 
 ### Components
 
@@ -93,7 +92,7 @@ Site and homepage text live in YAML. Skills, blog posts and projects are self-co
    - **Published elsewhere**: set `external: { url, name }` and leave the body empty; the card reads "Read on <name>"
 4. New posts can start with `draft: true`: drafts show up in `make dev` but are left out of the build. Remove it (or set `false`) to publish
 
-`content/blogs/hello-world` is a draft that uses every supported Markdown element; use it to check the article template.
+`docs/content.md` documents every frontmatter field, `homepage.yaml`, `site.yaml`, `artwork.ts` and the Markdown the article template supports.
 
 **Adding a project:**
 
