@@ -1,8 +1,14 @@
-<img src="assets/logo.svg" width="160" alt="Personal website logo">
+<img src="assets/logo.png" width="160" alt="Personal website logo">
 
 # personal-website
 
 My personal website brings together my projects, writing, and background. It is built with Astro, React, and TypeScript, with content stored in Markdown and YAML. The illustrations combine simple geometric shapes with layered ink effects inspired by risograph printing.
+
+## Background
+
+The site is a place to publish projects and writing, and it is also a side project in its own right. Content lives in Markdown and YAML files with schemas that the build validates, so a missing artwork or a broken featured entry fails the build instead of reaching the published pages. Astro produces plain static files that GitHub Pages can serve, which keeps hosting simple and leaves no server to maintain.
+
+The risograph-inspired illustrations give the site a distinct look and a setting for experimenting with canvas rendering. Each entry owns a small animated artwork drawn through a shared painter that layers ink colors and halftone effects. Artwork modules load lazily and the renderer redraws only visible figures at a limited frame rate, so drawing cost is a design constraint on how large and complex a figure can be.
 
 ## Getting started
 
