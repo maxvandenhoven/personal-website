@@ -1,5 +1,3 @@
-import storybook from "eslint-plugin-storybook";
-
 import eslintPluginAstro from "eslint-plugin-astro";
 import reactHooks from "eslint-plugin-react-hooks";
 import tseslint from "@typescript-eslint/eslint-plugin";
@@ -8,7 +6,7 @@ import eslintConfigPrettier from "eslint-config-prettier";
 
 export default [
   {
-    ignores: ["dist/", ".astro/", "node_modules/", "storybook-static/"],
+    ignores: ["dist/", ".astro/", "node_modules/"],
   },
   {
     files: ["**/*.{ts,tsx}"],
@@ -33,5 +31,4 @@ export default [
   },
   ...eslintPluginAstro.configs.recommended,
   eslintConfigPrettier,
-  ...storybook.configs["flat/recommended"],
 ];

@@ -5,7 +5,7 @@ import { initTagFilters } from "./tag-filter";
 
 /**
  * Attach every interactive behaviour to the server-rendered markup inside
- * `root`. Returns a function that detaches them again (used by Storybook).
+ * `root`. Returns a function that detaches them again.
  */
 export function initControllers(root: ParentNode = document): () => void {
   const cleanups = [

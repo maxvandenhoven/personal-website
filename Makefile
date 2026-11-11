@@ -1,4 +1,4 @@
-.PHONY: dev build preview clean lint format type check ci storybook storybook-build
+.PHONY: dev build preview clean lint format type check ci
 
 dev:
 	npm run dev
@@ -30,9 +30,3 @@ ci:
 	npm run lint
 	npm run format:check
 	npm run typecheck
-
-storybook:
-	npm run storybook
-
-storybook-build:
-	npm run build-storybook

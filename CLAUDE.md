@@ -15,8 +15,6 @@ All commands are available via the Makefile:
 - `make type` — run TypeScript type checking via `astro check`
 - `make check` — auto-fix lint + format, then run typecheck
 - `make ci` — run lint + format check + typecheck (all report-only, all must pass; used in CI)
-- `make storybook` — start Storybook dev server on port 6006
-- `make storybook-build` — build static Storybook (output: `storybook-static/`)
 
 Additional npm scripts (used by Makefile and lint-staged):
 
@@ -70,14 +68,6 @@ Additional npm scripts (used by Makefile and lint-staged):
 - One component per `.tsx` file, PascalCase naming
 - Each subfolder has an `index.ts` barrel export
 - Custom component library — no external UI libraries
-
-### Storybook
-
-- Every React component gets a co-located `.stories.tsx` file (e.g. `Tag.stories.tsx` next to `Tag.tsx`); shared sample data lives in `src/components/fixtures.ts`
-- Add `tags: ["autodocs"]` in the story meta to auto-generate a docs page from the TypeScript interface
-- Storybook imports `global.css` (with the Tailwind Vite plugin) and runs the client controllers, so figures animate and controls work in stories
-- Stories must not import modules that use `astro:*` virtual modules (e.g. `src/lib/content.ts` at runtime); type-only imports are fine
-- Astro components (`.astro`) are server-only and cannot be used in Storybook — only React `.tsx` components
 
 ### Content Authoring
 

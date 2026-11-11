@@ -13,7 +13,6 @@ personal-website/
 ├── .claude/
 │   └── ARCHITECTURE.md
 ├── .github/workflows/deploy.yml  # Build + deploy on push to main, manual trigger
-├── .storybook/                   # Storybook config; preview runs the client controllers
 ├── content/                      # CMS content (not in src/ — treated as data)
 │   ├── site.yaml                 # Site-wide settings: name, socials, contact, listing page copy
 │   ├── homepage.yaml             # Homepage text, and which skills/projects/posts it shows
@@ -41,8 +40,7 @@ personal-website/
 │   │   ├── home/                 # Hero, AboutStory, StudyPath, SkillGrid
 │   │   ├── blog/                 # BlogCard
 │   │   ├── projects/             # ProjectCard
-│   │   ├── riso/                 # MotionToggle
-│   │   └── fixtures.ts           # Sample data for stories
+│   │   └── riso/                 # MotionToggle
 │   ├── layouts/BaseLayout.astro  # <head>, header, footer, client script
 │   ├── lib/
 │   │   ├── content.ts            # Build-time content queries and card view models
@@ -151,7 +149,7 @@ There are no hydrated React islands. Components render to static HTML, and one b
 - `lib/riso/engine.ts`: animates every `canvas[data-figure]`, loading each artwork on demand
 - `lib/riso/background.ts`: the page's dot grid, which warms up near the mouse (touch and pen input leave it grey)
 
-Each controller returns a cleanup function; Storybook's preview uses them to make stories interactive.
+Each controller returns a cleanup function.
 
 ### Risograph renderer (`src/lib/riso/`)
 

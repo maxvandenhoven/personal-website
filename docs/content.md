@@ -180,7 +180,6 @@ export default defineArtwork({ create: () => pulse });
 - Inks are named mixes of the three riso drums: `ink` (paper), `dim`, `cream`, `sun`, `orange`, `ember`, `red`, `rose`, `steel`, `slate`, `navy` and `night`.
 - Helpers: `circle`, `roundedRect`, `hexagon` and `figurePadding` in `@/lib/riso/geometry`; `hash`, `clamp`, `ease` and `seededRandom` in `@/lib/riso/math`; `drawEclipse` in `@/lib/riso/motifs/eclipse`.
 - To reuse another entry's artwork, re-export it: `export { default } from "../../projects/hive/artwork";`.
-- Every artwork appears in Storybook under UI → RisoFigure → All artworks.
 - Keep artworks cheap: they redraw 20 times a second while on screen.
 
 ## `homepage.yaml`
