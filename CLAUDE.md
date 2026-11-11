@@ -1,107 +1,47 @@
-# Personal Website
+# Personal website
 
-Static personal website built with Astro, React, TypeScript, and Tailwind CSS. Deployed to GitHub Pages at `maxvandenhoven.com`.
+Static personal website for `maxvandenhoven.com`, built with Astro 7, React 19, TypeScript (strict) and Tailwind CSS v4, and deployed to GitHub Pages. Start with `README.md` for the background and `docs/architecture.md` for how the code fits together.
 
 ## Commands
 
-All commands are available via the Makefile:
+Run everything through `make`.
 
-- `make dev` — start local dev server
-- `make build` — build static site
-- `make preview` — preview built site locally
-- `make clean` — remove `dist/` and `.astro/`
-- `make lint` — run ESLint (report only)
-- `make format` — run Prettier (auto-fix)
-- `make type` — run TypeScript type checking via `astro check`
-- `make check` — auto-fix lint + format, then run typecheck
-- `make ci` — run lint + format check + typecheck (all report-only, all must pass; used in CI)
+- `make dev` starts the dev server. Drafts are visible here and left out of builds.
+- `make build` builds into `dist/`, and `make preview` serves it.
+- `make check` fixes lint, formats and type checks. Run it before you finish a change.
+- `make ci` runs the same checks as GitHub without changing files. All of them must pass.
+- `make lint`, `make format`, `make type` and `make clean` run single steps.
 
-Additional npm scripts (used by Makefile and lint-staged):
+There is no automated test suite. Verify a change with `make ci`, `make build` and, for visual changes, by looking at the page at phone and desktop width.
 
-- `npm run lint:fix` — ESLint with auto-fix
-- `npm run format:check` — Prettier report only (no writes)
+## Where to find things
 
-## Tech Stack
+| Topic                                            | Read                                |
+| ------------------------------------------------ | ----------------------------------- |
+| Structure, data flow, renderer, design decisions | `docs/architecture.md`              |
+| Tokens and styling rules                         | `docs/design-system.md`             |
+| Setup, checks, conventions, common changes       | `docs/guides/development.md`        |
+| Frontmatter, YAML config, Markdown, tags         | `docs/guides/writing-content.md`    |
+| `artwork.ts`, painter API, previewing            | `docs/guides/artworks.md`           |
+| Release flow and CI                              | `docs/guides/deployment.md`         |
+| Pages, DNS and HTTPS setup                       | `docs/guides/setup-github-pages.md` |
 
-- **Framework**: Astro 7 with React islands for interactive components
-- **Language**: TypeScript (strict mode)
-- **Styling**: Tailwind CSS v4 (light mode only, designed for easy dark mode extension)
-- **Syntax Highlighting**: Shiki (VS Code-grade tokenization)
-- **Package Manager**: npm
-- **Node Version**: 24 (managed via nvm, see `.nvmrc`)
-- **Linting**: ESLint 10 (flat config in `eslint.config.js`) with Astro, React Hooks, and TypeScript plugins
-- **Formatting**: Prettier (with `prettier-plugin-astro` and `prettier-plugin-tailwindcss` for class sorting)
-- **Pre-commit**: husky + lint-staged runs `eslint --fix` and `prettier --write` on staged `.ts`, `.tsx`, `.astro`, `.css` files
+## Rules
 
-## Code Conventions
+- **Content.** Skills, blog posts and projects are folders under `content/` with an `index.md` and an `artwork.ts`. Every visible entry needs an artwork, or the build fails. The homepage chooses featured entries by folder name in `content/homepage.yaml`.
+- **Data access.** Pages get their data from `src/lib/content.ts` and never query collections directly.
+- **Components.** Components are React `.tsx` files rendered to static HTML. Do not add `client:*` hydration, state or effects. Put interactivity in `src/scripts/` controllers that bind to `data-*` attributes and return a cleanup function.
+- **Component files.** One component per file in PascalCase, exported from the folder's `index.ts` barrel. Use no external UI library.
+- **Styling.** Never use raw hex or rgb colors. Use the tokens and named scales from the `@theme` block in `src/styles/global.css`. The riso inks stay in `@theme static`. The site is light mode only.
+- **TypeScript.** No `any`. Prefer `interface` for object shapes. Use `.tsx` for components and `.ts` for utilities.
+- **Artworks.** Figures redraw every frame, so keep them at card size or article width. To reuse another entry's artwork, re-export it.
+- **Git.** Use conventional commits (`feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`). The pre-commit hook runs lint-staged. Pushes that only change `docs/` or `.claude/` do not trigger a deploy.
 
-### Git
+## Skills
 
-- Use conventional commits: `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`
-- Pre-commit hook runs lint-staged (auto-fixes lint + format on staged files)
+- `riso-artwork` creates or revises an `artwork.ts` from a link, text or idea and previews it with `node .claude/skills/riso-artwork/scripts/preview.mjs <artwork.ts>`.
+- `writing-style` applies to any website copy, blog text or README prose.
 
-### TypeScript
+## Keeping docs current
 
-- Strict mode enabled, no `any` types
-- Prefer interfaces over type aliases for object shapes
-- Use `.tsx` for React components, `.ts` for utilities
-
-### Styling
-
-- Never use raw hex/rgb colors — always use Tailwind theme tokens defined in `src/styles/global.css`
-- Design tokens (colors, type scale, spacing, radii, shadows, breakpoints) live in the `@theme` block in `src/styles/global.css` (Tailwind v4 CSS-based config). Use the named scales (`text-md`, `leading-copy`, `tracking-eyebrow`, `gap-gutter`, `p-inset`, ...) rather than arbitrary values
-- Token names must not collide across namespaces: Tailwind resolves `max-w-*` against `--spacing-*` before `--container-*`
-- The riso ink colors are read at runtime by the canvas renderer, so they live in a `@theme static` block
-- Light mode only for now; every color goes through a token so dark mode only needs new values
-- Fonts: Schibsted Grotesk (`font-sans`) and Martian Mono (`font-mono`) from Google Fonts
-
-### Components
-
-- Components live in `src/components/` organized by function:
-  - `ui/` — primitives (Card, CardGrid, Chip, Pill, Tag, RisoFigure, FilterableList, ...)
-  - `layout/` — structural (Header, NavMenu, Footer, Section, SectionHeading, PageHeading)
-  - `home/` — homepage sections (Hero, AboutStory, StudyPath, SkillGrid)
-  - `blog/` and `projects/` — BlogCard and ProjectCard
-  - `riso/` — MotionToggle
-- Components are React `.tsx` files rendered to static HTML by Astro (no `client:*` hydration). Interactivity lives in `src/scripts/` controllers that bind to `data-*` attributes, loaded once by `BaseLayout`
-- Pages get their data through `src/lib/content.ts`, not by querying collections directly
-- One component per `.tsx` file, PascalCase naming
-- Each subfolder has an `index.ts` barrel export
-- Custom component library — no external UI libraries
-
-### Content Authoring
-
-Site and homepage text live in YAML. Skills, blog posts and projects are self-contained folders under `content/`, each with an `index.md` and an `artwork.ts`; the listing pages show all of them, and `content/homepage.yaml` picks which ones the homepage shows, by folder name and in display order. Field reference: see ARCHITECTURE.md.
-
-**Adding a blog post:**
-
-1. Create `content/blogs/[slug]/index.md` with the required frontmatter, including `artwork_alt`
-2. Add `content/blogs/[slug]/artwork.ts` (see "Artworks" below)
-3. Choose one:
-   - **Hosted here**: write the article as the Markdown body; it gets a page at `/blog/[slug]`. Optionally add `banner.jpg` (the `og:image`) and an `images/` folder for inline images (`![alt](./images/photo.png)`)
-   - **Published elsewhere**: set `external: { url, name }` and leave the body empty; the card reads "Read on <name>"
-4. New posts can start with `draft: true`: drafts show up in `make dev` but are left out of the build. Remove it (or set `false`) to publish
-
-`docs/content.md` documents every frontmatter field, `homepage.yaml`, `site.yaml`, `artwork.ts` and the Markdown the article template supports.
-
-**Adding a project:**
-
-1. Create `content/projects/[slug]/index.md` with the required frontmatter, including `status` (e.g. "Open source") and `artwork_alt`
-2. Add `content/projects/[slug]/artwork.ts`
-
-**Adding a skill category:** create `content/skills/[slug]/index.md` (`title`, `items`) and a small square `artwork.ts` glyph.
-
-**Featuring on the homepage:** add the folder name to `about.skills`, `featured_projects.projects` or `featured_blogs.blogs` in `content/homepage.yaml`. The build fails on folders that don't exist or are drafts.
-
-**Site and homepage config:**
-
-- `content/site.yaml` — name, meta description, email, social links, contact block, and the projects/blog page intros
-- `content/homepage.yaml` — hero, about text (inline `[links](https://...)` supported), education, and the skills, projects and posts to show
-- See `.claude/PROMPTS.md` for implementation prompts to use in future sessions
-
-### Artworks
-
-- Each skill, blog post and project owns its animated illustration in `artwork.ts`, default-exporting `defineArtwork({ create, startTime? })` from `@/lib/riso/artwork`. `create` returns a motif: a function `(painter, width, height, time)` that draws one frame through the riso `Painter`. Shared helpers live in `src/lib/riso/` (`geometry`, `math`, `motifs/eclipse`)
-- To reuse another entry's artwork, re-export it: `export { default } from "../../projects/hive/artwork";`
-- Artworks are discovered by path and loaded lazily per page; every visible entry needs one, or the build fails. All of them appear in the `UI/RisoFigure` → "All artworks" story
-- Keep figures at card size or the article column width: they redraw every frame, so their cost grows with their area
+Update the matching page in `docs/` in the same change when you alter a schema, a command, a workflow, a token or the artwork API. Write documentation for both people and agents, with exact paths, commands and field names, and follow the `writing-style` skill.
