@@ -73,7 +73,7 @@ Use the Tailwind theme tokens and named scales, and never write raw color values
 
 ### Git
 
-- Branch from `main`, for example `feat/dark-mode` or `docs/documentation`.
+- Branch from `main`, for example `feat/dark-mode` or `fix/tag-filter`.
 - Use conventional commit messages, such as `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:` and `chore:`.
 - Open a pull request into `main`. The CI workflow runs on it. A merge to `main` deploys the site, as described in [`deployment.md`](deployment.md).
 
